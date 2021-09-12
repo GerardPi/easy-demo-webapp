@@ -14,7 +14,7 @@ import java.util.stream.IntStream;
 import static io.github.gerardpi.easy.demo.TestFunctions.matchesOrDoesNotMatch;
 import static org.assertj.core.api.Assertions.assertThat;
 
-class FixedUuidSeriesGeneratorTest extends SimpleScenarioTest<FixedUuidSeriesGeneratorTest.State> {
+class FixedUuidSeriesSupplierTest extends SimpleScenarioTest<FixedUuidSeriesSupplierTest.State> {
     @Test
     void UUIDs_generated_have_expected_values() {
         when().generating_$_UUIDs(5);
@@ -44,11 +44,11 @@ class FixedUuidSeriesGeneratorTest extends SimpleScenarioTest<FixedUuidSeriesGen
 
 
     static class State extends Stage<State> {
-        private final FixedUuidSeriesGenerator sut = new FixedUuidSeriesGenerator();
+        private final FixedUuidSeriesSupplier sut = new FixedUuidSeriesSupplier();
         private final List<UUID> uuids = new ArrayList<>();
 
         State generating_$_UUIDs(int count) {
-            uuids.addAll(IntStream.range(0, count).mapToObj(i -> sut.generate()).collect(Collectors.toList()));
+            uuids.addAll(IntStream.range(0, count).mapToObj(i -> sut.get()).collect(Collectors.toList()));
             return self();
         }
 
@@ -67,9 +67,9 @@ class FixedUuidSeriesGeneratorTest extends SimpleScenarioTest<FixedUuidSeriesGen
             UUID uuid1 = uuids.get(index1);
             UUID uuid2 = uuids.get(index2);
             if (matchesOrDoesNotMatch(matchesOrDoesNotMatch)) {
-                assertThat(FixedUuidSeriesGenerator.matchesInFirst8Positions(uuid1, uuid2)).isTrue();
+                assertThat(FixedUuidSeriesSupplier.matchesInFirst8Positions(uuid1, uuid2)).isTrue();
             } else {
-                assertThat(FixedUuidSeriesGenerator.matchesInFirst8Positions(uuid1, uuid2)).isFalse();
+                assertThat(FixedUuidSeriesSupplier.matchesInFirst8Positions(uuid1, uuid2)).isFalse();
             }
             return self();
         }

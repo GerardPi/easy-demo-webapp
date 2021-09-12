@@ -1,45 +1,46 @@
-package io.github.gerardpi.easy.demo.web;
+package io.github.gerardpi.easy.demo.web.addressbook;
 
-import io.github.gerardpi.easy.demo.UuidGenerator;
 import io.github.gerardpi.easy.demo.domain.addressbook.Address;
 import io.github.gerardpi.easy.demo.domain.addressbook.AddressRepository;
-import io.github.gerardpi.easy.demo.web.addressbook.AddressDto;
+import io.github.gerardpi.easy.demo.web.ControllerUtils;
+import io.github.gerardpi.easy.demo.web.EntityController;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.web.PageableDefault;
 import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
-import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.server.ResponseStatusException;
 
+import java.time.OffsetDateTime;
 import java.util.Optional;
 import java.util.UUID;
+import java.util.function.Supplier;
 
-import static io.github.gerardpi.easy.demo.web.ControllerUtils.toUri;
+import static io.github.gerardpi.easy.demo.web.ControllerUtils.*;
 
 @RestController
 @RequestMapping(AddressController.URI)
 public class AddressController implements EntityController<Address, AddressDto> {
     public static final String URI = "/api/addresses";
 
-    private final UuidGenerator uuidGenerator;
+    private final Supplier<UUID> uuidSupplier;
+    private final Supplier<OffsetDateTime> dateTimeSupplier;
     private final AddressRepository repository;
 
-    public AddressController(final UuidGenerator uuidGenerator, final AddressRepository personRepository) {
-        this.uuidGenerator = uuidGenerator;
+    public AddressController(final Supplier<UUID> uuidSupplier, Supplier<OffsetDateTime> dateTimeSupplier, final AddressRepository personRepository) {
+        this.uuidSupplier = uuidSupplier;
+        this.dateTimeSupplier = dateTimeSupplier;
         this.repository = personRepository;
     }
 
     @PostMapping
     public HttpEntity<Void> createOne(@RequestBody final AddressDto addressDto) {
-        final Address savedAddress = repository
-                .save(addressDto.toEntity(Address.create(uuidGenerator.generate()).build())
+        final Address entity = repository
+                .save(addressDto.toEntity(Address.create(uuidSupplier.get()).build())
                         .build());
-        return ResponseEntity.created(toUri(URI, savedAddress.getId().toString()))
-                .eTag("" + savedAddress.getEtag())
-                .build();
+        return responseForPost(entity, toUri(URI, entity.getId().toString()));
     }
 
     /**
@@ -53,10 +54,7 @@ public class AddressController implements EntityController<Address, AddressDto> 
         final Address existingEntity = repository.findById(id).orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND));
         ControllerUtils.assertEtagEqual(existingEntity, expectedEtag);
         final Address savedEntity = repository.save(addressDto.toEntityNotNull(existingEntity).build());
-        return ResponseEntity.ok()
-                .eTag("" + savedEntity.getEtag())
-                .location(toUri(URI, savedEntity.getId().toString()))
-                .build();
+        return responseForPatch(savedEntity, toUri(URI, savedEntity.getId().toString()));
     }
 
     /**
@@ -72,10 +70,7 @@ public class AddressController implements EntityController<Address, AddressDto> 
             @PathVariable final UUID id,
             @RequestBody final AddressDto addressDto) {
         final Address savedEntity = repository.save(addressDto.toEntity(repository.getAddressById(id)).build());
-        return ResponseEntity.ok()
-                .eTag("" + savedEntity.getEtag())
-                .location(toUri(URI, savedEntity.getId().toString()))
-                .build();
+        return responseForPut(savedEntity, toUri(URI, savedEntity.getId().toString()));
     }
 
     @GetMapping("/{id}")
@@ -85,7 +80,7 @@ public class AddressController implements EntityController<Address, AddressDto> 
         final AddressDto dto = AddressDto.fromEntity(repository.getAddressById(id)).build();
         ControllerUtils.assertEtagDifferent(ifNoneMatchHeader, dto.getEtag(),
                 toUri(URI, id.toString()).toString());
-        return ControllerUtils.okResponse(dto);
+        return responseForGet(dto, dateTimeSupplier);
     }
 
     @GetMapping
@@ -103,6 +98,6 @@ public class AddressController implements EntityController<Address, AddressDto> 
         final Address entity = repository.getAddressById(id);
         ControllerUtils.assertEtagEqual(entity, expectedEtag);
         repository.delete(entity);
-        return ControllerUtils.okNoContent();
+        return responseForDelete();
     }
 }

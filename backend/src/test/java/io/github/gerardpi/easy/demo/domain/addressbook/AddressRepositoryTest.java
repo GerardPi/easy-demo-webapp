@@ -3,12 +3,14 @@ package io.github.gerardpi.easy.demo.domain.addressbook;
 import io.github.gerardpi.easy.demo.DemoApplication;
 import io.github.gerardpi.easy.demo.Repositories;
 import io.github.gerardpi.easy.demo.TestConfig;
-import io.github.gerardpi.easy.demo.UuidGenerator;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.TestPropertySource;
+
+import java.util.UUID;
+import java.util.function.Supplier;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
@@ -18,12 +20,12 @@ import static org.assertj.core.api.Assertions.assertThat;
 @SpringBootTest(classes = {DemoApplication.class, TestConfig.class})
 class AddressRepositoryTest {
     private final Repositories repositories;
-    private final UuidGenerator uuidGenerator;
+    private final Supplier<UUID> uuidSupplier;
 
     @Autowired
-    AddressRepositoryTest(Repositories repositories, UuidGenerator uuidGenerator) {
+    AddressRepositoryTest(Repositories repositories, Supplier<UUID> uuidSupplier) {
         this.repositories = repositories;
-        this.uuidGenerator = uuidGenerator;
+        this.uuidSupplier = uuidSupplier;
     }
 
     @BeforeEach
@@ -34,7 +36,7 @@ class AddressRepositoryTest {
     @Test
     void test() {
         // Given
-        Address address = Address.create(uuidGenerator.generate())
+        Address address = Address.create(uuidSupplier.get())
                 .setCountryCode("NL")
                 .setCity("Amsterdam")
                 .setPostalCode("1000AA")

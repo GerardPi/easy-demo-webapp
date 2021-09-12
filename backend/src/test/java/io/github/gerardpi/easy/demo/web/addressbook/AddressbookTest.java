@@ -20,6 +20,8 @@ import org.springframework.web.context.WebApplicationContext;
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
 import java.util.List;
+import java.util.UUID;
+import java.util.function.Supplier;
 
 import static io.github.gerardpi.easy.demo.TestFunctions.storeAndReturnPerson;
 import static org.assertj.core.api.Assertions.assertThat;
@@ -30,25 +32,25 @@ import static org.assertj.core.api.Assertions.assertThat;
 @SpringBootTest(classes = {DemoApplication.class, TestConfig.class})
 class AddressbookTest extends SimpleScenarioTest<AddressbookTest.State> {
     private final Repositories repositories;
-    private final UuidGenerator uuidGenerator;
+    private final Supplier<UUID> uuidSupplier;
     private final WebApplicationContext wac;
 
     @ScenarioStage
     private State state;
 
     @Autowired
-    AddressbookTest(Repositories repositories, UuidGenerator uuidGenerator, WebApplicationContext wac) {
+    AddressbookTest(Repositories repositories, Supplier<UUID> uuidSupplier, WebApplicationContext wac) {
         this.repositories = repositories;
-        this.uuidGenerator = uuidGenerator;
+        this.uuidSupplier = uuidSupplier;
         this.wac = wac;
     }
 
     @BeforeEach
     public void init() {
-        ((FixedUuidSeriesGenerator) uuidGenerator).reset();
+        ((FixedUuidSeriesSupplier) uuidSupplier).reset();
         repositories.clear();
         // Repositories repositories = new Repositories(personRepository, addressRepository, personAddressRepository, itemRepository, itemOrderRepository, itemOrderLineRepository);
-        state.init(uuidGenerator, repositories, IntegrationTestUtils.createMockMvc(wac));
+        state.init(uuidSupplier, repositories, IntegrationTestUtils.createMockMvc(wac));
     }
 
     @Test
@@ -82,11 +84,11 @@ class AddressbookTest extends SimpleScenarioTest<AddressbookTest.State> {
     static class State extends Stage<State> {
         private final SavedEntities savedEntities = new SavedEntities();
         private Repositories repositories;
-        private UuidGenerator uuidGenerator;
+        private Supplier<UUID> uuidGenerator;
         private MockMvc mockMvc;
 
         @Hidden
-        void init(final UuidGenerator uuidGenerator, final Repositories repositories, final MockMvc mockMvc) {
+        void init(final Supplier<UUID> uuidGenerator, final Repositories repositories, final MockMvc mockMvc) {
             this.uuidGenerator = uuidGenerator;
             this.repositories = repositories;
             this.mockMvc = mockMvc;
@@ -141,7 +143,7 @@ class AddressbookTest extends SimpleScenarioTest<AddressbookTest.State> {
                 @Quoted final String postalCode,
                 @Quoted final String street,
                 @Quoted final String houseNumber) {
-            final Address address = Address.create(uuidGenerator.generate())
+            final Address address = Address.create(uuidGenerator.get())
                     .setCountryCode(countryCode)
                     .setCity(city)
                     .setPostalCode(postalCode)
@@ -188,7 +190,7 @@ class AddressbookTest extends SimpleScenarioTest<AddressbookTest.State> {
                 @Quoted final int personNumber,
                 @Quoted final int addressNumber,
                 @Quoted final String personAddressType) {
-            final PersonAddress.Builder builder = PersonAddress.create(uuidGenerator.generate())
+            final PersonAddress.Builder builder = PersonAddress.create(uuidGenerator.get())
                     .setPersonId(savedEntities.getPersonId(personNumber))
                     .setType(PersonAddressType.valueOf(personAddressType))
                     .setAddressId(savedEntities.getAddressId(addressNumber));

@@ -31,6 +31,7 @@ import java.io.UnsupportedEncodingException;
 import java.nio.charset.StandardCharsets;
 import java.time.LocalDate;
 import java.time.OffsetDateTime;
+import java.util.UUID;
 import java.util.function.Supplier;
 
 import static io.github.gerardpi.easy.demo.TestFunctions.storeAndReturnPerson;
@@ -48,7 +49,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 class PersonAddressControllerTest extends SimpleScenarioTest<PersonAddressControllerTest.State> {
     private static final Logger LOG = LoggerFactory.getLogger(PersonAddressControllerTest.class);
     private final SavedEntities savedEntities;
-    private final UuidGenerator uuidGenerator;
+    private final Supplier<UUID> uuidSupplier;
     private final Repositories repositories;
     private final Supplier<OffsetDateTime> testDateTimeSupplier;
     private final WebApplicationContext wac;
@@ -57,9 +58,9 @@ class PersonAddressControllerTest extends SimpleScenarioTest<PersonAddressContro
     private State state;
 
     @Autowired
-    PersonAddressControllerTest(UuidGenerator uuidGenerator, Repositories repositories, Supplier<OffsetDateTime> testDateTimeSupplier, WebApplicationContext wac) {
+    PersonAddressControllerTest(Supplier<UUID> uuidSupplier, Repositories repositories, Supplier<OffsetDateTime> testDateTimeSupplier, WebApplicationContext wac) {
         this.savedEntities = new SavedEntities();
-        this.uuidGenerator = uuidGenerator;
+        this.uuidSupplier = uuidSupplier;
         this.repositories = repositories;
         this.testDateTimeSupplier = testDateTimeSupplier;
         this.wac = wac;
@@ -67,9 +68,9 @@ class PersonAddressControllerTest extends SimpleScenarioTest<PersonAddressContro
 
     @BeforeEach
     public void init() {
-        ((FixedUuidSeriesGenerator) uuidGenerator).reset();
+        ((FixedUuidSeriesSupplier) uuidSupplier).reset();
         repositories.clear();
-        state.init(uuidGenerator, repositories, new MockMvcExecutor(wac), savedEntities,
+        state.init(uuidSupplier, repositories, new MockMvcExecutor(wac), savedEntities,
                 (TestDateTimeSupplier) testDateTimeSupplier);
     }
 
@@ -140,7 +141,7 @@ class PersonAddressControllerTest extends SimpleScenarioTest<PersonAddressContro
     static class State extends Stage<State> {
         private SavedEntities savedEntities;
         private MockMvcExecutor mockMvcExecutor;
-        private UuidGenerator uuidGenerator;
+        private Supplier<UUID> uuidGenerator;
         private Repositories repositories;
         private Exception exception;
         private ResultActions resultActions;
@@ -154,7 +155,7 @@ class PersonAddressControllerTest extends SimpleScenarioTest<PersonAddressContro
         }
 
         @Hidden
-        void init(final UuidGenerator uuidGenerator,
+        void init(final Supplier<UUID> uuidGenerator,
                   final Repositories repositories,
                   final MockMvcExecutor mockMvcExecutor,
                   final SavedEntities savedEntities,
@@ -175,7 +176,7 @@ class PersonAddressControllerTest extends SimpleScenarioTest<PersonAddressContro
 
         State an_address_$_is_stored_in_the_database_with_values_$(@Quoted final int testId, @Quoted final AddressDto addressDto) {
             Address storedAddress = repositories.getAddressRepository().save(
-                    addressDto.toEntity(Address.create(uuidGenerator.generate()).build())
+                    addressDto.toEntity(Address.create(uuidGenerator.get()).build())
                             .build());
             this.savedEntities.putAddressId(testId, storedAddress.getId());
             return self();

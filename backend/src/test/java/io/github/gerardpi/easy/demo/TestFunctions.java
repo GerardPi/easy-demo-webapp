@@ -6,6 +6,8 @@ import io.github.gerardpi.easy.demo.domain.addressbook.PersonName;
 import io.github.gerardpi.easy.demo.domain.addressbook.PersonRepository;
 
 import java.time.LocalDate;
+import java.util.UUID;
+import java.util.function.Supplier;
 
 public final class TestFunctions {
 
@@ -13,9 +15,9 @@ public final class TestFunctions {
         // No instantation allowed.
     }
 
-    public static Person storeAndReturnPerson(final String nameFirst, final String nameLast, final LocalDate dateOfBirth, final UuidGenerator uuidGenerator, final PersonRepository personRepository) {
+    public static Person storeAndReturnPerson(final String nameFirst, final String nameLast, final LocalDate dateOfBirth, final Supplier<UUID> uuidSupplier, final PersonRepository personRepository) {
         final PersonName name = PersonName.create().setFirst(nameFirst).setLast(nameLast).build();
-        final Person person = Person.create(uuidGenerator.generate())
+        final Person person = Person.create(uuidSupplier.get())
                 .setDateOfBirth(dateOfBirth)
                 .setName(name)
                 .build();

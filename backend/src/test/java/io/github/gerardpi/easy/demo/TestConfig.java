@@ -8,6 +8,7 @@ import org.springframework.transaction.annotation.EnableTransactionManagement;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.time.OffsetDateTime;
+import java.util.UUID;
 import java.util.function.Supplier;
 
 @Configuration
@@ -25,8 +26,8 @@ public class TestConfig {
     }
 
     @Bean
-    UuidGenerator uuidGenerator() {
-        return new FixedUuidSeriesGenerator();
+    Supplier<UUID> uuidSupplier() {
+        return new FixedUuidSeriesSupplier();
     }
 
     @Bean

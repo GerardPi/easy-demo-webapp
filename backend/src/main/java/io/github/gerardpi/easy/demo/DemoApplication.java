@@ -41,7 +41,7 @@ public class DemoApplication implements WebMvcConfigurer {
     }
 
     @Bean
-    UuidGenerator uuidGenerator() {
+    public Supplier<UUID> uuidSupplier() {
         return UUID::randomUUID;
     }
 }

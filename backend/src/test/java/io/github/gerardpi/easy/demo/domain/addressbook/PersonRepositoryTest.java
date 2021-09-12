@@ -3,7 +3,6 @@ package io.github.gerardpi.easy.demo.domain.addressbook;
 import io.github.gerardpi.easy.demo.DemoApplication;
 import io.github.gerardpi.easy.demo.Repositories;
 import io.github.gerardpi.easy.demo.TestConfig;
-import io.github.gerardpi.easy.demo.UuidGenerator;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -11,6 +10,8 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.TestPropertySource;
 
 import java.time.LocalDate;
+import java.util.UUID;
+import java.util.function.Supplier;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
@@ -20,12 +21,12 @@ import static org.assertj.core.api.Assertions.assertThat;
 @SpringBootTest(classes = {DemoApplication.class, TestConfig.class})
 class PersonRepositoryTest {
     private final Repositories repositories;
-    private final UuidGenerator uuidGenerator;
+    private final Supplier<UUID> uuidSupplier;
 
     @Autowired
-    PersonRepositoryTest(Repositories repositories, UuidGenerator uuidGenerator) {
+    PersonRepositoryTest(Repositories repositories, Supplier<UUID> uuidSupplier) {
         this.repositories = repositories;
-        this.uuidGenerator = uuidGenerator;
+        this.uuidSupplier = uuidSupplier;
     }
 
     @BeforeEach
@@ -38,15 +39,15 @@ class PersonRepositoryTest {
         // Given
         PersonName personName = PersonName.create()
                 .setLast("Pietersen").build();
-        Person person1 = Person.create(uuidGenerator.generate())
+        Person person1 = Person.create(uuidSupplier.get())
                 .setName(personName)
                 .setDateOfBirth(LocalDate.of(1973, 2, 2))
                 .build();
-        Person person2 = Person.create(uuidGenerator.generate())
+        Person person2 = Person.create(uuidSupplier.get())
                 .setName(personName)
                 .setDateOfBirth(LocalDate.of(1958, 1, 1))
                 .build();
-        Person person3 = Person.create(uuidGenerator.generate())
+        Person person3 = Person.create(uuidSupplier.get())
                 .setName(personName)
                 .setDateOfBirth(LocalDate.of(1997, 8, 1))
                 .build();

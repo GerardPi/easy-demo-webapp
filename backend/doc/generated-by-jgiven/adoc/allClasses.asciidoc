@@ -1,8 +1,8 @@
-include::io.github.gerardpi.easy.demo.FixedUuidSeriesGeneratorTest.asciidoc[]
-
 include::io.github.gerardpi.easy.demo.web.addressbook.AddressbookTest.asciidoc[]
 
 include::io.github.gerardpi.easy.demo.domain.webshop.PersistenceTests.asciidoc[]
+
+include::io.github.gerardpi.easy.demo.FixedUuidSeriesSupplierTest.asciidoc[]
 
 include::io.github.gerardpi.easy.demo.web.addressbook.PersonAddressControllerTest.asciidoc[]
 

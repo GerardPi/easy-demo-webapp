@@ -22,6 +22,8 @@ import java.time.OffsetDateTime;
 import java.util.List;
 import java.util.TreeMap;
 import java.util.TreeSet;
+import java.util.UUID;
+import java.util.function.Supplier;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
@@ -34,20 +36,20 @@ class WebshopTest extends SimpleScenarioTest<WebshopTest.State> {
     private static final Logger LOG = LoggerFactory.getLogger(WebshopTest.class);
     private static final String OFFSET_DATE_TIME_SUFFIX = ".901351+02:00";
     private final Repositories repositories;
-    private final UuidGenerator uuidGenerator;
+    private final Supplier<UUID> uuidSupplier;
     @ScenarioStage
     private State state;
 
     @Autowired
-    WebshopTest(Repositories repositories, UuidGenerator uuidGenerator) {
+    WebshopTest(Repositories repositories, Supplier<UUID> uuidGenerator) {
         this.repositories = repositories;
-        this.uuidGenerator = uuidGenerator;
+        this.uuidSupplier = uuidGenerator;
     }
 
     @BeforeEach
     public void init() {
-        ((FixedUuidSeriesGenerator) uuidGenerator).reset();
-        state.init(uuidGenerator, repositories);
+        ((FixedUuidSeriesSupplier) uuidSupplier).reset();
+        state.init(uuidSupplier, repositories);
     }
 
     @Test
@@ -72,18 +74,18 @@ class WebshopTest extends SimpleScenarioTest<WebshopTest.State> {
     static class State extends Stage<State> {
         private final SavedEntities savedEntities = new SavedEntities();
         private Repositories repositories;
-        private UuidGenerator uuidGenerator;
+        private Supplier<UUID> uuidSupplier;
 
         @Hidden
-        void init(final UuidGenerator uuidGenerator, final Repositories repositories) {
-            this.uuidGenerator = uuidGenerator;
+        void init(final Supplier<UUID> uuidSupplier, final Repositories repositories) {
+            this.uuidSupplier = uuidSupplier;
             this.repositories = repositories;
             repositories.clear();
         }
 
         State a_person_$_with_first_name_$_and_last_name_$(@Quoted final int number, @Quoted final String nameFirst, @Quoted final String nameLast) {
             final PersonName name = PersonName.create().setFirst(nameFirst).setLast(nameLast).build();
-            final Person person = Person.create(uuidGenerator.generate())
+            final Person person = Person.create(uuidSupplier.get())
                     .setDateOfBirth(LocalDate.now())
                     .setName(name)
                     .build();
@@ -92,7 +94,7 @@ class WebshopTest extends SimpleScenarioTest<WebshopTest.State> {
         }
 
         State an_item_$_with_name_$(final int itemNumber, @Quoted final String name) {
-            final Item item = Item.create(uuidGenerator.generate(), "CHS01")
+            final Item item = Item.create(uuidSupplier.get(), "CHS01")
                     .setName(name)
                     .setImageNames(new TreeSet<>())
                     .setAttributes(new TreeMap<>())
@@ -103,7 +105,7 @@ class WebshopTest extends SimpleScenarioTest<WebshopTest.State> {
         }
 
         State an_order_$_with_date_and_time_$_is_stored_for_person_$(@Quoted final int itemOrderKey, @Quoted final String orderDateTimeStr, final int personKey) {
-            final ItemOrder itemOrder = ItemOrder.create(uuidGenerator.generate())
+            final ItemOrder itemOrder = ItemOrder.create(uuidSupplier.get())
                     .setPersonId(this.savedEntities.getPersonId(personKey))
                     .setDateTime(OffsetDateTime.parse(orderDateTimeStr))
                     .build();
@@ -112,7 +114,7 @@ class WebshopTest extends SimpleScenarioTest<WebshopTest.State> {
         }
 
         State that_order_$_contains_$_pieces_of_$_which_cost_$_a_piece(@Quoted final int itemOrderKey, @Quoted final int itemNumber, @Quoted final int itemCount, @Quoted final BigDecimal amountPerItem) {
-            final ItemOrderLine itemOrderLine = ItemOrderLine.create(uuidGenerator.generate())
+            final ItemOrderLine itemOrderLine = ItemOrderLine.create(uuidSupplier.get())
                     .setItemOrderId(savedEntities.getItemOrderId(1))
                     .setItemId(savedEntities.getItemId(itemNumber))
                     .setAmountPerItem(amountPerItem)

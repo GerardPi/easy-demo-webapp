@@ -5,6 +5,7 @@ import org.slf4j.LoggerFactory;
 
 import java.util.UUID;
 import java.util.concurrent.atomic.AtomicInteger;
+import java.util.function.Supplier;
 
 /**
  * This class implements a generator of a predictable series of UUIDs.
@@ -13,13 +14,13 @@ import java.util.concurrent.atomic.AtomicInteger;
  * That number is incremented at each new generation.
  * The rest of the UUID won't ever change.
  */
-public class FixedUuidSeriesGenerator implements UuidGenerator {
-    private static final Logger LOG = LoggerFactory.getLogger(FixedUuidSeriesGenerator.class);
+public class FixedUuidSeriesSupplier implements Supplier<UUID> {
+    private static final Logger LOG = LoggerFactory.getLogger(FixedUuidSeriesSupplier.class);
 
     private final AtomicInteger counter = new AtomicInteger(0);
     public static final String UUID_SUFFIX = "1111-2222-3333-444444444444";
     @Override
-    public UUID generate() {
+    public UUID get() {
         return generateWith(counter.getAndIncrement());
     }
 

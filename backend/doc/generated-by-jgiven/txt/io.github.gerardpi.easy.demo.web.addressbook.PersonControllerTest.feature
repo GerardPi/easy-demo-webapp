@@ -109,7 +109,7 @@
           }
           ----------------------------------------------------------------------
  and headers "{If-Match=0}"
-   Then the HTTP status code is "200 OK"
+   Then the HTTP status code is "201 CREATED"
     And the location in the response is "/api/persons/00000000-1111-2222-3333-444444444444"
     And the etag in the response is "1"
    When an HTTP "GET" on "/api/persons/00000000-1111-2222-3333-444444444444" is performed

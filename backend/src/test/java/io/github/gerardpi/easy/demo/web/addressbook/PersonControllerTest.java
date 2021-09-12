@@ -33,6 +33,7 @@ import java.time.LocalDate;
 import java.time.OffsetDateTime;
 import java.util.Collections;
 import java.util.Map;
+import java.util.UUID;
 import java.util.function.Supplier;
 
 import static io.github.gerardpi.easy.demo.TestFunctions.storeAndReturnPerson;
@@ -50,7 +51,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 class PersonControllerTest extends SimpleScenarioTest<PersonControllerTest.State> {
     private static final Logger LOG = LoggerFactory.getLogger(PersonControllerTest.class);
     private final SavedEntities savedEntities;
-    private final UuidGenerator uuidGenerator;
+    private final Supplier<UUID> uuidSupplier;
     private final Repositories repositories;
     private final Supplier<OffsetDateTime> testDateTimeSupplier;
     private final WebApplicationContext wac;
@@ -59,9 +60,9 @@ class PersonControllerTest extends SimpleScenarioTest<PersonControllerTest.State
     private State state;
 
     @Autowired
-    PersonControllerTest(UuidGenerator uuidGenerator, Repositories repositories, Supplier<OffsetDateTime> testDateTimeSupplier, WebApplicationContext wac) {
+    PersonControllerTest(Supplier<UUID> uuidGenerator, Repositories repositories, Supplier<OffsetDateTime> testDateTimeSupplier, WebApplicationContext wac) {
         this.savedEntities = new SavedEntities();
-        this.uuidGenerator = uuidGenerator;
+        this.uuidSupplier = uuidGenerator;
         this.repositories = repositories;
         this.testDateTimeSupplier = testDateTimeSupplier;
         this.wac = wac;
@@ -69,9 +70,9 @@ class PersonControllerTest extends SimpleScenarioTest<PersonControllerTest.State
 
     @BeforeEach
     public void init() {
-        ((FixedUuidSeriesGenerator) uuidGenerator).reset();
+        ((FixedUuidSeriesSupplier) uuidSupplier).reset();
         repositories.clear();
-        state.init(uuidGenerator, repositories, new MockMvcExecutor(wac), savedEntities,
+        state.init(uuidSupplier, repositories, new MockMvcExecutor(wac), savedEntities,
                 (TestDateTimeSupplier) testDateTimeSupplier);
     }
 
@@ -80,7 +81,7 @@ class PersonControllerTest extends SimpleScenarioTest<PersonControllerTest.State
         final OffsetDateTime givenDateTime = OffsetDateTime.parse("2021-09-01T21:11:28.0+02:00");
         given().the_the_current_date_and_time_is_$(givenDateTime);
         when().an_HTTP_$_on_$_with_the_id_for_entity_with_id_$_is_performed("GET", "/api/persons/",
-                FixedUuidSeriesGenerator.generateWith(200).toString());
+                FixedUuidSeriesSupplier.generateWith(200).toString());
         then().the_HTTP_status_code_is_$(HttpStatus.NOT_FOUND)
                 .and().the_response_contains_body_equals_$(
                         ObjectMapperHolder.getIntance().toJson(
@@ -174,7 +175,7 @@ class PersonControllerTest extends SimpleScenarioTest<PersonControllerTest.State
                                         .setLast("very last")
                                         .build())
                                 .build()), ImmutableMap.of(HttpHeaders.IF_MATCH, "0"));
-        then().the_HTTP_status_code_is_$(HttpStatus.OK)
+        then().the_HTTP_status_code_is_$(HttpStatus.CREATED)
                 .and().the_location_in_the_response_is_$("/api/persons/00000000-1111-2222-3333-444444444444")
                 .and().the_etag_in_the_response_is_$("1");
         when().an_HTTP_$_on_$_is_performed("GET", "/api/persons/" + personId);
@@ -190,7 +191,7 @@ class PersonControllerTest extends SimpleScenarioTest<PersonControllerTest.State
     static class State extends Stage<State> {
         private SavedEntities savedEntities;
         private MockMvcExecutor mockMvcExecutor;
-        private UuidGenerator uuidGenerator;
+        private Supplier<UUID> uuidSupplier;
         private Repositories repositories;
         private Exception exception;
         private ResultActions resultActions;
@@ -204,21 +205,21 @@ class PersonControllerTest extends SimpleScenarioTest<PersonControllerTest.State
         }
 
         @Hidden
-        void init(final UuidGenerator uuidGenerator,
+        void init(final Supplier<UUID> uuidSupplier,
                   final Repositories repositories,
                   final MockMvcExecutor mockMvcExecutor,
                   final SavedEntities savedEntities,
                   final TestDateTimeSupplier testDateTimeSupplier) {
             this.savedEntities = savedEntities;
             this.repositories = repositories;
-            this.uuidGenerator = uuidGenerator;
+            this.uuidSupplier = uuidSupplier;
             this.mockMvcExecutor = mockMvcExecutor;
             this.testDateTimeSupplier = testDateTimeSupplier;
         }
 
         State person_$_is_stored_in_the_database_with_first_name_$_and_last_name_$_and_date_of_birth_$_in_the_database(
                 @Quoted final int testId, @Quoted final String nameFirst, @Quoted final String nameLast, @Quoted final String dateOfBirth) {
-            final Person person = storeAndReturnPerson(nameFirst, nameLast, LocalDate.parse(dateOfBirth), uuidGenerator, repositories.getPersonRepository());
+            final Person person = storeAndReturnPerson(nameFirst, nameLast, LocalDate.parse(dateOfBirth), uuidSupplier, repositories.getPersonRepository());
             this.savedEntities.putPersonId(testId, person.getId());
             return self();
         }

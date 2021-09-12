@@ -1,45 +1,45 @@
-package io.github.gerardpi.easy.demo.web;
+package io.github.gerardpi.easy.demo.web.addressbook;
 
-import io.github.gerardpi.easy.demo.UuidGenerator;
 import io.github.gerardpi.easy.demo.domain.addressbook.Person;
 import io.github.gerardpi.easy.demo.domain.addressbook.PersonRepository;
-import io.github.gerardpi.easy.demo.web.addressbook.PersonDto;
+import io.github.gerardpi.easy.demo.web.ControllerUtils;
+import io.github.gerardpi.easy.demo.web.EntityController;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.web.PageableDefault;
 import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
-import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.server.ResponseStatusException;
 
+import java.time.OffsetDateTime;
 import java.util.Optional;
 import java.util.UUID;
+import java.util.function.Supplier;
 
-import static io.github.gerardpi.easy.demo.web.ControllerUtils.toUri;
+import static io.github.gerardpi.easy.demo.web.ControllerUtils.*;
 
 
 @RestController
 @RequestMapping(PersonController.URI)
 public class PersonController implements EntityController<Person, PersonDto> {
     public static final String URI = "/api/persons";
-    private final UuidGenerator uuidGenerator;
+    private final Supplier<UUID> uuidSupplier;
+    private final Supplier<OffsetDateTime> dateTimeSupplier;
     private final PersonRepository repository;
 
-    public PersonController(final UuidGenerator uuidGenerator, final PersonRepository personRepository) {
-        this.uuidGenerator = uuidGenerator;
+    public PersonController(final Supplier<UUID> uuidSupplier, Supplier<OffsetDateTime> dateTimeSupplier, final PersonRepository personRepository) {
+        this.uuidSupplier = uuidSupplier;
+        this.dateTimeSupplier = dateTimeSupplier;
         this.repository = personRepository;
     }
 
     @PostMapping
     public HttpEntity<Void> createOne(@RequestBody final PersonDto personDto) {
-        final Person updatedEntity = personDto.toEntity(Person.create(uuidGenerator.generate()).build()).build();
+        final Person updatedEntity = personDto.toEntity(Person.create(uuidSupplier.get()).build()).build();
         final Person savedEntity = repository.save(updatedEntity);
-        return ResponseEntity
-                .created(toUri(URI, savedEntity.getId().toString()))
-                .eTag("" + savedEntity.getEtag())
-                .build();
+        return responseForPost(savedEntity, toUri(URI, savedEntity.getId().toString()));
     }
 
     /**
@@ -55,10 +55,7 @@ public class PersonController implements EntityController<Person, PersonDto> {
         ControllerUtils.assertEtagEqual(existingPerson, expectedEtag);
         final Person updatedEntity = personDto.toEntityNotNull(existingPerson).build();
         final Person savedEntity = repository.save(updatedEntity);
-        return ResponseEntity.ok()
-                .eTag("" + savedEntity.getEtag())
-                .location(toUri(URI, savedEntity.getId().toString()))
-                .build();
+        return responseForPatch(savedEntity, toUri(URI, savedEntity.getId().toString()));
     }
 
     /**
@@ -72,10 +69,7 @@ public class PersonController implements EntityController<Person, PersonDto> {
     @PutMapping("/{id}")
     public HttpEntity<Void> replaceOne(@PathVariable final UUID id, @RequestBody final PersonDto personDto) {
         final Person savedEntity = repository.save(personDto.toEntity(repository.getPersonById(id)).build());
-        return ResponseEntity.ok()
-                .eTag("" + savedEntity.getEtag())
-                .location(toUri(URI, savedEntity.getId().toString()))
-                .build();
+        return responseForPut(savedEntity, toUri(URI, savedEntity.getId().toString()));
     }
 
     @GetMapping("/{id}")
@@ -85,7 +79,7 @@ public class PersonController implements EntityController<Person, PersonDto> {
         final PersonDto dto = PersonDto.fromEntity(repository.getPersonById(id)).build();
         ControllerUtils.assertEtagDifferent(ifNoneMatchHeader, dto.getEtag(),
                 toUri(URI, id.toString()).toString());
-        return ControllerUtils.okResponse(dto);
+        return responseForGet(dto, dateTimeSupplier);
     }
 
     @GetMapping
@@ -100,6 +94,6 @@ public class PersonController implements EntityController<Person, PersonDto> {
         final Person entity = repository.getPersonById(id);
         ControllerUtils.assertEtagEqual(entity, expectedEtag);
         repository.delete(entity);
-        return ControllerUtils.okNoContent();
+        return ControllerUtils.responseForDelete();
     }
 }

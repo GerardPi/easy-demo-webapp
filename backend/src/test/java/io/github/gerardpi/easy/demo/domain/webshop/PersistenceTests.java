@@ -14,6 +14,8 @@ import org.springframework.test.context.TestPropertySource;
 
 import java.util.TreeMap;
 import java.util.TreeSet;
+import java.util.UUID;
+import java.util.function.Supplier;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
@@ -24,20 +26,20 @@ import static org.assertj.core.api.Assertions.assertThat;
 @SpringBootTest(classes = {DemoApplication.class, TestConfig.class})
 class PersistenceTests extends SimpleScenarioTest<PersistenceTests.State> {
     private final Repositories repositories;
-    private final UuidGenerator uuidGenerator;
+    private final Supplier<UUID> uuidSupplier;
     @ScenarioStage
     private State state;
 
     @Autowired
-    PersistenceTests(Repositories repositories, UuidGenerator uuidGenerator) {
+    PersistenceTests(Repositories repositories, Supplier<UUID> uuidSupplier) {
         this.repositories = repositories;
-        this.uuidGenerator = uuidGenerator;
+        this.uuidSupplier = uuidSupplier;
     }
 
     @BeforeEach
     public void init() {
-        ((FixedUuidSeriesGenerator) uuidGenerator).reset();
-        state.init(uuidGenerator, repositories);
+        ((FixedUuidSeriesSupplier) uuidSupplier).reset();
+        state.init(uuidSupplier, repositories);
     }
 
     @Test
@@ -67,7 +69,7 @@ class PersistenceTests extends SimpleScenarioTest<PersistenceTests.State> {
     static class State extends Stage<State> {
         private final SavedEntities savedEntities = new SavedEntities();
         private Repositories repositories;
-        private UuidGenerator uuidGenerator;
+        private Supplier<UUID> uuidSupplier;
         private Item fetchedItem;
         private Item.Builder itemBuilder;
         private Item rebuiltItem;
@@ -83,14 +85,14 @@ class PersistenceTests extends SimpleScenarioTest<PersistenceTests.State> {
         }
 
         @Hidden
-        void init(final UuidGenerator uuidGenerator, final Repositories repositories) {
-            this.uuidGenerator = uuidGenerator;
+        void init(final Supplier<UUID> uuidSupplier, final Repositories repositories) {
+            this.uuidSupplier = uuidSupplier;
             this.repositories = repositories;
             repositories.clear();
         }
 
         State an_item_$_with_name_is_stored_in_the_database$(final int itemNumber, @Quoted final String name) {
-            final Item item = Item.create(uuidGenerator.generate(), "CHS01")
+            final Item item = Item.create(uuidSupplier.get(), "CHS01")
                     .setName(name)
                     .setImageNames(new TreeSet<>())
                     .setAttributes(new TreeMap<>())
@@ -102,7 +104,7 @@ class PersistenceTests extends SimpleScenarioTest<PersistenceTests.State> {
 
         State a_currency_with_code_$_and_name_$_is_stored_in_the_database(@Quoted final String currencyCode, @Quoted final String currencyName) {
             repositories.getCurrencyRepository().save(
-                    Currency.create(uuidGenerator.generate())
+                    Currency.create(uuidSupplier.get())
                             .setCode(currencyCode)
                             .setName(currencyName)
                             .build());

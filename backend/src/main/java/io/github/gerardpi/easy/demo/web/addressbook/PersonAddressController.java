@@ -1,21 +1,22 @@
-package io.github.gerardpi.easy.demo.web;
+package io.github.gerardpi.easy.demo.web.addressbook;
 
-import io.github.gerardpi.easy.demo.UuidGenerator;
 import io.github.gerardpi.easy.demo.domain.addressbook.PersonAddress;
 import io.github.gerardpi.easy.demo.domain.addressbook.PersonAddressRepository;
-import io.github.gerardpi.easy.demo.web.addressbook.PersonAddressDto;
+import io.github.gerardpi.easy.demo.web.ControllerUtils;
+import io.github.gerardpi.easy.demo.web.EntityController;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.web.PageableDefault;
 import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
-import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.server.ResponseStatusException;
 
+import java.time.OffsetDateTime;
 import java.util.Optional;
 import java.util.UUID;
+import java.util.function.Supplier;
 
 import static io.github.gerardpi.easy.demo.web.ControllerUtils.toUri;
 
@@ -24,21 +25,21 @@ import static io.github.gerardpi.easy.demo.web.ControllerUtils.toUri;
 @RequestMapping(PersonAddressController.URI)
 public class PersonAddressController implements EntityController<PersonAddress, PersonAddressDto> {
     public static final String URI = "/api/person-addresses";
-    private final UuidGenerator uuidGenerator;
+    private final Supplier<UUID> uuidSupplier;
+    private final Supplier<OffsetDateTime> dateTimeSupplier;
     private final PersonAddressRepository repository;
 
-    public PersonAddressController(final UuidGenerator uuidGenerator, final PersonAddressRepository repository) {
-        this.uuidGenerator = uuidGenerator;
+    public PersonAddressController(final Supplier<UUID> uuidSupplier, Supplier<OffsetDateTime> dateTimeSupplier, final PersonAddressRepository repository) {
+        this.uuidSupplier = uuidSupplier;
+        this.dateTimeSupplier = dateTimeSupplier;
         this.repository = repository;
     }
 
     @PostMapping
     public HttpEntity<Void> createOne(@RequestBody final PersonAddressDto dto) {
-        final PersonAddress newEntity = dto.toEntity(PersonAddress.create(uuidGenerator.generate()).build()).build();
+        final PersonAddress newEntity = dto.toEntity(PersonAddress.create(uuidSupplier.get()).build()).build();
         final PersonAddress savedEntity = repository.save(newEntity);
-        return ResponseEntity.created(toUri(URI, savedEntity.getId().toString()))
-                .eTag("" + savedEntity.getEtag())
-                .build();
+        return ControllerUtils.responseForPost(savedEntity, toUri(URI, savedEntity.getId().toString()));
     }
 
     /**
@@ -52,10 +53,7 @@ public class PersonAddressController implements EntityController<PersonAddress, 
         final PersonAddress existingEntity = repository.findById(id).orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND));
         ControllerUtils.assertEtagEqual(existingEntity, expectedEtag);
         final PersonAddress savedEntity = repository.save(dto.toEntityNotNull(existingEntity).build());
-        return ResponseEntity.ok()
-                .eTag("" + savedEntity.getEtag())
-                .location(toUri(URI, savedEntity.getId().toString()))
-                .build();
+        return ControllerUtils.responseForPatch(savedEntity, toUri(URI, savedEntity.getId().toString()));
     }
 
     /**
@@ -71,10 +69,7 @@ public class PersonAddressController implements EntityController<PersonAddress, 
             @PathVariable final UUID id,
             @RequestBody final PersonAddressDto dto) {
         final PersonAddress replacedEntity = repository.save(dto.toEntity(repository.getPersonAddressById(id)).build());
-        return ResponseEntity.ok()
-                .eTag("" + replacedEntity.getEtag())
-                .location(toUri(URI, replacedEntity.getId().toString()))
-                .build();
+        return ControllerUtils.responseForPut(replacedEntity, toUri(URI, replacedEntity.getId().toString()));
     }
 
     @GetMapping("/{id}")
@@ -84,7 +79,7 @@ public class PersonAddressController implements EntityController<PersonAddress, 
         final PersonAddressDto dto = PersonAddressDto.fromEntity(repository.getPersonAddressById(id)).build();
         ControllerUtils.assertEtagDifferent(ifNoneMatchHeader, dto.getEtag(),
                 toUri(URI, id.toString()).toString());
-        return ControllerUtils.okResponse(dto);
+        return ControllerUtils.responseForGet(dto, dateTimeSupplier);
     }
 
     @GetMapping
@@ -100,6 +95,6 @@ public class PersonAddressController implements EntityController<PersonAddress, 
         final PersonAddress entity = repository.getPersonAddressById(id);
         ControllerUtils.assertEtagEqual(entity, expectedEtag);
         repository.delete(entity);
-        return ControllerUtils.okNoContent();
+        return ControllerUtils.responseForDelete();
     }
 }

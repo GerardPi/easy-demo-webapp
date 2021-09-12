@@ -11,7 +11,6 @@
     <groupId>com.github.gerardpi.testapp</groupId>
     <artifactId>easy-demo-frontend</artifactId>
     <version>localbuild-SNAPSHOT</version>
-    <name>frontend</name>
     <description>Demo project for Spring Boot</description>
     <properties>
         <node.version>v14.17.6</node.version>

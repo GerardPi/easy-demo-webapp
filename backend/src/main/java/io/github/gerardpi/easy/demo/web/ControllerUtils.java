@@ -9,9 +9,11 @@ import org.springframework.http.HttpEntity;
 import org.springframework.http.ResponseEntity;
 
 import java.net.URI;
+import java.time.OffsetDateTime;
 import java.time.ZonedDateTime;
 import java.util.Optional;
 import java.util.concurrent.TimeUnit;
+import java.util.function.Supplier;
 
 public final class ControllerUtils {
     private ControllerUtils() {
@@ -59,8 +61,51 @@ public final class ControllerUtils {
                 .body(entityDto);
     }
 
-    public static HttpEntity<Void> okNoContent() {
+    public static HttpEntity<Void> okNoContentResponse() {
         return ResponseEntity.noContent().build();
+    }
+
+    public static HttpEntity<Void> responseForDelete() {
+        return okNoContentResponse();
+    }
+
+    public static <D extends EntityDtoWithTag> HttpEntity<D> okWithCacheControlEtagAndLastModifiedResponse(D dto, Supplier<OffsetDateTime> dateTimeSupplier) {
+        return ResponseEntity
+                .ok()
+                .cacheControl(cacheForOneMinute())
+                .eTag(dto.getEtag())
+                .lastModified(dateTimeSupplier.get().toZonedDateTime())
+                .body(dto);
+    }
+
+    public static <D extends EntityDtoWithTag> HttpEntity<D> responseForGet(D dto, Supplier<OffsetDateTime> dateTimeSupplier) {
+        return okWithCacheControlEtagAndLastModifiedResponse(dto, dateTimeSupplier);
+    }
+
+    public static <E extends PersistableEntityWithTag> HttpEntity<Void> responseForPost(E entity, URI location) {
+        return createdResponse(entity, location);
+    }
+
+    public static <E extends PersistableEntityWithTag> HttpEntity<Void> responseForPatch(E entity, URI location) {
+        return createdResponse(entity, location);
+    }
+
+    public static <E extends PersistableEntityWithTag> HttpEntity<Void> createdResponse(E entity, URI location) {
+        return ResponseEntity
+                .created(location)
+                .eTag("" + entity.getEtag())
+                .build();
+    }
+
+    public static <E extends PersistableEntityWithTag> HttpEntity<Void> responseForPut(E entity, URI location) {
+        return okNoContentResponse(entity, location);
+    }
+
+    public static <E extends PersistableEntityWithTag> HttpEntity<Void> okNoContentResponse(E entity, URI location) {
+        return ResponseEntity.noContent()
+                .location(location)
+                .eTag("" + entity)
+                .build();
     }
 
     public static CacheControl cacheForOneMinute() {

@@ -3,8 +3,6 @@ package io.github.gerardpi.easy.demo.domain.addressbook;
 import io.github.gerardpi.easy.demo.DemoApplication;
 import io.github.gerardpi.easy.demo.Repositories;
 import io.github.gerardpi.easy.demo.TestConfig;
-import io.github.gerardpi.easy.demo.UuidGenerator;
-import org.checkerframework.checker.units.qual.A;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -13,6 +11,8 @@ import org.springframework.test.context.TestPropertySource;
 
 import java.time.LocalDate;
 import java.util.List;
+import java.util.UUID;
+import java.util.function.Supplier;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
@@ -22,12 +22,12 @@ import static org.assertj.core.api.Assertions.assertThat;
 @SpringBootTest(classes = {DemoApplication.class, TestConfig.class})
 class PersonAddressRepositoryTest {
     private final Repositories repositories;
-    private final UuidGenerator uuidGenerator;
+    private final Supplier<UUID> uuidSupplier;
 
     @Autowired
-    PersonAddressRepositoryTest(Repositories repositories, UuidGenerator uuidGenerator) {
+    PersonAddressRepositoryTest(Repositories repositories, Supplier<UUID> uuidSupplier) {
         this.repositories = repositories;
-        this.uuidGenerator = uuidGenerator;
+        this.uuidSupplier = uuidSupplier;
     }
 
     @BeforeEach
@@ -40,8 +40,8 @@ class PersonAddressRepositoryTest {
         // Given
         PersonName personName = PersonName.create()
                 .setLast("Pietersen").build();
-        Person person = Person.create(uuidGenerator.generate()).setName(personName).setDateOfBirth(LocalDate.of(1973, 2, 2)).build();
-        Address address = Address.create(uuidGenerator.generate())
+        Person person = Person.create(uuidSupplier.get()).setName(personName).setDateOfBirth(LocalDate.of(1973, 2, 2)).build();
+        Address address = Address.create(uuidSupplier.get())
                 .setCountryCode("NL")
                 .setCity("Amsterdam")
                 .setPostalCode("1000AA")
@@ -52,7 +52,7 @@ class PersonAddressRepositoryTest {
         repositories.getAddressRepository().save(address);
         repositories.getPersonRepository().save(person);
         // When
-        PersonAddress ownedAddress = PersonAddress.create(uuidGenerator.generate())
+        PersonAddress ownedAddress = PersonAddress.create(uuidSupplier.get())
                 .setAddressId(address.getId())
                 .setPersonId(person.getId())
                 .setDescription("bla bla")
@@ -60,7 +60,7 @@ class PersonAddressRepositoryTest {
                 .setType(PersonAddressType.PROPERTY)
                 .build();
         repositories.getPersonAddressRepository().save(ownedAddress);
-        PersonAddress occupiedAddress = PersonAddress.create(uuidGenerator.generate())
+        PersonAddress occupiedAddress = PersonAddress.create(uuidSupplier.get())
                 .setAddressId(address.getId())
                 .setPersonId(person.getId())
                 .setDescription("bla bla")
