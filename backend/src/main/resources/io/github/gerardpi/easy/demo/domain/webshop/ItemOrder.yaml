@@ -1,0 +1,10 @@
+extendsFromClass: "PersistableEntityWithTag"
+fieldDefs:
+  - name: personId
+    type: java.util.UUID
+    notNull: true
+  - name: description
+  - name: dateTime
+    type: "java.time.OffsetDateTime"
+    notNull: true
+    annotation: javax.persistence.Column(columnDefinition = "TIMESTAMP WITH TIME ZONE")

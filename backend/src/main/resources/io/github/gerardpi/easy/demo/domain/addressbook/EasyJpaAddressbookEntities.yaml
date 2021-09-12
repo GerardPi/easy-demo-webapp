@@ -1,0 +1,7 @@
+---
+commonPackage: io.github.gerardpi.easy.demo.persistence
+entityClassDefNames:
+  - Address
+  - PersonName
+  - Person
+  - PersonAddress

@@ -1,0 +1,5 @@
+annotation: javax.persistence.Embeddable
+fieldDefs:
+  - name: "first"
+  - name: "last"
+    notNull: true

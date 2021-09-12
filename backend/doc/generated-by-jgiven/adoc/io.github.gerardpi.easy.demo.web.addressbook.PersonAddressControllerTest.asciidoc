@@ -1,0 +1,37 @@
+==== io.github.gerardpi.easy.demo.web.addressbook.PersonAddressControllerTest ====
+
+===== Get persons addresses =====
+
+Given person pass:["1"] is stored in the database with first name pass:["Frits"] and last name pass:["Jansma"] and date of birth pass:["2001-11-23"] in the database +
+and person pass:["2"] is stored in the database with first name pass:["Albert"] and last name pass:["Fles"] and date of birth pass:["2002-11-24"] in the database +
+and an address pass:["1"] is stored in the database with values pass:["class=io.github.gerardpi.easy.demo.web.addressbook.AddressDto;id=null;etag=null;countryCode=NL;city=Amsterdam;postalCode=1010AA;street=Alkmaarstraat;houseNumber=1a"] +
+and an address pass:["1"] is stored in the database with values pass:["class=io.github.gerardpi.easy.demo.web.addressbook.AddressDto;id=null;etag=null;countryCode=NL;city=Amsterdam;postalCode=1010AA;street=Alblasserdamstraat;houseNumber=1b"] +
+When an HTTP pass:["GET"] on pass:["/api/persons"] is performed +
+Then the HTTP status code is pass:["200 OK"] +
+and the number of items received is pass:[2] +
+When an HTTP pass:["GET"] on pass:["/api/addresses"] is performed +
+Then the HTTP status code is pass:["200 OK"] +
+and the number of items received is pass:[2] +
+When an HTTP pass:["GET"] on pass:["/api/persons/"] with the id for entity pass:["1"] is performed +
+When an HTTP pass:["POST"] on pass:["/api/person-addresses"] is performed with body 
+
+....
+
+          ----------------------------------------------------------------------
+          {
+                    "fromDate": "1994-01-01",
+                    "description": "this is where the person lived",
+                    "personId": "00000000-1111-2222-3333-444444444444",
+                    "type": "RESIDENCE",
+                    "addressId": "00000003-1111-2222-3333-444444444444",
+                    "thruDate": "2013-08-12"
+          }
+          ----------------------------------------------------------------------
+
+....
+
++
+Then the HTTP status code is pass:["201 CREATED"] +
+and the location in the response is pass:["/api/person-addresses/00000004-1111-2222-3333-444444444444"] +
+and the etag in the response is pass:["0"] +
+

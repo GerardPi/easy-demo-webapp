@@ -1,0 +1,13 @@
+extendsFromClass: "PersistableEntity"
+fieldDefs:
+  - name: "code"
+    notNull: true
+    annotations:
+      - javax.validation.constraints.Size(min=3, max=3)
+      - javax.validation.constraints.NotNull
+      - javax.persistence.Column(unique = true)
+  - name: "name"
+    notNull: true
+    annotations:
+      - javax.validation.constraints.NotNull
+      - javax.persistence.Column(unique = true)

@@ -1,0 +1,12 @@
+extendsFromClass: "PersistableEntityWithTag"
+fieldDefs:
+  - name: itemId
+    type: java.util.UUID
+    notNull: true
+  - name: itemOrderId
+    type: java.util.UUID
+    notNull: true
+  - name: count
+    type: java.lang.Integer
+  - name: amountPerItem
+    type: java.math.BigDecimal

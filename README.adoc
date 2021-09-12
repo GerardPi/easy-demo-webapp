@@ -1,0 +1,7 @@
+= easy-demo-webapp
+
+== Introduction
+
+Demo webapp for easy-jpa-entities.
+
+

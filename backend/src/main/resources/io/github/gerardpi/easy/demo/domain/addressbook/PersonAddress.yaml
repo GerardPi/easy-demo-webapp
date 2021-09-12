@@ -1,0 +1,22 @@
+extendsFromClass: "PersistableEntityWithTag"
+dtoTargetPackage: io.github.gerardpi.easy.demo.web.addressbook
+fieldDefs:
+  - name: "addressId"
+    type: "java.util.UUID"
+    notNull: true
+    annotation: javax.persistence.JoinColumn(nullable = false, table = "address", referencedColumnName = "id")
+  - name: "personId"
+    type: "java.util.UUID"
+    notNull: true
+    annotation: javax.persistence.JoinColumn(nullable = false, table = "person", referencedColumnName = "id")
+  - name: "description"
+  - name: "fromDate"
+    type: "java.time.LocalDate"
+    annotation: javax.persistence.Column(columnDefinition = "DATE")
+  - name: "thruDate"
+    type: "java.time.LocalDate"
+    annotation: javax.persistence.Column(columnDefinition = "DATE")
+  - name: "type"
+    type: io.github.gerardpi.easy.demo.domain.addressbook.PersonAddressType
+    annotation: javax.persistence.Enumerated(javax.persistence.EnumType.STRING)
+    notNull: true
