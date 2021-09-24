@@ -1,7 +1,7 @@
 import { html } from 'lit';
 import { fixture, expect } from '@open-wc/testing';
 
-import '../src/easy-demo.js';
+import '../src/application/easy-demo.js';
 
 describe('EasyDemo', () => {
   let element;

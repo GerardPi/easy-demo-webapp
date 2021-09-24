@@ -42,7 +42,8 @@
                         <version>1.12.0</version>
                         <configuration>
                             <nodeVersion>${node.version}</nodeVersion>
-                            <workingDirectory>src</workingDirectory>
+			    <!-- Defrault working directory is project's base dir: same dir as pom.xml -->
+			    <!-- <workingDirectory>${basedir}</workingDirectory> -->
                         </configuration>
                         <executions>
                             <execution>
@@ -81,18 +82,18 @@
                         <configuration>
                             <filesets>
                                 <fileset>
-                                    <directory>src/node</directory>
+                                    <directory>node</directory>
                                     <includes>
                                         <include>**/*</include>
                                     </includes>
                                     <followSymlinks>false</followSymlinks>
                                 </fileset>
                                 <fileset>
-                                    <directory>src/node_modules</directory>
+                                    <directory>node_modules</directory>
                                     <followSymlinks>false</followSymlinks>
                                 </fileset>
                                 <fileset>
-                                    <directory>src/dist</directory>
+                                    <directory>dist</directory>
                                     <followSymlinks>false</followSymlinks>
                                 </fileset>
                             </filesets>

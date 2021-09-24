@@ -21,7 +21,10 @@
 
 <body>
   <easy-demo></easy-demo>
-
+  <script lang="JavaScript">
+    window.process = { env: { NODE_ENV: 'production'}};
+    window.backendUrlPrefix = "/api";
+  </script>
   <script type="module" src="./src/application/easy-demo.js"></script>
 </body>
 
