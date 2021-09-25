@@ -1,6 +1,6 @@
 import { ofType } from "redux-observable";
-import { from } from "redux-observable/node_modules/rxjs";
-import { map } from "rxjs/operators";
+import { map, mergeMap } from "rxjs/operators";
+import { from } from "rxjs";
 import * as addressbookActions from './actions';
 import * as addressbookServices from '../backend/addressbook-services';
 import * as reduxUtils from '../redux-utils';

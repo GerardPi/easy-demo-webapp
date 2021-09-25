@@ -1,4 +1,4 @@
-import { catchError, mergeMap } from 'rxjs/operators';
+import { mergeMap, catchError } from "rxjs/operators";
 import { BehaviorSubject, EMPTY } from 'rxjs';
 
 export class EpicRegistry {
