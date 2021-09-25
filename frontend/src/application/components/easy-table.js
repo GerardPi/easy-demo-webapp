@@ -2,6 +2,7 @@ import {LitElement, html} from 'lit';
 import {tableStyle} from './style';
 
 export class EasyTable extends LitElement {
+
   static get properties() {
     return {
       title: {type: String},
