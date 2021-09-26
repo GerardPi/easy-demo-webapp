@@ -16,11 +16,11 @@
     "start": "web-dev-server"
   },
   "dependencies": {
+    "@bundled-es-modules/axios": "0.21.1",
+    "@reduxjs/toolkit": "1.6.1",
     "lit": "2.0.0",
     "lodash-es": "4.17.21",
     "pwa-helpers": "0.9.1",
-    "@bundled-es-modules/axios": "0.21.1",
-    "@reduxjs/toolkit": "1.6.1",
     "redux": "4.0.0",
     "redux-observable": "2.0.0",
     "rxjs": "7.0.0"

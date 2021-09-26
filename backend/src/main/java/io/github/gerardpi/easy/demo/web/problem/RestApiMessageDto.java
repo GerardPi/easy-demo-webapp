@@ -1,5 +1,6 @@
 package io.github.gerardpi.easy.demo.web.problem;
 
+import com.google.common.base.MoreObjects;
 import com.google.common.collect.ImmutableList;
 
 import java.time.OffsetDateTime;
@@ -69,8 +70,22 @@ public class RestApiMessageDto {
         return new Builder();
     }
 
-    public
-    static class Builder {
+    @Override
+    public String toString() {
+        return MoreObjects.toStringHelper(this)
+                .add("path", path)
+                .add("method", method)
+                .add("statusCode", statusCode)
+                .add("statusName", statusName)
+                .add("statusSeries", statusSeries)
+                .add("title", title)
+                .add("messages", messages)
+                .add("timestamp", timestamp)
+                .add("traceId", traceId)
+                .toString();
+    }
+
+    public static class Builder {
         private String path;
         private String method;
         private int statusCode;
@@ -132,6 +147,11 @@ public class RestApiMessageDto {
 
         public Builder setTraceId(String traceId) {
             this.traceId = traceId;
+            return this;
+        }
+
+        public Builder setTraceId(long traceId) {
+            this.traceId = "" + traceId;
             return this;
         }
 

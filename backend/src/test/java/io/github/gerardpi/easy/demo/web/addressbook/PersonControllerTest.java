@@ -94,7 +94,7 @@ class PersonControllerTest extends SimpleScenarioTest<PersonControllerTest.State
                                         .setStatusName("Not Found")
                                         .addMessage("No 'Person' for ID '00000200-1111-2222-3333-444444444444' exists.")
                                         .setTimestamp(givenDateTime)
-                                        .setTraceId("" + givenDateTime.toInstant().toEpochMilli())
+                                        .setTraceId(givenDateTime.toInstant().toEpochMilli())
                                         .build()));
     }
 

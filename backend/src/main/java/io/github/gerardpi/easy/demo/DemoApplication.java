@@ -2,12 +2,17 @@ package io.github.gerardpi.easy.demo;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import io.github.gerardpi.easy.demo.json.ObjectMapperHolder;
+import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.boot.SpringApplication;
+import org.springframework.boot.autoconfigure.EnableAutoConfiguration;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
+import org.springframework.boot.autoconfigure.web.servlet.error.ErrorMvcAutoConfiguration;
 import org.springframework.context.annotation.Bean;
+import org.springframework.core.env.Environment;
 import org.springframework.http.converter.HttpMessageConverter;
 import org.springframework.http.converter.json.MappingJackson2HttpMessageConverter;
+import org.springframework.web.servlet.config.annotation.CorsRegistry;
 import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
 
 import java.time.OffsetDateTime;
@@ -17,8 +22,30 @@ import java.util.function.Supplier;
 
 @SpringBootApplication
 public class DemoApplication implements WebMvcConfigurer {
+    private static final Logger LOG = LoggerFactory.getLogger(DemoApplication.class);
+
+    public DemoApplication(Environment environment) {
+        this.environment = environment;
+    }
+
     public static void main(String[] args) {
         SpringApplication.run(DemoApplication.class, args);
+    }
+
+    private final Environment environment;
+
+    @Override
+    public void addCorsMappings(CorsRegistry registry) {
+        // Use -Deasy.demo.cors.enabled=true for testing purposes only.
+        boolean corsEnabled = environment.getProperty("easy.demo.cors.enabled", Boolean.class, false);
+        LOG.info("CORS enabled: '{}'", corsEnabled);
+        if (corsEnabled) {
+            String corsPathPattern = "/**";
+            String corsAllowedOrigins = "http://localhost:8080";
+            LOG.warn("!!! Added CORS maping for path pattern '{}' to allow origins '{}' !!!", corsPathPattern, corsAllowedOrigins);
+            registry.addMapping(corsPathPattern).allowedOrigins(corsAllowedOrigins);
+        }
+        WebMvcConfigurer.super.addCorsMappings(registry);
     }
 
     @Bean
