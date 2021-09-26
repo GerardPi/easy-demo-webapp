@@ -18,9 +18,8 @@ import java.util.function.Supplier;
 @RestController
 @RequestMapping(GlobalProblemController.URI)
 public class GlobalProblemController implements org.springframework.boot.web.servlet.error.ErrorController {
-    private static final Logger LOG = LoggerFactory.getLogger(GlobalProblemController.class);
-
     public static final String URI = "/api/problems";
+    private static final Logger LOG = LoggerFactory.getLogger(GlobalProblemController.class);
     private final Supplier<OffsetDateTime> dateTimeSupplier;
 
     public GlobalProblemController(Supplier<OffsetDateTime> dateTimeSupplier) {

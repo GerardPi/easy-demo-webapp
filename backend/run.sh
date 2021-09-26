@@ -1,3 +1,3 @@
 #!/bin/sh
 
-mvn spring-boot:run -Dspring-boot.run.jvmArguments="-Deasy.demo.cors.enabled=true -Deasy.demo.security.enabled=false"
+mvn spring-boot:run -Dspring-boot.run.jvmArguments="-Deasy.demo.cors.enabled=true -Deasy.demo.security.enabled=false -Deasy.demo.populatedb.enabled=true"

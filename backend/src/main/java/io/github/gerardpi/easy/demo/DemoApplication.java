@@ -5,9 +5,7 @@ import io.github.gerardpi.easy.demo.json.ObjectMapperHolder;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.boot.SpringApplication;
-import org.springframework.boot.autoconfigure.EnableAutoConfiguration;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
-import org.springframework.boot.autoconfigure.web.servlet.error.ErrorMvcAutoConfiguration;
 import org.springframework.context.annotation.Bean;
 import org.springframework.core.env.Environment;
 import org.springframework.http.converter.HttpMessageConverter;
@@ -23,6 +21,7 @@ import java.util.function.Supplier;
 @SpringBootApplication
 public class DemoApplication implements WebMvcConfigurer {
     private static final Logger LOG = LoggerFactory.getLogger(DemoApplication.class);
+    private final Environment environment;
 
     public DemoApplication(Environment environment) {
         this.environment = environment;
@@ -31,8 +30,6 @@ public class DemoApplication implements WebMvcConfigurer {
     public static void main(String[] args) {
         SpringApplication.run(DemoApplication.class, args);
     }
-
-    private final Environment environment;
 
     @Override
     public void addCorsMappings(CorsRegistry registry) {
