@@ -74,4 +74,4 @@ const reducer = createReducer(INITIAL_STATE, {
 
 export const STORE_NAME = 'common';
 
-reducerRegistry.register(STORE_NAME);
+reducerRegistry.register(STORE_NAME, reducer);

@@ -4,6 +4,7 @@ import './components/easy-table';
 const logo = new URL('../../assets/open-wc-logo.svg', import.meta.url).href;
 import store from '../redux/store';
 import { connect } from 'pwa-helpers';
+import './addressbook/address-list';
 
 export class EasyDemo extends connect(store)(LitElement) {
   static get properties() {
@@ -43,6 +44,7 @@ export class EasyDemo extends connect(store)(LitElement) {
         <h1>${this.title}</h1>
 
         <easy-table .title='the title' .columns=${this.tableColumns} .data=${this.tableData}></easy-table>
+        <address-list></address-list>
 
         <p>Edit <code>src/EasyDemo.js</code> and save to reload.</p>
         <a

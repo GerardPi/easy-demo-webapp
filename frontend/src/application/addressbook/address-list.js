@@ -1,7 +1,10 @@
 import {LitElement, html} from 'lit';
 import {tableStyle} from './style';
-import store from '../redux/store';
+import store from '../../redux/store';
 import { connect } from 'pwa-helpers';
+import addressbookSelectors from '../../redux/addressbook/selectors';
+import * as addressbookActions from '../../redux/addressbook/actions';
+import * as infoForUser from '../../redux/info-for-user';
 
 export class AddressList extends connect(store)(LitElement) {
 
@@ -15,11 +18,26 @@ export class AddressList extends connect(store)(LitElement) {
   static get styles() {
     return tableStyle;
   }
+
   constructor() {
    super();
    this.title = '';
    this.columns = [];
    this.data = { rows: []};
+  }
+
+  stateChanged(state) {
+    this.data = addressbookSelectors.address.list(state);
+    return this.requestUpdate();
+  }
+
+  connectedCallback() {
+    this.refreshTable();
+    super.connectedCallback();
+  }
+
+  refreshTable() {
+    store.dispatch(addressbookActions.address.readList.command(infoForUser.readList()));
   }
 
   renderHeaderRows(columns) {

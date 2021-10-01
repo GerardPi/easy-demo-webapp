@@ -2,7 +2,7 @@ import { axios } from '@bundled-es-modules/axios';
 
 export const rest = axios.create({
   xsrfCookieName: 'XSRF-TOKEN',
-  withCrednetials: true
+  withCredentials: true
 });
 
 const contentTypes = {
@@ -17,18 +17,17 @@ export const contentTypeOptions = {
   upload: { headers: { headerNameContentType: undefined }}
 };
 
-
-export const backend = {
+export const actualBackend = {
   performGet: (url) => { return rest.get(url).then(response => response.data); },
   performPost: (url) => { return rest.post(url).then(response => response.data); },
   performPostWithJsonBody: (url, jsonBody) => {
       return rest.post(url, jsonBody, contentTypeOptions.json.headers).then(response => response.data);
   },
   performPostWithFormData: (url, body) => {
-      return rest.post(url, jsonBody, contentTypeOptions.formData).then(response => response.data); 
+      return rest.post(url, jsonBody, contentTypeOptions.formData).then(response => response.data);
   },
   performPutWithJsonBody: (url, jsonBody, tag) => {
-      return rest.put(url, jsonBody, contentTypeOptions.json).then(response => response.data); 
+      return rest.put(url, jsonBody, contentTypeOptions.json).then(response => response.data);
   },
   performUpload: (url, uploadFile) => {
       const formData = new FormData();

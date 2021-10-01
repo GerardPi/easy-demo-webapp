@@ -4,10 +4,10 @@ import { reducerRegistry } from './reducer-registry';
 import { epicRegistry } from './epic-registry';
 import { epicMiddlewareConfiguration } from './epic-mw-config';
 
-import { epics as addressbookEpics } from './addressbook/epics';
+import addressbookEpics from './addressbook/epics';
 import './addressbook/reducers';
 
-import { epics as commonEpics } from './common/epics';
+import commonEpics from './common/epics';
 import './common/reducers';
 
 const epicMiddleware = reduxObservable.createEpicMiddleware(epicMiddlewareConfiguration.getConfiguration());
@@ -25,6 +25,8 @@ reducerRegistry.setChangeListener(rootReducer => store.replaceReducer(rootReduce
 
 epicMiddleware.run(epicRegistry.rootEpic.bind(epicRegistry));
 
-epicRegistry.register(Object.values(addressbookEpics, commonEpics));
+console.log(`### addressbookEpics = ${JSON.stringify(addressbookEpics)}`);
+epicRegistry.register(Object.values(addressbookEpics));
+epicRegistry.register(Object.values(commonEpics));
 
 export default store;

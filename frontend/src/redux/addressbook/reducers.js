@@ -5,14 +5,14 @@ import * as addressbookActions from './actions';
 
 const INITIAL_VALUES = {
     address: {
-        readList: {
+        one: {
+            id: null,
+            content: null
+        },
+        list: {
             content: [],
             pageIndex: 0,
             pageSize: defaultReadListSize
-        },
-        read: {
-            id: null,
-            content: null
         }
     }
 };
@@ -23,24 +23,41 @@ const INITIAL_STATE = {
 
 const reducer = createReducer(INITIAL_STATE, {
     [addressbookActions.address.read.command.type]: (state, action) => {
-        state.address.read = INITIAL_VALUES.address.read;
-        state.address.read.id = action.payload.id;
+        state.address.one = INITIAL_VALUES.address.one;
+        state.address.one.id = action.payload.id;
     },
     [addressbookActions.address.read.ok.type]: (state, action) => {
-        state.address.read.content = action.payload.response.content;
+        state.address.one.content = action.payload.response.content;
     },
     [addressbookActions.address.readList.command.type]: (state, action) => {
-        state.address.readList = INITIAL_VALUES.address.readList;
-        state.address.readList.pageIndex = action.payload.pageIndex;
-        state.address.readList.pageSize = action.payload.pageSize;
+        state.address.list = INITIAL_VALUES.address.list;
+        state.address.list.pageIndex = action.payload.pageIndex;
+        state.address.list.pageSize = action.payload.pageSize;
     },
     [addressbookActions.address.readList.ok.type]: (state, action) => {
-        state.address.readList.content = action.payload.response.content;
-        state.address.readList.pageIndex = action.payload.response.pageable.pageNumber;
-        state.address.readList.pageSize = action.payload.response.pageable.pageSize;
+        state.address.list.content = action.payload.response.content;
+        state.address.list.pageIndex = action.payload.response.pageable.pageNumber;
+        state.address.list.pageSize = action.payload.response.pageable.pageSize;
+    },
+    [addressbookActions.person.read.command.type]: (state, action) => {
+        state.person.one = INITIAL_VALUES.person.one;
+        state.person.one.id = action.payload.id;
+    },
+    [addressbookActions.person.read.ok.type]: (state, action) => {
+        state.person.one.content = action.payload.response.content;
+    },
+    [addressbookActions.person.readList.command.type]: (state, action) => {
+        state.person.list = INITIAL_VALUES.person.list;
+        state.person.list.pageIndex = action.payload.pageIndex;
+        state.person.list.pageSize = action.payload.pageSize;
+    },
+    [addressbookActions.person.readList.ok.type]: (state, action) => {
+        state.person.list.content = action.payload.response.content;
+        state.person.list.pageIndex = action.payload.response.pageable.pageNumber;
+        state.person.list.pageSize = action.payload.response.pageable.pageSize;
     }
 });
 
 export const STORE_NAME = 'addressbook';
 
-reducerRegistry.register(STORE_NAME);
+reducerRegistry.register(STORE_NAME, reducer);

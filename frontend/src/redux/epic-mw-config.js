@@ -1,10 +1,10 @@
-import * as backendServices from './backend/addressbook-services';
+import { actualBackend } from './backend/backend-services';
 
-let configuration = { dependencies: { backendServices: backendServices }};
+let configuration = { dependencies: { backendSvc: actualBackend }};
 
 export const epicMiddlewareConfiguration = {
-    setBackendServices: (newBackendServices) => {
-        configuration.dependencies.backendServices = newBackendServices;
+    setBackendServices: (newBackendSvc) => {
+        configuration.dependencies.backendSvc = newBackendSvc;
     },
     getConfiguration: () => {
         return configuration;
