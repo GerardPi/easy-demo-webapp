@@ -4,7 +4,7 @@ import store from '../../redux/store';
 import { connect } from 'pwa-helpers';
 import addressbookSelectors from '../../redux/addressbook/selectors';
 import * as addressbookActions from '../../redux/addressbook/actions';
-import * as infoForUser from '../../redux/info-for-user';
+import * as userInfo from '../../redux/info-for-user';
 
 export class AddressList extends connect(store)(LitElement) {
 
@@ -24,6 +24,8 @@ export class AddressList extends connect(store)(LitElement) {
    this.title = '';
    this.columns = [];
    this.data = { rows: []};
+   this.pageIndex = 0;
+   this.pageSize = 10;
   }
 
   stateChanged(state) {
@@ -37,7 +39,7 @@ export class AddressList extends connect(store)(LitElement) {
   }
 
   refreshTable() {
-    store.dispatch(addressbookActions.address.readList.command(infoForUser.readList()));
+    store.dispatch(addressbookActions.address.readList.command());
   }
 
   renderHeaderRows(columns) {
@@ -51,7 +53,8 @@ export class AddressList extends connect(store)(LitElement) {
     return columns.map(column => this.renderColumn(row, column.path));
   }
   renderRows(rows, columns) {
-    return rows.map((row) => html`<tr>${this.renderColumns(row, columns)}</tr>`);
+    return html``;
+//    return rows.map((row) => html`<tr>${this.renderColumns(row, columns)}</tr>`);
   }
   render() {
     return html`

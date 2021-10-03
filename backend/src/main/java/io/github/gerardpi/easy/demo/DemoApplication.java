@@ -38,9 +38,9 @@ public class DemoApplication implements WebMvcConfigurer {
         LOG.info("CORS enabled: '{}'", corsEnabled);
         if (corsEnabled) {
             String corsPathPattern = "/**";
-            String corsAllowedOrigins = "http://localhost:8080";
+            String corsAllowedOrigins = "http://localhost:8000";
             LOG.warn("!!! Added CORS maping for path pattern '{}' to allow origins '{}' !!!", corsPathPattern, corsAllowedOrigins);
-            registry.addMapping(corsPathPattern).allowedOrigins(corsAllowedOrigins);
+            registry.addMapping(corsPathPattern).allowedOrigins(corsAllowedOrigins).allowCredentials(true);
         }
         WebMvcConfigurer.super.addCorsMappings(registry);
     }

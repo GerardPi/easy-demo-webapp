@@ -18,7 +18,10 @@ export const contentTypeOptions = {
 };
 
 export const actualBackend = {
-  performGet: (url) => { return rest.get(url).then(response => response.data); },
+  performGet: (url) => {
+    console.log(`## url=${JSON.stringify(url)}`);
+    return rest.get(url).then(response => response.data);
+  },
   performPost: (url) => { return rest.post(url).then(response => response.data); },
   performPostWithJsonBody: (url, jsonBody) => {
       return rest.post(url, jsonBody, contentTypeOptions.json.headers).then(response => response.data);

@@ -1,14 +1,18 @@
 import {createUrl, toQueryArguments} from './backend-services';
 
 export const urls = {
-  addresses: 'api/addresses',
-  persons: 'api/persons',
-  personAddresses: 'api/person-addresses'
+  addresses: '/addresses',
+  persons: '/persons',
+  personAddresses: '/person-addresses'
 };
 
 export const address = {
   read: backendSvc => backendSvc.performGet(createUrl(urls.addresses)),
-  readList: (backendSvc, args) => backendSvc.performGet(createUrl(`${urls.addresses}?${toQueryArguments(args)}`)),
+  readList: (backendSvc, args) => {
+    const url = createUrl(`${urls.addresses}?${toQueryArguments(args)}`);
+    console.log(`##### the url is ${url}`);
+    return backendSvc.performGet(createUrl(`${urls.addresses}?${toQueryArguments(args)}`));
+  },
   create: (backendSvc, jsonBody) => backendSvc.performPostWithJsonBody(createUrl(urls.addresses), jsonBody),
   update: (backendSvc, jsonBody, tag) => backendSvc.performPutWithJsonBodyAndTag(createUrl(urls.addresses), jsonBody, tag),
   delete: (backendSvc, tag) => backendSvc.performDeleteWithTag(createUrl(urls.addresses), tag)

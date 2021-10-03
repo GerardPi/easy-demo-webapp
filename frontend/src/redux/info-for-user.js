@@ -1,9 +1,9 @@
 
 const notificationType = {
-    custom: 'NOTIF_TYPE_CUSTOM',
-    confirmed: 'NOTIF_TYPE_CONFIRMED',
-    transient: 'NOTIF_TYPE_TRANSIENT',
-    none: 'NOTIF_TYPE_NONE'
+    custom: 'NOTIFY_TYPE_CUSTOM',
+    confirmed: 'NOTIFY_TYPE_CONFIRMED',
+    transient: 'NOTIFY_TYPE_TRANSIENT',
+    none: 'NOTIFY_TYPE_NONE'
 };
 
 export const notificationArrangements = {
@@ -39,7 +39,7 @@ export const readData = ({notificationArrangement = notificationArrangements.war
   }
 });
 
-export const defaultInfoForUser = {
+export const INFO_FOR_USER_DEFAULT = {
     notificationArrangement: notificationArrangements.warningOnly,
     text: {
         fail: '[no message available (fail)]',

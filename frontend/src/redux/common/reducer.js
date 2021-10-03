@@ -1,9 +1,8 @@
-import { createReducer } from "@reduxjs/toolkit";
+import * as reduxToolkit from "@reduxjs/toolkit";
 import { defaultReadListSize } from "../../application-defaults";
-import { reducerRegistry } from "../reducer-registry";
 import * as commonActions from './actions';
 import * as reduxUtils from '../redux-utils';
-import { produce } from 'immer';
+import * as commonUtils from '../../common-utils';
 
 const INITIAL_VALUES = {
     commandTypesBusy: [],
@@ -40,7 +39,7 @@ function createBackendError(commandType, response) {
     return createBackendResult(commandType, response, getErrorMessage(response), false);
 }
 
-const reducer = createReducer(INITIAL_STATE, {
+const reducer = reduxToolkit.createReducer(INITIAL_STATE, {
     [commonActions.backend.command.refreshCommandTypesBusy.type]: (state, action) => {
         const cmdType = action.payload.commandType;
         if (reduxUtils.isInProgress(cmdType, state)) {
@@ -56,22 +55,21 @@ const reducer = createReducer(INITIAL_STATE, {
     },
     [commonActions.backend.command.succeeded.type]: (state, action) => {
         const cmdType = action.payload.commandType;
+        console.log(`###### commonActions.backend.command.succeeded.type: ${JSON.stringify(action)}, action.payload= ${JSON.stringify(action.payload)}`);
         state.commandTypesInProgress = commonUtils.arrayWithoutValue(state.commandTypesInProgress, cmdType);
         state.commandTypesBusy = commonUtils.arrayWithoutValue(state.commandTypesInProgress, cmdType);
-        const result = createBackendSuccess(commandType, action.response);
-        state.backendResults = commonUtils.objectWith(state.backendResults, cmdType, state.backendResults);
+        const result = createBackendSuccess(cmdType, action.payload.response);
+        state.backendResults = commonUtils.objectWith(state.backendResults, cmdType, result);
         state.infoForUser = state.infoForUser.concat(action.payload.infoForUser);
     },
     [commonActions.backend.command.failed.type]: (state, action) => {
         const cmdType = action.payload.commandType;
         state.commandTypesInProgress = commonUtils.arrayWithoutValue(state.commandTypesInProgress, cmdType);
         state.commandTypesBusy = commonUtils.arrayWithoutValue(state.commandTypesInProgress, cmdType);
-        const result = createBackendError(commandType, action.response);
-        state.backendResults = commonUtils.objectWith(state.backendResults, cmdType, state.backendResults);
+        const result = createBackendError(cmdType, action.payload.response);
+        state.backendResults = commonUtils.objectWith(state.backendResults, cmdType, result);
         state.infoForUser = state.infoForUser.concat(action.payload.infoForUser);
     }
 });
 
-export const STORE_NAME = 'common';
-
-reducerRegistry.register(STORE_NAME, reducer);
+export default reducer;

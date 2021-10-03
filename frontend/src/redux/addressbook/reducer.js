@@ -1,6 +1,5 @@
-import { createReducer } from "@reduxjs/toolkit";
-import { defaultReadListSize } from "../../application-defaults";
-import { reducerRegistry } from "../reducer-registry";
+import * as reduxToolkit from "@reduxjs/toolkit";
+import * as applicationDefaults from "../../application-defaults";
 import * as addressbookActions from './actions';
 
 const INITIAL_VALUES = {
@@ -12,7 +11,7 @@ const INITIAL_VALUES = {
         list: {
             content: [],
             pageIndex: 0,
-            pageSize: defaultReadListSize
+            pageSize: applicationDefaults.PAGE_SIZE_DEFAULT
         }
     }
 };
@@ -21,7 +20,7 @@ const INITIAL_STATE = {
     address: INITIAL_VALUES.address
 };
 
-const reducer = createReducer(INITIAL_STATE, {
+const reducer = reduxToolkit.createReducer(INITIAL_STATE, {
     [addressbookActions.address.read.command.type]: (state, action) => {
         state.address.one = INITIAL_VALUES.address.one;
         state.address.one.id = action.payload.id;
@@ -35,9 +34,10 @@ const reducer = createReducer(INITIAL_STATE, {
         state.address.list.pageSize = action.payload.pageSize;
     },
     [addressbookActions.address.readList.ok.type]: (state, action) => {
+        console.log(`###### readList.ok.type: ${JSON.stringify(action)}, action.payload= ${JSON.stringify(action.payload)}`);
         state.address.list.content = action.payload.response.content;
-        state.address.list.pageIndex = action.payload.response.pageable.pageNumber;
-        state.address.list.pageSize = action.payload.response.pageable.pageSize;
+        state.address.list.pageIndex = action.payload.response.pageable.page;
+        state.address.list.pageSize = action.payload.response.pageable.size;
     },
     [addressbookActions.person.read.command.type]: (state, action) => {
         state.person.one = INITIAL_VALUES.person.one;
@@ -58,6 +58,4 @@ const reducer = createReducer(INITIAL_STATE, {
     }
 });
 
-export const STORE_NAME = 'addressbook';
-
-reducerRegistry.register(STORE_NAME, reducer);
+export default reducer;

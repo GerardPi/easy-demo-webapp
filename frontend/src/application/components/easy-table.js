@@ -24,7 +24,7 @@ export class EasyTable extends LitElement {
     return html`<tr>${columns.map((column) => html`<th>${column.name}</th>`)}</tr>`;
   }
   renderColumn(row, key) {
-    console.log(`# row=${JSON.stringify(row)} # row[key] = ${row[key]}`);
+    //console.log(`# row=${JSON.stringify(row)} # row[key] = ${row[key]}`);
     return html`<td>${key}: ${row[key]}</td>`;
   }
   renderColumns(row, columns) {
