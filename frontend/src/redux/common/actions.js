@@ -1,6 +1,6 @@
 import { createAction } from '@reduxjs/toolkit';
 
-export const backend = {
+const actions = {
     command: {
         started: createAction('BACKEND_COMMAND_STARTED', (commandType, payload) =>
             ({payload: { commandType, payload}})),
@@ -11,3 +11,5 @@ export const backend = {
         refreshCommandTypesBusy: createAction('REFRESH_COMMAND_TYPES_BUSY', commandType => ({ payload: { commandType }}))
     }
 };
+
+export default actions;

@@ -1,8 +1,8 @@
-import { map, mergeMap, tap, catchError, withLatestFrom } from 'rxjs/operators';
+import { map, mergeMap, tap, catchError, withLatestFrom, delay } from 'rxjs/operators';
 import { from, of } from 'rxjs';
 import { ofType  } from 'redux-observable';
-import * as addressbookActions from './actions';
-import * as addressbookServices from '../backend/addressbook-services';
+import addressbookActions from './actions';
+import addressbookServices from '../backend/addressbook-services';
 import * as reduxUtils from '../redux-utils';
 
 const epics = {
@@ -18,6 +18,7 @@ const epics = {
 
   readAddressList: (action$, state$, { backendSvc }) => action$.pipe(
       ofType(addressbookActions.address.readList.command.type),
+      delay(2000),
       mergeMap(action =>
           from(addressbookServices.address.readList(backendSvc, {
                     pargeIndex: action.payload.pageIndex,

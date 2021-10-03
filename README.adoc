@@ -32,3 +32,13 @@ This should open a browser automatically.
 
 This application does not contain functionality yet.
 It is work in progress...
+
+
+== References
+
+* State management using Redux-Observable:: https://redux-observable.js.org/, which implies using
+    ** https://rxjs.dev
+    ** https://redux.js.org/
+    ** https://redux-toolkit.js.org/
+    ** https://immerjs.github.io/immer/
+* Web components implemented using Lit: https://lit.dev/

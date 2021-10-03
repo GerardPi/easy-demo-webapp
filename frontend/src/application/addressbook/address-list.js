@@ -3,8 +3,10 @@ import {tableStyle} from './style';
 import store from '../../redux/store';
 import { connect } from 'pwa-helpers';
 import addressbookSelectors from '../../redux/addressbook/selectors';
-import * as addressbookActions from '../../redux/addressbook/actions';
+import addressbookActions from '../../redux/addressbook/actions';
 import * as userInfo from '../../redux/info-for-user';
+import * as commonUtils from '../../common-utils';
+import { ADDRESS_COLUMNS} from './columns';
 
 export class AddressList extends connect(store)(LitElement) {
 
@@ -12,7 +14,8 @@ export class AddressList extends connect(store)(LitElement) {
     return {
       title: {type: String},
       columns: { type: Array},
-      data: {type: Object}
+      items: {type: Array},
+      inProgress: {type: Boolean}
     }
   }
   static get styles() {
@@ -22,14 +25,15 @@ export class AddressList extends connect(store)(LitElement) {
   constructor() {
    super();
    this.title = '';
-   this.columns = [];
-   this.data = { rows: []};
-   this.pageIndex = 0;
-   this.pageSize = 10;
+   this.columns = ADDRESS_COLUMNS;
+   this.items = [];
+   this.inProgress = false;
   }
 
   stateChanged(state) {
-    this.data = addressbookSelectors.address.list(state);
+    this.items = addressbookSelectors.address.list.items(state);
+    this.inProgress = addressbookSelectors.address.list.inProgress(state);
+    console.log(`##### items ${JSON.stringify(this.items)}`);
     return this.requestUpdate();
   }
 
@@ -53,18 +57,30 @@ export class AddressList extends connect(store)(LitElement) {
     return columns.map(column => this.renderColumn(row, column.path));
   }
   renderRows(rows, columns) {
-    return html``;
-//    return rows.map((row) => html`<tr>${this.renderColumns(row, columns)}</tr>`);
+    if (commonUtils.isNotNullOrEmpty(rows)) {
+      console.log(`###### ${rows.length} rows...`);
+      return rows.map((row) => html`<tr>${this.renderColumns(row, columns)}</tr>`);
+    } else if (this.inProgress) {
+      console.log(`###### in progress`);
+      return html`<tr><td>In progress...</i></td></tr>`;
+    } else {
+      console.log(`###### no data`);
+      return html`<tr><td>no data</td></tr>`;
+    }
+  }
+  refreshButtonClicked() {
+    this.refreshTable();
   }
   render() {
     return html`
-      <h1>${this.title}</h1>
+      <input type="button" @click=${this.refreshButtonClicked}>refresh</input>
+      <h1>TABLE ${this.title}</h1>
       <table border='1'>
         <thead>
           ${this.renderHeaderRows(this.columns)}
         </theader>
         <tbody>
-          ${this.renderRows(this.data.rows, this.columns)}
+          ${this.renderRows(this.items, this.columns)}
         </tbody>
         <tfoot>
           ${this.renderHeaderRows(this.columns)}

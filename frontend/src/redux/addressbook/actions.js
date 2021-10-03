@@ -2,7 +2,7 @@
 import { ajax } from 'rxjs/ajax';
 import * as reduxUtils from '../redux-utils';
 import { createAction } from '@reduxjs/toolkit';
-import * as appDefaults from '../../application-defaults';
+import applicationDefaults from '../../application-defaults';
 import * as userInfo from '../info-for-user';
 
 const actionTypePrefixes = {
@@ -23,7 +23,7 @@ const actionTypePrefixes = {
 }
 
 
-export const address = {
+const address = {
     read: {
         command: createAction(reduxUtils.backendAction.command.create(actionTypePrefixes.address.read),
             infoForUser => ({payload: { infoForUser }})),
@@ -33,7 +33,9 @@ export const address = {
     },
     readList: {
         command: createAction(reduxUtils.backendAction.command.create(actionTypePrefixes.address.readList),
-            (pageIndex = appDefaults.PAGE_INDEX_DEFAULT, pageSize = appDefaults.PAGE_SIZE_DEFAULT, infoForUser = userInfo.INFO_FOR_USER_DEFAULT) => ({payload: { pageIndex, pageSize, infoForUser }})),
+            (pageIndex = applicationDefaults.pageIndex,
+             pageSize = applicationDefaults.pageSize,
+             infoForUser = userInfo.INFO_FOR_USER_DEFAULT) => ({payload: { pageIndex, pageSize, infoForUser }})),
         ok: createAction(reduxUtils.backendAction.ok.create(actionTypePrefixes.address.readList),
             (response, infoForUser) => {
               console.log(`### actions.js address.readList.ok...`);
@@ -84,3 +86,10 @@ export const person = {
     }
 };
 
+
+const actions = {
+  person,
+  address
+};
+
+export default actions;
