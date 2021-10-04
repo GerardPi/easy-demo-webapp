@@ -1,4 +1,3 @@
-import produce from 'immer';
 import * as ldObject from 'lodash-es/object';
 import * as ldLang from 'lodash-es/lang';
 import * as ldString from 'lodash-es/string';
@@ -30,8 +29,8 @@ export function startsWith(value, suffix) {
 }
 
 export function containsPropertyWithKey(targetObject, propertyKey) {
-    return (targetObject !== null 
-        && targetObject !== undefined 
+    return (targetObject !== null
+        && targetObject !== undefined
         && Object.prototype.hasOwnProperty.call(targetObject, propertyKey));
 }
 

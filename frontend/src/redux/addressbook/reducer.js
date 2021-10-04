@@ -34,7 +34,6 @@ const reducer = reduxToolkit.createReducer(INITIAL_STATE, {
         state.address.list.pageSize = action.payload.pageSize;
     },
     [addressbookActions.address.readList.ok.type]: (state, action) => {
-        console.log(`###### readList.ok.type: ${JSON.stringify(action)}, action.payload= ${JSON.stringify(action.payload)}`);
         state.address.list.items = action.payload.response.content;
         state.address.list.pageIndex = action.payload.response.pageable.page;
         state.address.list.pageSize = action.payload.response.pageable.size;

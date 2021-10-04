@@ -8,6 +8,7 @@ export const tableStyle=css`
     td {
       border-: 1em;
       margin-right: 1em;
+      white-space:nowrap;
     }
     tr:hover {
       color: white;

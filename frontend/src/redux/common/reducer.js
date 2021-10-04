@@ -49,12 +49,11 @@ const reducer = reduxToolkit.createReducer(INITIAL_STATE, {
     },
     [commonActions.command.started.type]: (state, action) => {
         const cmdType = action.payload.commandType;
-        state.commandTypesInProgress = commonUtils.arrayWithValue(cmdType, state.commandTypesInProgress);
+        state.commandTypesInProgress = commonUtils.arrayWithValue(state.commandTypesInProgress, cmdType);
         state.backendResults = commonUtils.objectWithout(state.backendResults, cmdType);
     },
     [commonActions.command.succeeded.type]: (state, action) => {
         const cmdType = action.payload.commandType;
-        console.log(`###### commonActions.backend.command.succeeded.type: ${JSON.stringify(action)}, action.payload= ${JSON.stringify(action.payload)}`);
         state.commandTypesInProgress = commonUtils.arrayWithoutValue(state.commandTypesInProgress, cmdType);
         state.commandTypesBusy = commonUtils.arrayWithoutValue(state.commandTypesInProgress, cmdType);
         const result = createBackendSuccess(cmdType, action.payload.response);

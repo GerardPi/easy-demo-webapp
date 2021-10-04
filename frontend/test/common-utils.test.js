@@ -6,9 +6,15 @@ import * as commonUtils from '../src/common-utils';
 describe('common-utils', () => {
   it('null is not notNullOrEmpty', () => {
     expect(commonUtils.isNotNullOrEmpty(null)).to.be.equal(false);
+    expect(commonUtils.isNotNullOrEmpty([])).to.be.equal(false);
+    expect(commonUtils.isNotNullOrEmpty([1])).to.be.equal(true);
+    expect(commonUtils.isNotNullOrEmpty(undefined)).to.be.equal(false);
   });
   it('null is nullOrEmpty', () => {
     expect(commonUtils.isNullOrEmpty(null)).to.be.equal(true);
+    expect(commonUtils.isNullOrEmpty(undefined)).to.be.equal(true);
+    expect(commonUtils.isNullOrEmpty([])).to.be.equal(true);
+    expect(commonUtils.isNullOrEmpty([1])).to.be.equal(false);
   });
   it ('objectWith to result in an extened object and original is not touched', () => {
     const a = { a: 1, b: 2, c: 3};

@@ -33,7 +33,6 @@ export class AddressList extends connect(store)(LitElement) {
   stateChanged(state) {
     this.items = addressbookSelectors.address.list.items(state);
     this.inProgress = addressbookSelectors.address.list.inProgress(state);
-    console.log(`##### items ${JSON.stringify(this.items)}`);
     return this.requestUpdate();
   }
 
@@ -50,7 +49,6 @@ export class AddressList extends connect(store)(LitElement) {
     return html`<tr>${columns.map((column) => html`<th>${column.name}</th>`)}</tr>`;
   }
   renderColumn(row, key) {
-    console.log(`# row=${JSON.stringify(row)} # row[key] = ${row[key]}`);
     return html`<td>${key}: ${row[key]}</td>`;
   }
   renderColumns(row, columns) {
@@ -58,13 +56,10 @@ export class AddressList extends connect(store)(LitElement) {
   }
   renderRows(rows, columns) {
     if (commonUtils.isNotNullOrEmpty(rows)) {
-      console.log(`###### ${rows.length} rows...`);
       return rows.map((row) => html`<tr>${this.renderColumns(row, columns)}</tr>`);
     } else if (this.inProgress) {
-      console.log(`###### in progress`);
-      return html`<tr><td>In progress...</i></td></tr>`;
+      return html`<tr><td colspan="${columns.length}" ><img src="assets/loader-bar.gif" title="loading..."></td></tr>`;
     } else {
-      console.log(`###### no data`);
       return html`<tr><td>no data</td></tr>`;
     }
   }
