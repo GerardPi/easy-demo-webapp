@@ -1,6 +1,11 @@
 import { LitElement, html, css } from 'lit';
 
-export const tableStyle=css`
+export const style=css`
+
+`;
+
+export default style;
+/*
     table {
       border-spacing: 0px;
       border-width: 1px;
@@ -14,4 +19,5 @@ export const tableStyle=css`
       color: white;
       background-color: grey;
     }
-`;
+
+*/

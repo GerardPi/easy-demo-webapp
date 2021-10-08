@@ -1,6 +1,8 @@
 import { LitElement, html, css } from 'lit';
 
 export const mainStyle=css`
+    `;
+    /*
       :host {
         min-height: 100vh;
         display: flex;
@@ -41,6 +43,5 @@ export const mainStyle=css`
       .app-footer a {
         margin-left: 5px;
       }
-    `;
 
-
+*/

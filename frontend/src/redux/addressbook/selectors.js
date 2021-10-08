@@ -8,7 +8,7 @@ const selectors = {
     },
     list: {
       items: state => state.addressbook.address.list.items,
-      inProgress: state => commonSelectors.commandTypeInProgress(state, addressbookActions.address.readList.command.type)
+      inProgress: state => commonSelectors.isCommandTypeInProgress(state, addressbookActions.address.readList.command.type)
     }
   },
   person: {

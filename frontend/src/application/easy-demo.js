@@ -7,13 +7,20 @@ import { connect } from 'pwa-helpers';
 import './addressbook/address-list';
 import commonSelectors from '../redux/common/selectors';
 import * as commonUtils from '../common-utils';
+import '@kor-ui/kor/components/page';
+import '@kor-ui/kor/components/app-bar';
+import '@kor-ui/kor/components/nav-bar';
+import '@kor-ui/kor/components/tabs';
+import '@kor-ui/kor/components/icon';
+
 
 export class EasyDemo extends connect(store)(LitElement) {
   static get properties() {
     return {
       title: { type: String },
       columns: { type: Array},
-      contents: { type: Object}
+      contents: { type: Object},
+      isSomethingInProgress: { type: Boolean}
     };
   }
 
@@ -40,55 +47,48 @@ export class EasyDemo extends connect(store)(LitElement) {
   }
 
   stateChanged(state) {
-    console.log(`####### someting is in progress....${this.isSomethingInProgress}`);
-    console.log(`####### in progress ${JSON.stringify(state.common.commandTypesInProgress)}`);
-    console.log(`####### is something in progress ${commonUtils.isNotNullOrEmpty(state.common.commandTypesInProgress)}`);
-    console.log(`####### busy ${JSON.stringify(state.common.commandTypesBusy)}`);
-    this.inSomethingInProgress = commonSelectors.isSomethingInProgress(state);
+    this.isSomethingInProgress = commonSelectors.isSomethingInProgress(state);
     return this.requestUpdate();
   }
 
   renderSomethingIsInProgress() {
     if (this.isSomethingInProgress) {
-      return html`<h1>hi<img src="assets/loader-arrow-circle.gif" title="Something is being loaded..."></h1>`;
+      return html`<div slot="functions">busy <img src="assets/loader-arrow-circle.gif" title="Something is being loaded..."></div>`;
     }
-    return html`<h1>nothing</h1>`;
+    return html`<div slot="functions">done</div>`;
   }
 
   connectedCallback() {
     super.connectedCallback();
   }
 
+  _addressTabClicked(event) {
+    console.log("_addressTabClicked");
+  }
+
+  _personTabClicked(event) {
+    console.log("_personTabClicked");
+  }
+
+
   render() {
     return html`
-      <main>
-        <div class="logo"><img alt="open-wc logo" src=${logo} /></div>
-        <h1>${this.title}</h1>
-
+    <kor-page flex-direction="column">
+      <kor-app-bar slot="top" label="Easy Demo">
         ${this.renderSomethingIsInProgress()}
-        <easy-table .title='the title' .columns=${this.tableColumns} .data=${this.tableData}></easy-table>
-        <address-list></address-list>
-
-        <p>Edit <code>src/EasyDemo.js</code> and save to reload.</p>
-        <a
-          class="app-link"
-          href="https://open-wc.org/guides/developing-components/code-examples/"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Code examples
-        </a>
-      </main>
-
-      <p class="app-footer">
-        🚽 Made with love by
-        <a
-          target="_blank"
-          rel="noopener noreferrer"
-          href="https://github.com/open-wc"
-          >open-wc</a
-        >.
-      </p>
+      </kor-app-bar>
+      <kor-nav-bar slot="top">
+        <kor-tabs>
+          <kor-tab-item label="Addresses" @click=${this._addressTabClicked} active></kor-tab-item>
+          <kor-tab-item label="Persons" @click=${this._personTabClicked} ></kor-tab-item>
+        </kor-tabs>
+        <!--
+        <kor-icon icon="launch" button slot="functions"></kor-icon>
+        <kor-icon icon="more_vert" button slot="functions"></kor-icon>
+        -->
+      </kor-nav-bar>
+      <address-list></address-list>
+    </kor-page>
     `;
   }
 }

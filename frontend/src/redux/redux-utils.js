@@ -12,23 +12,27 @@ const ACTION_SUFFIX = {
 export const backendAction = {
     command: {
         create: prefix => prefix + ACTION_SUFFIX.command,
-        is: action => commonUtils.endsWith(action, ACTION_SUFFIX.command),
+        is: action => commonUtils.endsWith(action.type, ACTION_SUFFIX.command),
+        isType: actionType => commonUtils.endsWith(actionType, ACTION_SUFFIX.command),
         suffix: ACTION_SUFFIX.command
     },
     commandRepeat: {
         create: prefix => prefix + ACTION_SUFFIX.commandRepeat,
-        is: action => commonUtils.endsWith(action, ACTION_SUFFIX.commandRepeat),
+        is: action => commonUtils.endsWith(action.type, ACTION_SUFFIX.commandRepeat),
+        isType: actionType => commonUtils.endsWith(actionType, ACTION_SUFFIX.commandRepeat),
         suffix: ACTION_SUFFIX.commandRepeat
     },
     ok: {
         create: prefix => prefix + ACTION_SUFFIX.ok,
-        is: action => commonUtils.endsWith(action, ACTION_SUFFIX.ok),
+        is: action => commonUtils.endsWith(action.type, ACTION_SUFFIX.ok),
+        isType: actionType => commonUtils.endsWith(actionType, ACTION_SUFFIX.ok),
         suffix: ACTION_SUFFIX.ok,
         toCommand: actionType => actionType.substr(0, actionType.length - ACTION_SUFFIX.ok.length) + ACTION_SUFFIX.command
     },
     fail: {
         create: prefix => prefix + ACTION_SUFFIX.fail,
-        is: action => commonUtils.endsWith(action, ACTION_SUFFIX.fail),
+        is: action => commonUtils.endsWith(action.type, ACTION_SUFFIX.fail),
+        isType: actionType => commonUtils.endsWith(actionType, ACTION_SUFFIX.fail),
         suffix: ACTION_SUFFIX.fail,
         toCommand: actionType => actionType.substr(0, actionType.length - ACTION_SUFFIX.fail.length) + ACTION_SUFFIX.command
     },

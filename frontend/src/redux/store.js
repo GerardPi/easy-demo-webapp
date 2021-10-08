@@ -7,8 +7,11 @@ import { epicMiddlewareConfiguration } from './epic-mw-config';
 import addressbookReducer from './addressbook/reducer';
 reducerRegistry.register("addressbook", addressbookReducer);
 
-import commonReducer from './common/reducer';
-reducerRegistry.register("common", commonReducer);
+//import commonReducer from './common/reducer';
+//reducerRegistry.register("common", commonReducer);
+
+import commonReducer2 from './common/reducer2';
+reducerRegistry.register("common", commonReducer2);
 
 import commonEpics from './common/epics';
 import addressbookEpics from './addressbook/epics';
