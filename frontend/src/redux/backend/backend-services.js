@@ -24,18 +24,23 @@ export const actualBackend = {
   },
   performPost: (url) => { return rest.post(url).then(response => response.data); },
   performPostWithJsonBody: (url, jsonBody) => {
-      return rest.post(url, jsonBody, contentTypeOptions.json.headers).then(response => response.data);
+    return rest.post(url, jsonBody, contentTypeOptions.json.headers).then(response => response.data);
   },
   performPostWithFormData: (url, body) => {
-      return rest.post(url, jsonBody, contentTypeOptions.formData).then(response => response.data);
+    return rest.post(url, jsonBody, contentTypeOptions.formData).then(response => response.data);
   },
-  performPutWithJsonBody: (url, jsonBody, tag) => {
-      return rest.put(url, jsonBody, contentTypeOptions.json).then(response => response.data);
+  performPutWithJsonBody: (url, jsonBody, etag) => {
+    return rest.put(url, jsonBody, contentTypeOptions.json).then(response => response.data);
   },
   performUpload: (url, uploadFile) => {
-      const formData = new FormData();
-      formData.append('multipartFile', uploadFile);
-      return rest.post(url, formData, contentTypeOptions.upload).then(response => response.data);
+    const formData = new FormData();
+    formData.append('multipartFile', uploadFile);
+    return rest.post(url, formData, contentTypeOptions.upload).then(response => response.data);
+  },
+  performDeleteWithTag: (url, etag) => {
+    const headers = {'If-Match': etag};
+    console.log(`#### delete url=${JSON.stringify(url)} headers=${JSON.stringify(headers)}`);
+    return rest.delete(url, headers).then((response) => response.data);
   }
 };
 

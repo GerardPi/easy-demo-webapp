@@ -1,6 +1,6 @@
 export const ADDRESS_COLUMNS = [
-    { name: 'ID', path: 'id' },
-    { name: 'etag', path: 'etag'},
+    { name: 'ID', path: 'id', hidden: true },
+    { name: 'etag', path: 'etag', hidden: true},
     { name: 'Country code', path: 'countryCode', width: 1},
     { name: 'City', path: 'city', width: 3},
     { name: 'Postal code', path: 'postalCode', width: 2},

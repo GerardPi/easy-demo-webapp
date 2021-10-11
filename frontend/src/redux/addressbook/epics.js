@@ -36,8 +36,8 @@ const epics = {
       mergeMap(action =>
           from(addressbookServices.address.create(backendSvc, action.payload.address))
             .pipe(
-              mergeMap(response => of(reduxUtils.successFromCommandAction(action))),
-              catchError(error => of(reduxUtils.failureFromCommandAction(action, error)))
+              mergeMap(response => of(reduxUtils.createCommonSuccessAction(action))),
+              catchError(error => of(reduxUtils.createCommonFailureAction(action, error)))
           )
       )
   ),
@@ -47,19 +47,19 @@ const epics = {
       mergeMap(action =>
           from(addressbookServices.address.update(backendSvc, action.payload.address))
             .pipe(
-              mergeMap(response => of(reduxUtils.successFromCommandAction(action))),
-              catchError(error => of(reduxUtils.failureFromCommandAction(action, error)))
+              mergeMap(response => of(reduxUtils.createCommonSuccessAction(action))),
+              catchError(error => of(reduxUtils.createCommonFailureAction(action, error)))
           )
       )
   ),
 
   deleteAddress: (action$, state$, { backendSvc }) => action$.pipe(
-      ofType(addressbookActions.address.delete.command.type),
+      ofType(addressbookActions.address.remove.command.type),
       mergeMap(action =>
-          from(addressbookServices.address.delete(backendSvc, action.payload.id))
+          from(addressbookServices.address.remove(backendSvc, action.payload.id, action.payload.etag))
             .pipe(
-              mergeMap(response => of(reduxUtils.successFromCommandAction(action))),
-              catchError(error => of(reduxUtils.failureFromCommandAction(action, error)))
+              mergeMap(response => of(reduxUtils.createCommonSuccessAction(action))),
+              catchError(error => from([reduxUtils.createCommonFailureAction(action, error)]))
             )
       )
   )

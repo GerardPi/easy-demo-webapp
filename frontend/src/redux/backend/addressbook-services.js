@@ -14,24 +14,24 @@ const address = {
     return backendSvc.performGet(createUrl(`${URLS.addresses}?${toQueryArguments(args)}`));
   },
   create: (backendSvc, jsonBody) => backendSvc.performPostWithJsonBody(createUrl(URLS.addresses), jsonBody),
-  update: (backendSvc, jsonBody, tag) => backendSvc.performPutWithJsonBodyAndTag(createUrl(URLS.addresses), jsonBody, tag),
-  delete: (backendSvc, tag) => backendSvc.performDeleteWithTag(createUrl(URLS.addresses), tag)
+  update: (backendSvc, jsonBody, etag) => backendSvc.performPutWithJsonBodyAndTag(createUrl(URLS.addresses), jsonBody, etag),
+  remove: (backendSvc, id, etag) => backendSvc.performDeleteWithTag(createUrl(URLS.addresses) + '/' + id, etag)
 };
 
 const person = {
   read: backendSvc => backendSvc.performGet(createUrl(URLS.persons)),
   readList: (backendSvc, args) => backendSvc.performGet(createUrl(`${URLS.persons}?${toQueryArguments(args)}`)),
   create: (backendSvc, jsonBody) => backendSvc.performPostWithJsonBody(createUrl(URLS.persons), jsonBody),
-  update: (backendSvc, jsonBody, tag) => backendSvc.performPutWithJsonBodyAndTag(createUrl(URLS.persons), jsonBody, tag),
-  delete: (backendSvc, tag) => backendSvc.performDeleteWithTag(createUrl(URLS.persons), tag)
+  update: (backendSvc, jsonBody, etag) => backendSvc.performPutWithJsonBodyAndTag(createUrl(URLS.persons), jsonBody, etag),
+  remove: (backendSvc, id, etag) => backendSvc.performDeleteWithTag(createUrl(URLS.persons) + '/' + id, etag)
 };
 
 const personAddress = {
   read: backendSvc => backendSvc.performGet(createUrl(URLS.personAddresses)),
   readList: (backendSvc, args) => backendSvc.performGet(createUrl(`${URLS.personAddresses}?${toQueryArguments(args)}`)),
   create: (backendSvc, jsonBody) => backendSvc.performPostWithJsonBody(createUrl(URLS.personAddresses), jsonBody),
-  update: (backendSvc, jsonBody, tag) => backendSvc.performPutWithJsonBodyAndTag(createUrl(URLS.personAddresses), jsonBody, tag),
-  delete: (backendSvc, tag) => backendSvc.performDeleteWithTag(createUrl(URLS.personAddresses), tag)
+  update: (backendSvc, jsonBody, etag) => backendSvc.performPutWithJsonBodyAndTag(createUrl(URLS.personAddresses), jsonBody, etag),
+  remove: (backendSvc, id, etag) => backendSvc.performDeleteWithTag(createUrl(URLS.personAddresses) + '/' + id, etag)
 };
 
 const services = {

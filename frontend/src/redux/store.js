@@ -7,11 +7,8 @@ import { epicMiddlewareConfiguration } from './epic-mw-config';
 import addressbookReducer from './addressbook/reducer';
 reducerRegistry.register("addressbook", addressbookReducer);
 
-//import commonReducer from './common/reducer';
-//reducerRegistry.register("common", commonReducer);
-
-import commonReducer2 from './common/reducer2';
-reducerRegistry.register("common", commonReducer2);
+import commonReducer from './common/reducer';
+reducerRegistry.register("common", commonReducer);
 
 import commonEpics from './common/epics';
 import addressbookEpics from './addressbook/epics';
@@ -30,8 +27,8 @@ reducerRegistry.setChangeListener(rootReducer => store.replaceReducer(rootReduce
 
 epicMiddleware.run(epicRegistry.rootEpic.bind(epicRegistry));
 
-console.log(`### addressbookEpics = ${Object.keys(addressbookEpics)}`);
-console.log(`### commonEpics = ${Object.keys(commonEpics)}`);
+//console.log(`### addressbookEpics = ${Object.keys(addressbookEpics)}`);
+//console.log(`### commonEpics = ${Object.keys(commonEpics)}`);
 epicRegistry.register(Object.values(addressbookEpics));
 epicRegistry.register(Object.values(commonEpics));
 

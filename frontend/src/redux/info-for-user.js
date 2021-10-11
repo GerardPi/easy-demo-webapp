@@ -23,6 +23,14 @@ export const readList = ({notificationArrangement = notificationArrangements.war
   }
 });
 
+export const removeItem = ({notificationArrangement = notificationArrangements.infoAndWarning, details = null} = {}) => ({
+  notificationArrangement,
+  text: {
+    ok: 'The item was removed successfully',
+    fail: 'The item was not removed. ' + (details ? details : PLEASE_TRY_AGAIN)
+  }
+});
+
 export const readOne = ({notificationArrangement = notificationArrangements.warningOnly, details = null} = {}) => ({
   notificationArrangement,
   text: {

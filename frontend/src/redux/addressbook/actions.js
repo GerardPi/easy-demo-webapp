@@ -11,14 +11,14 @@ const actionTypePrefixes = {
         readList: 'ADDRESS_READ_LIST',
         create: 'ADDRESS_CREATE',
         update: 'ADDRESS_UPDATE',
-        delete: 'ADDRESS_DELETE'
+        remove: 'ADDRESS_REMOVE'
     },
     person: {
         read: 'PERSON_READ',
         readList: 'PERSON_READ_LIST',
         create: 'PERSON_CREATE',
         update: 'PERSON_UPDATE',
-        delete: 'PERSON_DELETE'
+        remove: 'PERSON_REMOVE'
     }
 }
 
@@ -51,9 +51,9 @@ const address = {
         command: createAction(reduxUtils.backendAction.command.create(actionTypePrefixes.address.update),
             infoForUser => ({payload: {infoForUser}}))
     },
-    delete: {
-        command: createAction(reduxUtils.backendAction.command.create(actionTypePrefixes.address.delete),
-            infoForUser => ({palload: {infoForUser}}))
+    remove: {
+        command: createAction(reduxUtils.backendAction.command.create(actionTypePrefixes.address.remove),
+            (id, etag, infoForUser) => ({payload: {id, etag, infoForUser}}))
     }
 };
 
@@ -80,8 +80,8 @@ export const person = {
         command: createAction(reduxUtils.backendAction.command.create(actionTypePrefixes.person.update),
             infoForUser => ({payload: {infoForUser}}))
     },
-    delete: {
-        command: createAction(reduxUtils.backendAction.command.create(actionTypePrefixes.person.delete),
+    remove: {
+        command: createAction(reduxUtils.backendAction.command.create(actionTypePrefixes.person.remove),
             infoForUser => ({palload: {infoForUser}}))
     }
 };

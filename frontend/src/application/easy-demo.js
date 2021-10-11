@@ -20,7 +20,8 @@ export class EasyDemo extends connect(store)(LitElement) {
       title: { type: String },
       columns: { type: Array},
       contents: { type: Object},
-      isSomethingInProgress: { type: Boolean}
+      isSomethingInProgress: { type: Boolean},
+      isSomethingBusy: { type: Boolean},
     };
   }
 
@@ -31,6 +32,7 @@ export class EasyDemo extends connect(store)(LitElement) {
   constructor() {
     super();
     this.isSomethingInProgress = false;
+    this.isSomethingBusy = false;
     this.title = 'My app';
     this.tableColumns = [
       { name: 'First', path: 'first'},
@@ -48,14 +50,16 @@ export class EasyDemo extends connect(store)(LitElement) {
 
   stateChanged(state) {
     this.isSomethingInProgress = commonSelectors.isSomethingInProgress(state);
+    this.isSomethingBusy = commonSelectors.isSomethingBusy(state);
+    console.log(`## isSomethingInProgress: ${this.isSomethingInProgress}`);
     return this.requestUpdate();
   }
 
   renderSomethingIsInProgress() {
-    if (this.isSomethingInProgress) {
-      return html`<div slot="functions">busy <img src="assets/loader-arrow-circle.gif" title="Something is being loaded..."></div>`;
+    if (this.isSomethingBusy) {
+      return html`<div slot="functions"><img src="assets/loader-arrow-circle.gif" title="Something is being loaded..."></div>`;
     }
-    return html`<div slot="functions">done</div>`;
+    return html`<div slot="functions"></div>`;
   }
 
   connectedCallback() {

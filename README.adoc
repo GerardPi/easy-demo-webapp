@@ -41,4 +41,7 @@ It is work in progress...
     ** https://redux.js.org/
     ** https://redux-toolkit.js.org/
     ** https://immerjs.github.io/immer/
+* https://lodash.com/
 * Web components implemented using Lit: https://lit.dev/
+* https://kor-ui.com/introduction/welcome
+* https://spring.io/projects/spring-boot
