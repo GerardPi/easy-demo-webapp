@@ -9,13 +9,12 @@ const URLS = {
 const address = {
   read: backendSvc => backendSvc.performGet(createUrl(URLS.addresses)),
   readList: (backendSvc, args) => {
-    const url = createUrl(`${URLS.addresses}?${toQueryArguments(args)}`);
-    console.log(`##### the url is ${url}`);
-    return backendSvc.performGet(createUrl(`${URLS.addresses}?${toQueryArguments(args)}`));
+    const url = createUrl(`${URLS.addresses}?${toQueryArguments(args)}`)
+    return backendSvc.performGet(url);
   },
   create: (backendSvc, jsonBody) => backendSvc.performPostWithJsonBody(createUrl(URLS.addresses), jsonBody),
   update: (backendSvc, jsonBody, etag) => backendSvc.performPutWithJsonBodyAndTag(createUrl(URLS.addresses), jsonBody, etag),
-  remove: (backendSvc, id, etag) => backendSvc.performDeleteWithTag(createUrl(URLS.addresses) + '/' + id, etag)
+  delete: (backendSvc, id, etag) => backendSvc.performDeleteWithTag(createUrl(URLS.addresses) + '/' + id, etag)
 };
 
 const person = {
@@ -23,7 +22,7 @@ const person = {
   readList: (backendSvc, args) => backendSvc.performGet(createUrl(`${URLS.persons}?${toQueryArguments(args)}`)),
   create: (backendSvc, jsonBody) => backendSvc.performPostWithJsonBody(createUrl(URLS.persons), jsonBody),
   update: (backendSvc, jsonBody, etag) => backendSvc.performPutWithJsonBodyAndTag(createUrl(URLS.persons), jsonBody, etag),
-  remove: (backendSvc, id, etag) => backendSvc.performDeleteWithTag(createUrl(URLS.persons) + '/' + id, etag)
+  delete: (backendSvc, id, etag) => backendSvc.performDeleteWithTag(createUrl(URLS.persons) + '/' + id, etag)
 };
 
 const personAddress = {
@@ -31,7 +30,7 @@ const personAddress = {
   readList: (backendSvc, args) => backendSvc.performGet(createUrl(`${URLS.personAddresses}?${toQueryArguments(args)}`)),
   create: (backendSvc, jsonBody) => backendSvc.performPostWithJsonBody(createUrl(URLS.personAddresses), jsonBody),
   update: (backendSvc, jsonBody, etag) => backendSvc.performPutWithJsonBodyAndTag(createUrl(URLS.personAddresses), jsonBody, etag),
-  remove: (backendSvc, id, etag) => backendSvc.performDeleteWithTag(createUrl(URLS.personAddresses) + '/' + id, etag)
+  delete: (backendSvc, id, etag) => backendSvc.performDeleteWithTag(createUrl(URLS.personAddresses) + '/' + id, etag)
 };
 
 const services = {

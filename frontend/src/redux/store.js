@@ -2,7 +2,7 @@ import * as reduxToolkit from '@reduxjs/toolkit';
 import * as reduxObservable from 'redux-observable';
 import { reducerRegistry } from './reducer-registry';
 import { epicRegistry } from './epic-registry';
-import { epicMiddlewareConfiguration } from './epic-mw-config';
+import { actualBackend } from './backend/backend-services';
 
 import addressbookReducer from './addressbook/reducer';
 reducerRegistry.register("addressbook", addressbookReducer);
@@ -12,7 +12,7 @@ reducerRegistry.register("common", commonReducer);
 
 import commonEpics from './common/epics';
 import addressbookEpics from './addressbook/epics';
-const epicMiddleware = reduxObservable.createEpicMiddleware(epicMiddlewareConfiguration.getConfiguration());
+const epicMiddleware = reduxObservable.createEpicMiddleware();
 
 const store = reduxToolkit.configureStore(
     {

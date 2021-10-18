@@ -4,9 +4,10 @@ import { ofType  } from 'redux-observable';
 import addressbookActions from './actions';
 import addressbookServices from '../backend/addressbook-services';
 import * as reduxUtils from '../redux-utils';
+import { actualBackend as backendSvc } from '../backend/backend-services';
 
 const epics = {
-  readAddress: (action$, state$, { backendSvc }) => action$.pipe(
+  readAddress: (action$, state$) => action$.pipe(
       ofType(addressbookActions.address.read.command.type),
       mergeMap(action =>
           from(addressbookServices.address.read(backendSvc, action.payload.id, action.payload.infoForUser))
@@ -16,13 +17,12 @@ const epics = {
       )
   ),
 
-  readAddressList: (action$, state$, { backendSvc }) => action$.pipe(
+  readAddressList: (action$, state$) => action$.pipe(
       ofType(addressbookActions.address.readList.command.type),
-      delay(2000),
       mergeMap(action =>
           from(addressbookServices.address.readList(backendSvc, {
-                    pargeIndex: action.payload.pageIndex,
-                    pageSize: action.payload.pageSize
+                    page: action.payload.pageIndex,
+                    size: action.payload.pageSize
                 }))
             .pipe(
               map(response => addressbookActions.address.readList.ok(response, reduxUtils.successUserInfoFromCommandAction(action))),
@@ -31,7 +31,7 @@ const epics = {
       )
   ),
 
-  createAddress: (action$, state$, { backendSvc }) => action$.pipe(
+  createAddress: (action$, state$) => action$.pipe(
       ofType(addressbookActions.address.create.command.type),
       mergeMap(action =>
           from(addressbookServices.address.create(backendSvc, action.payload.address))
@@ -42,7 +42,7 @@ const epics = {
       )
   ),
 
-  updateAddress: (action$, state$, { backendSvc }) => action$.pipe(
+  updateAddress: (action$, state$) => action$.pipe(
       ofType(addressbookActions.address.update.command.type),
       mergeMap(action =>
           from(addressbookServices.address.update(backendSvc, action.payload.address))
@@ -53,14 +53,11 @@ const epics = {
       )
   ),
 
-  deleteAddress: (action$, state$, { backendSvc }) => action$.pipe(
-      ofType(addressbookActions.address.remove.command.type),
-      mergeMap(action =>
-          from(addressbookServices.address.remove(backendSvc, action.payload.id, action.payload.etag))
-            .pipe(
-              mergeMap(response => of(reduxUtils.createCommonSuccessAction(action))),
-              catchError(error => from([reduxUtils.createCommonFailureAction(action, error)]))
-            )
+  deleteAddress: (action$, state$) => action$.pipe(
+      ofType(addressbookActions.address.delete.command.type),
+      mergeMap((action) => from(addressbookServices.address.delete(backendSvc, action.payload.id, action.payload.etag)).pipe(
+            map((response) => reduxUtils.createCommonSuccessAction(action, response)),
+            catchError((error) => from([reduxUtils.createCommonFailureAction(action, error)])))
       )
   )
 };

@@ -38,6 +38,14 @@ function createBackendError(commandType, response) {
     return createBackendResult(commandType, response, getErrorMessage(response), false);
 }
 
+function bla(cmdType, action) {
+    state.commandTypesInProgress = state.commandTypesInProgress.filter(type => type !== cmdType);
+    state.commandTypesBusy = state.commandTypesBusy.filter(type => type !== cmdType);
+    const result = createBackendSuccess(cmdType, action.payload.response);
+    state.backendResults = commonUtils.objectWith(state.backendResults, cmdType, result);
+    state.infoForUser = state.infoForUser.concat(action.payload.infoForUser);
+}
+
 const reducer = reduxToolkit.createReducer(
   INITIAL_STATE,
   (builder) => {
@@ -49,26 +57,32 @@ const reducer = reduxToolkit.createReducer(
             state.commandTypesBusy.push(cmdType);
         }
     })
-    .addMatcher(reduxUtils.backendAction.command.is, (state, action) => {
-        const cmdType = action.type;
-        state.commandTypesInProgress.push(cmdType);
-        state.backendResults = commonUtils.objectWithout(state.backendResults, cmdType);
-    })
-    .addMatcher(reduxUtils.backendAction.ok.is, (state, action) => {
-        const cmdType = reduxUtils.backendAction.ok.toCommand(action.type);
+    .addCase(commonActions.command.succeeded, (state, action) => {
+        const cmdType = reduxUtils.backendAction.ok.toCommand(action.payload.commandType);
+        console.log(`### action=${JSON.stringify(action)} cmdType=${cmdType}`);
+        console.log(`### 1 state.commandTypesInProgress=${JSON.stringify(state.commandTypesInProgress)}`);
         state.commandTypesInProgress = state.commandTypesInProgress.filter(type => type !== cmdType);
+        console.log(`### 2 state.commandTypesInProgress=${JSON.stringify(state.commandTypesInProgress)}`);
         state.commandTypesBusy = state.commandTypesBusy.filter(type => type !== cmdType);
         const result = createBackendSuccess(cmdType, action.payload.response);
         state.backendResults = commonUtils.objectWith(state.backendResults, cmdType, result);
         state.infoForUser = state.infoForUser.concat(action.payload.infoForUser);
     })
-    .addMatcher(reduxUtils.backendAction.fail.is, (state, action) => {
-        const cmdType = reduxUtils.backendAction.fail.toCommand(action.type);
+    .addCase(commonActions.command.failed, (state, action) => {
+        const cmdType = reduxUtils.backendAction.fail.toCommand(action.payload.commandType);
+        console.log(`### action=${JSON.stringify(action)} cmdType=${cmdType}`);
+        console.log(`### 3 state.commandTypesInProgress=${JSON.stringify(state.commandTypesInProgress)}`);
         state.commandTypesInProgress = state.commandTypesInProgress.filter(type => type !== cmdType);
+        console.log(`### 4 state.commandTypesInProgress=${JSON.stringify(state.commandTypesInProgress)}`);
         state.commandTypesBusy = state.commandTypesBusy.filter(type => type !== cmdType);
         const result = createBackendError(cmdType, action.payload.response);
         state.backendResults = commonUtils.objectWith(state.backendResults, cmdType, result);
         state.infoForUser = state.infoForUser.concat(action.payload.infoForUser);
+    })
+    .addMatcher(reduxUtils.backendAction.command.is, (state, action) => {
+        const cmdType = action.type;
+        state.commandTypesInProgress.push(cmdType);
+        state.backendResults = commonUtils.objectWithout(state.backendResults, cmdType);
     })
   }
 );

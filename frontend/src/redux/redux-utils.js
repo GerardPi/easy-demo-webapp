@@ -1,6 +1,6 @@
 import * as commonUtils from '../common-utils';
 import * as userInfo from './info-for-user';
-import * as commonActions from './common/actions';
+import commonActions from './common/actions';
 
 const ACTION_SUFFIX = {
     command: '_CMD',
@@ -104,9 +104,12 @@ function problemTicketIdFromResponse(response) {
 }
 
 export function createCommonSuccessAction(commandAction, someResponse) {
-  const response = commonUtils.isValueNullOrEmpty(someResponse) ? RESPONSE_DEFAULT : someResponse;
+  console.log(`### createCommonSuccessAction ${JSON.stringify(commandAction)}`);
+  const response = commonUtils.isNullOrEmpty(someResponse) ? RESPONSE_DEFAULT : someResponse;
   const infoForUser = successUserInfoFromCommandAction(commandAction);
-  return commonActions.backend.command.succeeded(commandAction.type, response, infoForUser);
+  const result = commonActions.command.succeeded(commandAction.type, response, infoForUser);
+  console.log(`### createCommonSuccessAction result ${JSON.stringify(result)}`);
+  return result;
 }
 
 export function createCommonFailureAction(commandAction, someError) {
@@ -114,7 +117,9 @@ export function createCommonFailureAction(commandAction, someError) {
   const ticketId = problemTicketIdFromResponse(response);
   const infoForUser = failureUserInfoFromCommandAction(commandAction, ticketId);
   const errorResponse = resolveErrorResponse(someError);
-  return commonActions.backend.command.failed(commandAction.type, response, infoForUser, errorResponse);
+  const result = commonActions.command.failed(commandAction.type, response, infoForUser, errorResponse);
+  console.log(`### createCommonFailureAction result ${JSON.stringify(result)}`);
+  return result;
 }
 
 

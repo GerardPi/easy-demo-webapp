@@ -3,7 +3,6 @@ import * as ldLang from 'lodash-es/lang';
 import * as ldString from 'lodash-es/string';
 import * as ldArray from 'lodash-es/array';
 
-
 export function isNullOrEmpty(value) {
     return ldLang.isNull(value) || ldLang.isEmpty(value);
 }

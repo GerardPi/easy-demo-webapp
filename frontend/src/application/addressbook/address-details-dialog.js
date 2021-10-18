@@ -51,7 +51,7 @@ export class AddressDetailsDialog extends connect(store)(LitElement) {
 
   remove() {
     console.log(`removing ${JSON.stringify(this.address)}`);
-    store.dispatch(addressbookActions.address.remove.command(this.address.id, this.address.etag, userInfo.removeItem()));
+    store.dispatch(addressbookActions.address.delete.command(this.address.id, this.address.etag, userInfo.deleteItem()));
     this.close();
   }
 

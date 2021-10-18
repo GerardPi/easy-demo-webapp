@@ -1,5 +1,5 @@
 
-const notificationType = {
+export const NOTIFICATION_TYPES = {
     custom: 'NOTIFY_TYPE_CUSTOM',
     confirmed: 'NOTIFY_TYPE_CONFIRMED',
     transient: 'NOTIFY_TYPE_TRANSIENT',
@@ -7,10 +7,10 @@ const notificationType = {
 };
 
 export const notificationArrangements = {
-    infoAndWarning: { info: notificationType.confirmed, warning: notificationType.confirmed },
-    infoTransientAndWarning: { info: notificationType.transient, warning: notificationType.confirmed },
-    warningOnly: { info: notificationType.none, warning: notificationType.confirmed },
-    none: { info: notificationType.none, warning: notificationType.none }
+    infoAndWarning: { info: NOTIFICATION_TYPES.confirmed, warning: NOTIFICATION_TYPES.confirmed },
+    infoTransientAndWarning: { info: NOTIFICATION_TYPES.transient, warning: NOTIFICATION_TYPES.confirmed },
+    warningOnly: { info: NOTIFICATION_TYPES.none, warning: NOTIFICATION_TYPES.confirmed },
+    none: { info: NOTIFICATION_TYPES.none, warning: NOTIFICATION_TYPES.none }
 };
 
 const PLEASE_TRY_AGAIN = "Please try again.";
@@ -23,11 +23,11 @@ export const readList = ({notificationArrangement = notificationArrangements.war
   }
 });
 
-export const removeItem = ({notificationArrangement = notificationArrangements.infoAndWarning, details = null} = {}) => ({
+export const deleteItem = ({notificationArrangement = notificationArrangements.infoAndWarning, details = null} = {}) => ({
   notificationArrangement,
   text: {
-    ok: 'The item was removed successfully',
-    fail: 'The item was not removed. ' + (details ? details : PLEASE_TRY_AGAIN)
+    ok: 'The item was deleted successfully',
+    fail: 'The item was not deleted. ' + (details ? details : PLEASE_TRY_AGAIN)
   }
 });
 
@@ -39,6 +39,7 @@ export const readOne = ({notificationArrangement = notificationArrangements.warn
   }
 });
 
+
 export const readData = ({notificationArrangement = notificationArrangements.warningOnly, details = null} = {}) => ({
   notificationArrangement,
   text: {
@@ -47,10 +48,13 @@ export const readData = ({notificationArrangement = notificationArrangements.war
   }
 });
 
+export const INFO_FOR_USER_OK_DEFAULT = '[no message available (ok)]';
+export const INFO_FOR_USER_FAIL_DEFAULT = '[no message available (fail)]';
+
 export const INFO_FOR_USER_DEFAULT = {
     notificationArrangement: notificationArrangements.warningOnly,
     text: {
-        fail: '[no message available (fail)]',
-        ok: '[no message available (ok)]'
+        fail: INFO_FOR_USER_FAIL_DEFAULT,
+        ok: INFO_FOR_USER_OK_DEFAULT
     }
 };
