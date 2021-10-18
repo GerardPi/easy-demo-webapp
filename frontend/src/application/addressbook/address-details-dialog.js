@@ -1,12 +1,8 @@
 import {LitElement, html} from 'lit';
-import addressListStyle from './style';
-import store from '../../redux/store';
-import addressbookSelectors from '../../redux/addressbook/selectors';
-import addressbookActions from '../../redux/addressbook/actions';
 import { connect } from 'pwa-helpers';
-import * as userInfo from '../../redux/info-for-user';
-import * as commonUtils from '../../common-utils';
-import { ADDRESS_COLUMNS} from './columns';
+import store from '../../redux/store';
+import addressbookActions from '../../redux/addressbook/actions';
+import * as userFeedbacks from '../../redux/user-feedbacks';
 import '@kor-ui/kor/components/button';
 import '@kor-ui/kor/components/table';
 import '@kor-ui/kor/components/card';
@@ -51,20 +47,20 @@ export class AddressDetailsDialog extends connect(store)(LitElement) {
 
   remove() {
     console.log(`removing ${JSON.stringify(this.address)}`);
-    store.dispatch(addressbookActions.address.delete.command(this.address.id, this.address.etag, userInfo.deleteItem()));
+    store.dispatch(addressbookActions.address.delete.command(this.address.id, this.address.etag, userFeedbacks.deleteItem()));
     this.close();
   }
 
   _renderDetails() {
-      const address = this.address;
+      const { countryCode, city, postalCode, street, houseNumber, id, etag} = this.address;
       return html`
-          <kor-input label="Country code" value="${address.countryCode}" readonly></kor-input>
-          <kor-input label="City" value="${address.city}" readonly></kor-input>
-          <kor-input label="Postal code" value="${address.postalCode}" readonly></kor-input>
-          <kor-input label="Street" value="${address.street}" readonly></kor-input>
-          <kor-input label="Housenumber" value="${address.houseNumber}" readonly></kor-input>
-          <kor-input label="ID" value="${address.id}" readonly></kor-input>
-          <kor-input label="Entity tag" value="${address.etag}" readonly></kor-input>
+          <kor-input label="Country code" value="${countryCode}" readonly></kor-input>
+          <kor-input label="City" value="${city}" readonly></kor-input>
+          <kor-input label="Postal code" value="${postalCode}" readonly></kor-input>
+          <kor-input label="Street" value="${street}" readonly></kor-input>
+          <kor-input label="Housenumber" value="${houseNumber}" readonly></kor-input>
+          <kor-input label="ID" value="${id}" readonly></kor-input>
+          <kor-input label="Entity tag" value="${etag}" readonly></kor-input>
           `;
   }
 
@@ -76,8 +72,8 @@ export class AddressDetailsDialog extends connect(store)(LitElement) {
     return html`
       <kor-modal id="inner-modal" label="Address" height="500px">
         ${this._renderDetails()}
-        <kor-button slot="footer" color="secondary" icon="delete" @click="${(e) => this.remove()}"></kor-button>
-        <kor-button slot="footer" color="secondary" label="Close" @click="${(e) => this.close()}"></kor-button>
+        <kor-button slot="footer" color="secondary" icon="delete" @click="${this.remove}"></kor-button>
+        <kor-button slot="footer" color="secondary" label="Close" @click="${this.close}"></kor-button>
       </kor-modal>
     `;
   }

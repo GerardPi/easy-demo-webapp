@@ -12,7 +12,7 @@ export class EpicRegistry {
         return this._epic$.pipe(
             mergeMap(epic => epic(...args$)),
             catchError((error, source) => {
-                console.error('There was a RootEpic error: ' + error);
+                console.error(`There was a RootEpic error: ${JSON.stringify(error)}`);
                 return source;
             })
         );

@@ -19,7 +19,7 @@ export const readList = ({notificationArrangement = notificationArrangements.war
   notificationArrangement,
   text: {
     ok: 'The list was loaded successfully',
-    fail: 'The list could not be loaded from server. ' + (details ? details : PLEASE_TRY_AGAIN)
+    fail: `The list could not be loaded from server. ${details || PLEASE_TRY_AGAIN}`
   }
 });
 
@@ -27,7 +27,7 @@ export const deleteItem = ({notificationArrangement = notificationArrangements.i
   notificationArrangement,
   text: {
     ok: 'The item was deleted successfully',
-    fail: 'The item was not deleted. ' + (details ? details : PLEASE_TRY_AGAIN)
+    fail: `The item was not deleted. ${details || PLEASE_TRY_AGAIN}`
   }
 });
 
@@ -35,7 +35,7 @@ export const readOne = ({notificationArrangement = notificationArrangements.warn
   notificationArrangement,
   text: {
     ok: 'The item was loaded successfully',
-    fail: 'Item could not be loaded from server. ' + (details ? details : PLEASE_TRY_AGAIN)
+    fail: `Item could not be loaded from server. ${details || PLEASE_TRY_AGAIN}`
   }
 });
 
@@ -44,17 +44,17 @@ export const readData = ({notificationArrangement = notificationArrangements.war
   notificationArrangement,
   text: {
     ok: 'The data was loaded successfully',
-    fail: 'Data could not be loaded from server. ' + (details ? details : PLEASE_TRY_AGAIN)
+    fail: `Data could not be loaded from server. ${details || PLEASE_TRY_AGAIN}`
   }
 });
 
-export const INFO_FOR_USER_OK_DEFAULT = '[no message available (ok)]';
-export const INFO_FOR_USER_FAIL_DEFAULT = '[no message available (fail)]';
+export const USER_FEEDBACK_OK_DEFAULT = '[no message available (ok)]';
+export const USER_FEEDBACK_FAIL_DEFAULT = '[no message available (fail)]';
 
-export const INFO_FOR_USER_DEFAULT = {
+export const USER_FEEDBACK_DEFAULT = {
     notificationArrangement: notificationArrangements.warningOnly,
     text: {
-        fail: INFO_FOR_USER_FAIL_DEFAULT,
-        ok: INFO_FOR_USER_OK_DEFAULT
+        fail: USER_FEEDBACK_FAIL_DEFAULT,
+        ok: USER_FEEDBACK_OK_DEFAULT
     }
 };

@@ -10,7 +10,7 @@ const epics = {
     filter(action => reduxUtils.backendAction.fail.is(action)),
        map(action => {
          const commonFailCommand = reduxUtils.backendAction.fail.toCommand(action.type);
-         return commonActions.command.failed(commonFailCommand, action.payload.response, action.payload.infoForUser);
+         return commonActions.command.failed(commonFailCommand, action.payload.response, action.payload.userFeedback);
        })
      ),
 
@@ -18,7 +18,7 @@ const epics = {
     filter(action => reduxUtils.backendAction.ok.is(action)),
     map(action => {
       const commonOkCommand = reduxUtils.backendAction.ok.toCommand(action.type);
-      return commonActions.command.succeeded(commonOkCommand, action.payload.response, action.payload.infoForUser);
+      return commonActions.command.succeeded(commonOkCommand, action.payload.response, action.payload.userFeedback);
     })
   ),
 

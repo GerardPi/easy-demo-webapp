@@ -1,0 +1,27 @@
+{
+    "env": {
+        "browser": true,
+        "es2021": true
+    },
+    "extends": [
+      "@open-wc",
+      "prettier"
+    ],
+    "parserOptions": {
+        "ecmaVersion": 13,
+        "sourceType": "module"
+    },
+    "rules": {
+	"import/extensions": "off",
+	"class-methods-use-this": "off",
+	"no-console": "off",
+      "lines-between-class-members": "off",
+      "lit-a11y/alt-text": "off",
+      "yoda": "off",
+      "import/order": "off",
+      "no-unused-vars": "off",
+      "spaced-comment": "off",
+      "prefer-destructuring": "off",
+      "no-param-reassign": ["error", { "props": false }] //*  https://github.com/reduxjs/redux-toolkit/issues/521
+    }
+}

@@ -7,7 +7,7 @@ describe('backendServices', () => {
       window.backendUrlPrefix = urlPrefix;
   });
   it('createUrl', () => {
-    expect(sut.createUrl('/kaas')).to.be.equal(urlPrefix + '/' + 'kaas');
+    expect(sut.createUrl('/kaas')).to.be.equal(`${urlPrefix}/kaas`);
   });
   it ('toQueryArguments', () => {
     expect(sut.toQueryArguments({a: 1, b: 2})).to.be.equal('a=1&b=2');

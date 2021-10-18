@@ -1,10 +1,9 @@
 import {LitElement, html} from 'lit';
-import addressListStyle from './style';
 import { connect } from 'pwa-helpers';
+import store from '../../redux/store';
+import addressListStyle from './style';
 import addressbookSelectors from '../../redux/addressbook/selectors';
 import addressbookActions from '../../redux/addressbook/actions';
-import store from '../../redux/store';
-import * as userInfo from '../../redux/info-for-user';
 import * as commonUtils from '../../common-utils';
 import { ADDRESS_COLUMNS} from './columns';
 import '@kor-ui/kor/components/button';
@@ -85,13 +84,12 @@ export class AddressList extends connect(store)(LitElement) {
 
   renderBody(rows, columns) {
     if (commonUtils.isNotNullOrEmpty(rows)) {
-      return rows
-        .map((row) => html`<kor-table-row @click=${(e) => this._rowClicked(e, row)}>${this.renderColumns(row, columns)}</kor-table-row>`);
-    } else if (this.inProgress) {
-      return html`<kor-table-row><kor-table-cell grid-cols="7" alignment="center"><kor-spinner label="Loading..."></kor-spinner></kor-table-cell></kor-table-row>`;
-    } else {
-      return html`<kor-table-row><kor-table-cell>no data</kor-table-cell></kor-table-row>`;
+      return rows.map((row) => html`<kor-table-row @click=${(e) => this._rowClicked(e, row)}>${this.renderColumns(row, columns)}</kor-table-row>`);
     }
+    if (this.inProgress) {
+      return html`<kor-table-row><kor-table-cell grid-cols="7" alignment="center"><kor-spinner label="Loading..."></kor-spinner></kor-table-cell></kor-table-row>`;
+    }
+    return html`<kor-table-row><kor-table-cell>no data</kor-table-cell></kor-table-row>`;
   }
 
   refreshButtonClicked() {

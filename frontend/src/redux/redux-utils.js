@@ -1,12 +1,12 @@
 import * as commonUtils from '../common-utils';
-import * as userInfo from './info-for-user';
+import * as userFeedbacks from './user-feedbacks';
 import commonActions from './common/actions';
 
 const ACTION_SUFFIX = {
     command: '_CMD',
     commandRepeat: '_CMD_REPEAT',
-    ok: '_OK',
-    fail: '_FAIL'
+    ok: '_CMD_OK',
+    fail: '_CMD_FAIL'
 };
 
 export const backendAction = {
@@ -38,29 +38,27 @@ export const backendAction = {
     },
 };
 
-function getInfoForUser(commandAction) {
-  return commonUtils.isSubvalueNullOrEmpty(commandAction.payload, 'infoForUser')
-      ? userInfo.INFO_FOR_USER_DEFAULT
-      : commandAction.payload.infoForUser;
+function getUserFeedback(commandAction) {
+  return commonUtils.isSubvalueNullOrEmpty(commandAction.payload, 'userFeedback')
+      ? userFeedbacks.USER_FEEDBACK_DEFAULT
+      : commandAction.payload.userFeedback;
 }
 
 
-export function failureUserInfoFromCommandAction(commandAction, ticketId) {
-  const infoForUser = getInfoForUser(commandAction);
+export function failureUserFeedbackFromCommandAction(commandAction, ticketId) {
+  const userFeedback = getUserFeedback(commandAction);
   return {
-      notificationArrangement: infoForUser.notificationArrangement.warning,
-      text: infoForUser.text.fail,
-      commandType: commandAction.type,
+      notificationArrangement: userFeedback.notificationArrangement.warning,
+      text: userFeedback.text.fail,
       ticketId
   };
 }
 
-export function successUserInfoFromCommandAction(commandAction) {
-  const infoForUser = getInfoForUser(commandAction);
+export function successUserFeedbackFromCommandAction(commandAction) {
+  const userFeedback = getUserFeedback(commandAction);
   return {
-    notificationArrangement: infoForUser.notificationArrangement.info,
-    text: infoForUser.text.ok,
-    commandType: commandAction.type
+    notificationArrangement: userFeedback.notificationArrangement.info,
+    text: userFeedback.text.ok
   };
 }
 
@@ -78,12 +76,16 @@ function resolveErrorResponse(error) {
       const status = response.status;
       if (status === HTTP_STATUS_CODE.BAD_REQUEST) {
         return null;
-      } else if (status === HTTP_STATUS_CODE.PRECONDITION_FAILED) {
+      }
+
+      if (status === HTTP_STATUS_CODE.PRECONDITION_FAILED) {
         return { status, result: NO_DATA_AVAILABLE };
-      } else if (commonUtils.isSubvalueNotNullOrEmpty(response, 'data')) {
+      }
+
+      if (commonUtils.isSubvalueNotNullOrEmpty(response, 'data')) {
         const responseData = response.data;
         if (commonUtils.isSubvalueNotNullOrEmpty(responseData, 'id')) {
-          return { status, result: ERROR_ID, id: responseData.id };
+          return { status, result: 'ERROR_ID', id: responseData.id };
         }
         console.log('No response.data.id was available.');
       }
@@ -106,8 +108,8 @@ function problemTicketIdFromResponse(response) {
 export function createCommonSuccessAction(commandAction, someResponse) {
   console.log(`### createCommonSuccessAction ${JSON.stringify(commandAction)}`);
   const response = commonUtils.isNullOrEmpty(someResponse) ? RESPONSE_DEFAULT : someResponse;
-  const infoForUser = successUserInfoFromCommandAction(commandAction);
-  const result = commonActions.command.succeeded(commandAction.type, response, infoForUser);
+  const userFeedback = successUserFeedbackFromCommandAction(commandAction);
+  const result = commonActions.command.succeeded(commandAction.type, response, userFeedback);
   console.log(`### createCommonSuccessAction result ${JSON.stringify(result)}`);
   return result;
 }
@@ -115,9 +117,9 @@ export function createCommonSuccessAction(commandAction, someResponse) {
 export function createCommonFailureAction(commandAction, someError) {
   const response = commonUtils.isSubvalueNullOrEmpty(someError, 'response') ? RESPONSE_DEFAULT : someError.response;
   const ticketId = problemTicketIdFromResponse(response);
-  const infoForUser = failureUserInfoFromCommandAction(commandAction, ticketId);
+  const userFeedback = failureUserFeedbackFromCommandAction(commandAction, ticketId);
   const errorResponse = resolveErrorResponse(someError);
-  const result = commonActions.command.failed(commandAction.type, response, infoForUser, errorResponse);
+  const result = commonActions.command.failed(commandAction.type, response, userFeedback, errorResponse);
   console.log(`### createCommonFailureAction result ${JSON.stringify(result)}`);
   return result;
 }

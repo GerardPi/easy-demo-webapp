@@ -26,7 +26,7 @@ describe('common-utils', () => {
     expect(a).to.eql({a: 1, b:2, c: 3});
   });
   it ('objectWithout to result in a truncated object', () => {
-    let a = { a: 1, b: 2, c: 3};
+    const a = { a: 1, b: 2, c: 3};
     expect(commonUtils.objectWithout(a, 'b')).to.eql({ a: 1, c: 3});
     expect(a).to.eql({a: 1, b:2, c: 3});
     expect(commonUtils.objectWithout(a, 'a')).to.eql({ b: 2, c: 3});

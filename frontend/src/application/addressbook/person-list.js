@@ -2,11 +2,11 @@ import {LitElement, html} from 'lit';
 import personListStyle from './style';
 import store from '../../redux/store';
 import { connect } from 'pwa-helpers';
-import addressbookSelectors from '../../redux/personbook/selectors';
-import addressbookActions from '../../redux/personbook/actions';
-import * as userInfo from '../../redux/info-for-user';
+import addressbookSelectors from '../../redux/addressbook/selectors';
+import addressbookActions from '../../redux/addressbook/actions';
+import * as userFeedbacks from '../../redux/user-feedbacks';
 import * as commonUtils from '../../common-utils';
-import { PERON_COLUMNS} from './columns';
+import { PERSON_COLUMNS} from './columns';
 import '@kor-ui/kor/components/button';
 import '@kor-ui/kor/components/table';
 import '@kor-ui/kor/components/card';
@@ -78,11 +78,13 @@ export class PersonList extends connect(store)(LitElement) {
     if (commonUtils.isNotNullOrEmpty(rows)) {
       return rows
         .map((row) => html`<kor-table-row>${this.renderColumns(row, columns)}</kor-table-row>`);
-    } else if (this.inProgress) {
-      return html`<kor-table-row><kor-table-cell><img src="assets/loader-bar.gif" title="loading..."></kor-table-cell></kor-table-row>`;
-    } else {
-      return html`<kor-table-row><kor-table-cell>no data</kor-table-cell></kor-table-row>`;
     }
+
+    if (this.inProgress) {
+      return html`<kor-table-row><kor-table-cell><img src="assets/loader-bar.gif" title="loading..."></kor-table-cell></kor-table-row>`;
+    }
+
+    return html`<kor-table-row><kor-table-cell>no data</kor-table-cell></kor-table-row>`;
   }
   refreshButtonClicked() {
     this.refreshTable();

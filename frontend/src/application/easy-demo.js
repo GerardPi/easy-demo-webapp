@@ -1,7 +1,6 @@
 import { LitElement, html, css } from 'lit';
 import {mainStyle} from './style';
 import './components/easy-table';
-const logo = new URL('../../assets/open-wc-logo.svg', import.meta.url).href;
 import store from '../redux/store';
 import { connect } from 'pwa-helpers';
 import './addressbook/address-list';
@@ -13,6 +12,7 @@ import '@kor-ui/kor/components/nav-bar';
 import '@kor-ui/kor/components/tabs';
 import '@kor-ui/kor/components/icon';
 
+const logo = new URL('../../assets/open-wc-logo.svg', import.meta.url).href;
 
 export class EasyDemo extends connect(store)(LitElement) {
   static get properties() {

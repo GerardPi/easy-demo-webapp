@@ -3,15 +3,14 @@ import * as reduxObservable from 'redux-observable';
 import { reducerRegistry } from './reducer-registry';
 import { epicRegistry } from './epic-registry';
 import { actualBackend } from './backend/backend-services';
-
 import addressbookReducer from './addressbook/reducer';
-reducerRegistry.register("addressbook", addressbookReducer);
-
 import commonReducer from './common/reducer';
-reducerRegistry.register("common", commonReducer);
-
 import commonEpics from './common/epics';
 import addressbookEpics from './addressbook/epics';
+
+reducerRegistry.register("addressbook", addressbookReducer);
+reducerRegistry.register("common", commonReducer);
+
 const epicMiddleware = reduxObservable.createEpicMiddleware();
 
 const store = reduxToolkit.configureStore(
@@ -27,8 +26,6 @@ reducerRegistry.setChangeListener(rootReducer => store.replaceReducer(rootReduce
 
 epicMiddleware.run(epicRegistry.rootEpic.bind(epicRegistry));
 
-//console.log(`### addressbookEpics = ${Object.keys(addressbookEpics)}`);
-//console.log(`### commonEpics = ${Object.keys(commonEpics)}`);
 epicRegistry.register(Object.values(addressbookEpics));
 epicRegistry.register(Object.values(commonEpics));
 

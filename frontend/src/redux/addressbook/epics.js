@@ -10,7 +10,7 @@ const epics = {
   readAddress: (action$, state$) => action$.pipe(
       ofType(addressbookActions.address.read.command.type),
       mergeMap(action =>
-          from(addressbookServices.address.read(backendSvc, action.payload.id, action.payload.infoForUser))
+          from(addressbookServices.address.read(backendSvc, action.payload.id, action.payload.userFeedback))
             .pipe(
               map(response => addressbookActions.address.read.ok(response, reduxUtils.successFromCommandAction(action)))
           )
@@ -25,7 +25,8 @@ const epics = {
                     size: action.payload.pageSize
                 }))
             .pipe(
-              map(response => addressbookActions.address.readList.ok(response, reduxUtils.successUserInfoFromCommandAction(action))),
+              map(response => addressbookActions.address.readList
+                  .ok(response, reduxUtils.successUserFeedbackFromCommandAction(action))),
               catchError(error => from([reduxUtils.createCommonFailureAction(action, error)]))
             )
       )

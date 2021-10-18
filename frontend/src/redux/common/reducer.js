@@ -7,14 +7,14 @@ const INITIAL_VALUES = {
     commandTypesBusy: [],
     commandTypesInProgress: [],
     backendResults: {},
-    infoForUser: []
+    userFeedback: []
 };
 
 const INITIAL_STATE = {
     commandTypesBusy: INITIAL_VALUES.commandTypesBusy,
     commandTypesInProgress: INITIAL_VALUES.commandTypesInProgress,
     backendResults: INITIAL_VALUES.backendResults,
-    infoForUser: INITIAL_VALUES.infoForUser
+    userFeedback: INITIAL_VALUES.userFeedback
 };
 
 function createBackendResult(commandType, response, message, isSuccess) {
@@ -38,14 +38,6 @@ function createBackendError(commandType, response) {
     return createBackendResult(commandType, response, getErrorMessage(response), false);
 }
 
-function bla(cmdType, action) {
-    state.commandTypesInProgress = state.commandTypesInProgress.filter(type => type !== cmdType);
-    state.commandTypesBusy = state.commandTypesBusy.filter(type => type !== cmdType);
-    const result = createBackendSuccess(cmdType, action.payload.response);
-    state.backendResults = commonUtils.objectWith(state.backendResults, cmdType, result);
-    state.infoForUser = state.infoForUser.concat(action.payload.infoForUser);
-}
-
 const reducer = reduxToolkit.createReducer(
   INITIAL_STATE,
   (builder) => {
@@ -66,7 +58,7 @@ const reducer = reduxToolkit.createReducer(
         state.commandTypesBusy = state.commandTypesBusy.filter(type => type !== cmdType);
         const result = createBackendSuccess(cmdType, action.payload.response);
         state.backendResults = commonUtils.objectWith(state.backendResults, cmdType, result);
-        state.infoForUser = state.infoForUser.concat(action.payload.infoForUser);
+        state.userFeedback = state.userFeedback.concat(action.payload.userFeedback);
     })
     .addCase(commonActions.command.failed, (state, action) => {
         const cmdType = reduxUtils.backendAction.fail.toCommand(action.payload.commandType);
@@ -77,7 +69,7 @@ const reducer = reduxToolkit.createReducer(
         state.commandTypesBusy = state.commandTypesBusy.filter(type => type !== cmdType);
         const result = createBackendError(cmdType, action.payload.response);
         state.backendResults = commonUtils.objectWith(state.backendResults, cmdType, result);
-        state.infoForUser = state.infoForUser.concat(action.payload.infoForUser);
+        state.userFeedback = state.userFeedback.concat(action.payload.userFeedback);
     })
     .addMatcher(reduxUtils.backendAction.command.is, (state, action) => {
         const cmdType = action.type;

@@ -19,19 +19,14 @@ export const contentTypeOptions = {
 };
 
 export const actualBackend = {
-  performGet: (url) => {
-    return restApi.get(url).then(response => response.data);
-  },
-  performPost: (url) => { return restApi.post(url).then(response => response.data); },
-  performPostWithJsonBody: (url, jsonBody) => {
-    return restApi.post(url, jsonBody, contentTypeOptions.json.headers).then(response => response.data);
-  },
-  performPostWithFormData: (url, body) => {
-    return restApi.post(url, jsonBody, contentTypeOptions.formData).then(response => response.data);
-  },
-  performPutWithJsonBody: (url, jsonBody, etag) => {
-    return restApi.put(url, jsonBody, contentTypeOptions.json).then(response => response.data);
-  },
+  performGet: (url) => restApi.get(url).then(response => response.data),
+  performPost: (url) => restApi.post(url).then(response => response.data),
+  performPostWithJsonBody: (url, jsonBody) =>
+    restApi.post(url, jsonBody, contentTypeOptions.json.headers).then(response => response.data),
+  performPostWithFormData: (url, body) =>
+    restApi.post(url, body, contentTypeOptions.formData).then(response => response.data),
+  performPutWithJsonBody: (url, jsonBody, etag) =>
+    restApi.put(url, jsonBody, contentTypeOptions.json).then(response => response.data),
   performUpload: (url, uploadFile) => {
     const formData = new FormData();
     formData.append('multipartFile', uploadFile);
