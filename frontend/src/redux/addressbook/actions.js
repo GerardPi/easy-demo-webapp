@@ -2,7 +2,7 @@ import { ajax } from 'rxjs/ajax';
 import * as reduxUtils from '../redux-utils';
 import { createAction } from '@reduxjs/toolkit';
 import APP_DEFAULTS from '../../application-defaults';
-import * as userFeedbacks from '../user-feedbacks';
+import * as userFeedback from '../user-feedback';
 
 const actionTypePrefixes = {
     address: {
@@ -23,63 +23,61 @@ const actionTypePrefixes = {
 
 const address = {
     read: {
-        command: createAction(reduxUtils.backendAction.command.create(actionTypePrefixes.address.read),
-            (id, userFeedback) => ({payload: { id, userFeedback }})),
-        ok: createAction(reduxUtils.backendAction.ok.create(actionTypePrefixes.address.read),
-            (response, userFeedback) => ({payload: { response, userFeedback }})),
-        commandRepeat: createAction(reduxUtils.backendAction.commandRepeat.create(actionTypePrefixes.address.read))
+        command: createAction(reduxUtils.backendAction.command.createType(actionTypePrefixes.address.read),
+            (id, userFeedbackData) => ({payload: { id, userFeedbackData }})),
+        ok: createAction(reduxUtils.backendAction.ok.createType(actionTypePrefixes.address.read),
+            (response, meta) => ({payload: { response, meta }})),
+        commandRepeat: createAction(reduxUtils.backendAction.commandRepeat.createType(actionTypePrefixes.address.read))
     },
     readList: {
-        command: createAction(reduxUtils.backendAction.command.create(actionTypePrefixes.address.readList),
-            (pageIndex = APP_DEFAULTS.pageIndex, pageSize = APP_DEFAULTS.pageSize, userFeedback = userFeedbacks.INFO_FOR_USER_DEFAULT) =>
-                  ({payload: { pageIndex, pageSize, userFeedback }})),
-        ok: createAction(reduxUtils.backendAction.ok.create(actionTypePrefixes.address.readList),
-            (response, userFeedback) => {
-              console.log(`### actions.js address.readList.ok...`);
-              return {payload: { response, userFeedback}};
-            }),
-        commandRepeat: createAction(reduxUtils.backendAction.commandRepeat.create(actionTypePrefixes.address.readList))
+        command: createAction(reduxUtils.backendAction.command.createType(actionTypePrefixes.address.readList),
+            (pageIndex = APP_DEFAULTS.pageIndex, pageSize = APP_DEFAULTS.pageSize, userFeedbackData = userFeedback.USER_FEEDBACK_DATA_DEFAULT) =>
+                  ({payload: { pageIndex, pageSize, userFeedbackData }})),
+        ok: createAction(reduxUtils.backendAction.ok.createType(actionTypePrefixes.address.readList),
+            (response, meta) => ({payload: { response, meta}})),
+        commandRepeat: createAction(reduxUtils.backendAction.commandRepeat.createType(actionTypePrefixes.address.readList))
     },
     create: {
-        command: createAction(reduxUtils.backendAction.command.create(actionTypePrefixes.address.create),
-            userFeedback => ({payload: {userFeedback}}))
+        command: createAction(reduxUtils.backendAction.command.createType(actionTypePrefixes.address.create),
+            userFeedbackData => ({payload: {userFeedbackData}}))
     },
     update: {
-        command: createAction(reduxUtils.backendAction.command.create(actionTypePrefixes.address.update),
-            userFeedback => ({payload: {userFeedback}}))
+        command: createAction(reduxUtils.backendAction.command.createType(actionTypePrefixes.address.update),
+            userFeedbackData => ({payload: {userFeedbackData}}))
     },
     delete: {
-        command: createAction(reduxUtils.backendAction.command.create(actionTypePrefixes.address.delete),
-            (id, etag, userFeedback) => ({payload: {id, etag, userFeedback}}))
+        command: createAction(reduxUtils.backendAction.command.createType(actionTypePrefixes.address.delete),
+            (id, etag, userFeedbackData = userFeedback.USER_FEEDBACK_DATA_DEFAULT) =>
+                ({payload: {id, etag, userFeedbackData}}))
     }
 };
 
 const person = {
     read: {
-        command: createAction(reduxUtils.backendAction.command.create(actionTypePrefixes.person.read),
-            (id, userFeedback) => ({payload: { userFeedback}})),
-        ok: createAction(reduxUtils.backendAction.ok.create(actionTypePrefixes.person.read),
-            (response, userFeedback) => ({payload: { response, userFeedback}})),
-        commandRepeat: createAction(reduxUtils.backendAction.commandRepeat.create(actionTypePrefixes.person.read))
+        command: createAction(reduxUtils.backendAction.command.createType(actionTypePrefixes.person.read),
+            (id, userFeedbackData) => ({payload: { userFeedbackData}})),
+        ok: createAction(reduxUtils.backendAction.ok.createType(actionTypePrefixes.person.read),
+            (response, meta) => ({payload: { response, meta}})),
+        commandRepeat: createAction(reduxUtils.backendAction.commandRepeat.createType(actionTypePrefixes.person.read))
     },
     readList: {
-        command: createAction(reduxUtils.backendAction.command.create(actionTypePrefixes.person.readList),
-            (userFeedback, pageIndex = 0, pageSize = APP_DEFAULTS.pageSize) => ({payload: { userFeedback}})),
-        ok: createAction(reduxUtils.backendAction.ok.create(actionTypePrefixes.person.readList),
-            (response, userFeedback) => ({payload: { response, userFeedback}})),
-        commandRepeat: createAction(reduxUtils.backendAction.commandRepeat.create(actionTypePrefixes.person.readList))
+        command: createAction(reduxUtils.backendAction.command.createType(actionTypePrefixes.person.readList),
+            (userFeedbackData, pageIndex = 0, pageSize = APP_DEFAULTS.pageSize) => ({payload: { userFeedbackData}})),
+        ok: createAction(reduxUtils.backendAction.ok.createType(actionTypePrefixes.person.readList),
+            (response, meta) => ({payload: { response, meta}})),
+        commandRepeat: createAction(reduxUtils.backendAction.commandRepeat.createType(actionTypePrefixes.person.readList))
     },
     create: {
-        command: createAction(reduxUtils.backendAction.command.create(actionTypePrefixes.person.create),
-            userFeedback => ({payload: {userFeedback}}))
+        command: createAction(reduxUtils.backendAction.command.createType(actionTypePrefixes.person.create),
+            userFeedbackData => ({payload: {userFeedbackData}}))
     },
     update: {
-        command: createAction(reduxUtils.backendAction.command.create(actionTypePrefixes.person.update),
-            userFeedback => ({payload: {userFeedback}}))
+        command: createAction(reduxUtils.backendAction.command.createType(actionTypePrefixes.person.update),
+            userFeedbackData => ({payload: {userFeedbackData}}))
     },
     delete: {
-        command: createAction(reduxUtils.backendAction.command.create(actionTypePrefixes.person.delete),
-            userFeedback => ({payload: {userFeedback}}))
+        command: createAction(reduxUtils.backendAction.command.createType(actionTypePrefixes.person.delete),
+            userFeedbackData => ({payload: {userFeedbackData}}))
     }
 };
 

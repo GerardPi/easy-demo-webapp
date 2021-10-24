@@ -33,6 +33,7 @@ export const actualBackend = {
     return restApi.post(url, formData, contentTypeOptions.upload).then(response => response.data);
   },
   performDeleteWithTag: (url, etag) => {
+    commonUtils.assertNoNullOrEmptyValues({url, etag});
     const headers = {'If-Match': etag};
     console.log(`#### delete url=${JSON.stringify(url)} headers=${JSON.stringify(headers)}`);
     return restApi.head(url, { headers }).then((response) => response.data);

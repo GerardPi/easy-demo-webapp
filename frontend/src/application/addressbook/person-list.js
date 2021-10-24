@@ -4,7 +4,6 @@ import store from '../../redux/store';
 import { connect } from 'pwa-helpers';
 import addressbookSelectors from '../../redux/addressbook/selectors';
 import addressbookActions from '../../redux/addressbook/actions';
-import * as userFeedbacks from '../../redux/user-feedbacks';
 import * as commonUtils from '../../common-utils';
 import { PERSON_COLUMNS} from './columns';
 import '@kor-ui/kor/components/button';

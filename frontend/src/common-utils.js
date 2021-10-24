@@ -11,6 +11,7 @@ export function isNotNullOrEmpty(value) {
     return !ldLang.isNull(value) && !ldLang.isEmpty(value);
 }
 
+
 export function isSubvalueNullOrEmpty(value, propertyKey) {
     return (!ldObject.has(value, propertyKey)) || isNullOrEmpty(value[propertyKey]);
 }
@@ -51,4 +52,11 @@ export function objectWithout(object, propertyKey) {
 export function objectWith(object, path, value) {
     const result = ldLang.cloneDeep(object);
     return ldObject.set(result, path, value);
+}
+
+export function assertNoNullOrEmptyValues(keyValueMap) {
+  const nullValues = Object.keys(keyValueMap).filter(key => keyValueMap[key] === null);
+  if (Object.keys(nullValues).length > 0) {
+    throw `Missing arguments: ${JSON.stringify(nullValues)}`;
+  }
 }

@@ -2,7 +2,7 @@ import {LitElement, html} from 'lit';
 import { connect } from 'pwa-helpers';
 import store from '../../redux/store';
 import addressbookActions from '../../redux/addressbook/actions';
-import * as userFeedbacks from '../../redux/user-feedbacks';
+import * as userFeedback from '../../redux/user-feedback';
 import '@kor-ui/kor/components/button';
 import '@kor-ui/kor/components/table';
 import '@kor-ui/kor/components/card';
@@ -47,7 +47,7 @@ export class AddressDetailsDialog extends connect(store)(LitElement) {
 
   remove() {
     console.log(`removing ${JSON.stringify(this.address)}`);
-    store.dispatch(addressbookActions.address.delete.command(this.address.id, this.address.etag, userFeedbacks.deleteItem()));
+    store.dispatch(addressbookActions.address.delete.command(this.address.id, this.address.etag, userFeedback.deleteItem()));
     this.close();
   }
 

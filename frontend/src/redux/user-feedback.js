@@ -1,4 +1,9 @@
-
+/*
+This file contains user feedback data:
+  * declare how to notify a user (notification arrangements)
+  * structures to hold user feedback messages
+  * some generic feedback messages
+*/
 export const NOTIFICATION_TYPES = {
     custom: 'NOTIFY_TYPE_CUSTOM',
     confirmed: 'NOTIFY_TYPE_CONFIRMED',
@@ -48,13 +53,13 @@ export const readData = ({notificationArrangement = notificationArrangements.war
   }
 });
 
-export const USER_FEEDBACK_OK_DEFAULT = '[no message available (ok)]';
-export const USER_FEEDBACK_FAIL_DEFAULT = '[no message available (fail)]';
+export const USER_FEEDBACK_TEXT_OK_DEFAULT = '[no message available (ok)]';
+export const USER_FEEDBACK_TEXT_FAIL_DEFAULT = '[no message available (fail)]';
 
-export const USER_FEEDBACK_DEFAULT = {
+export const USER_FEEDBACK_DATA_DEFAULT = {
     notificationArrangement: notificationArrangements.warningOnly,
     text: {
-        fail: USER_FEEDBACK_FAIL_DEFAULT,
-        ok: USER_FEEDBACK_OK_DEFAULT
+        ok: USER_FEEDBACK_TEXT_OK_DEFAULT,
+        fail: USER_FEEDBACK_TEXT_FAIL_DEFAULT
     }
 };

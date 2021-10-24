@@ -51,4 +51,13 @@ describe('common-utils', () => {
     expect(commonUtils.arrayWithoutValue(a, 2)).to.eql([1, 3, 4]);
     expect(a).to.eql([1, 2, 3, 4]);
   });
+  it ('assertNoNullOrEmptyValues throws no exception when passing an object with non null values', () => {
+    const a = {b: 1, c: 2, d: 3 };
+    commonUtils.assertNoNullOrEmptyValues(a);
+    // No exception is thrown
+  });
+  it ('assertNoNullOrEmptyValues throws an exception when passing an object with a null value', () => {
+    const a = {b: 1, c: null, d: 3 };
+    expect(() => commonUtils.assertNoNullOrEmptyValues(a)).to.throw('Missing arguments: ["c"]');
+  });
 });

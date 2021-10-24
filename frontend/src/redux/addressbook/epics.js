@@ -12,7 +12,9 @@ const epics = {
       mergeMap(action =>
           from(addressbookServices.address.read(backendSvc, action.payload.id, action.payload.userFeedback))
             .pipe(
-              map(response => addressbookActions.address.read.ok(response, reduxUtils.successFromCommandAction(action)))
+              map(response => addressbookActions.address.read
+                  .ok(response, reduxUtils.createSuccessMetaData(action))),
+              catchError(error => of(reduxUtils.createCommonFailureAction(action, error)))
           )
       )
   ),
@@ -26,8 +28,8 @@ const epics = {
                 }))
             .pipe(
               map(response => addressbookActions.address.readList
-                  .ok(response, reduxUtils.successUserFeedbackFromCommandAction(action))),
-              catchError(error => from([reduxUtils.createCommonFailureAction(action, error)]))
+                  .ok(response, reduxUtils.createSuccessMetaData(action))),
+              catchError(error => of(reduxUtils.createCommonFailureAction(action, error)))
             )
       )
   ),
@@ -58,7 +60,7 @@ const epics = {
       ofType(addressbookActions.address.delete.command.type),
       mergeMap((action) => from(addressbookServices.address.delete(backendSvc, action.payload.id, action.payload.etag)).pipe(
             map((response) => reduxUtils.createCommonSuccessAction(action, response)),
-            catchError((error) => from([reduxUtils.createCommonFailureAction(action, error)])))
+            catchError((error) => of(reduxUtils.createCommonFailureAction(action, error))))
       )
   )
 };

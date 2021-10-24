@@ -1,5 +1,5 @@
 import * as commonUtils from '../common-utils';
-import * as userFeedbacks from './user-feedbacks';
+import * as userFeedback from './user-feedback';
 import commonActions from './common/actions';
 
 const ACTION_SUFFIX = {
@@ -11,26 +11,26 @@ const ACTION_SUFFIX = {
 
 export const backendAction = {
     command: {
-        create: prefix => prefix + ACTION_SUFFIX.command,
+        createType: prefix => prefix + ACTION_SUFFIX.command,
         is: action => commonUtils.endsWith(action.type, ACTION_SUFFIX.command),
         isType: actionType => commonUtils.endsWith(actionType, ACTION_SUFFIX.command),
         suffix: ACTION_SUFFIX.command
     },
     commandRepeat: {
-        create: prefix => prefix + ACTION_SUFFIX.commandRepeat,
+        createType: prefix => prefix + ACTION_SUFFIX.commandRepeat,
         is: action => commonUtils.endsWith(action.type, ACTION_SUFFIX.commandRepeat),
         isType: actionType => commonUtils.endsWith(actionType, ACTION_SUFFIX.commandRepeat),
         suffix: ACTION_SUFFIX.commandRepeat
     },
     ok: {
-        create: prefix => prefix + ACTION_SUFFIX.ok,
+        createType: prefix => prefix + ACTION_SUFFIX.ok,
         is: action => commonUtils.endsWith(action.type, ACTION_SUFFIX.ok),
         isType: actionType => commonUtils.endsWith(actionType, ACTION_SUFFIX.ok),
         suffix: ACTION_SUFFIX.ok,
         toCommand: actionType => actionType.substr(0, actionType.length - ACTION_SUFFIX.ok.length) + ACTION_SUFFIX.command
     },
     fail: {
-        create: prefix => prefix + ACTION_SUFFIX.fail,
+        createType: prefix => prefix + ACTION_SUFFIX.fail,
         is: action => commonUtils.endsWith(action.type, ACTION_SUFFIX.fail),
         isType: actionType => commonUtils.endsWith(actionType, ACTION_SUFFIX.fail),
         suffix: ACTION_SUFFIX.fail,
@@ -38,32 +38,40 @@ export const backendAction = {
     },
 };
 
-function getUserFeedback(commandAction) {
-  return commonUtils.isSubvalueNullOrEmpty(commandAction.payload, 'userFeedback')
-      ? userFeedbacks.USER_FEEDBACK_DEFAULT
-      : commandAction.payload.userFeedback;
+function getUserFeedbackData(commandAction) {
+  return commonUtils.isSubvalueNullOrEmpty(commandAction.payload, 'userFeedbackData')
+      ? userFeedback.USER_FEEDBACK_DATA_DEFAULT
+      : commandAction.payload.userFeedbackData;
 }
 
 
-export function failureUserFeedbackFromCommandAction(commandAction, ticketId) {
-  const userFeedback = getUserFeedback(commandAction);
+export function createFailureMetaData(commandAction, ticketId) {
+  const userFeedbackData = getUserFeedbackData(commandAction);
   return {
-      notificationArrangement: userFeedback.notificationArrangement.warning,
-      text: userFeedback.text.fail,
+    userFeedback: {
+      notificationArrangement: userFeedbackData.notificationArrangement.warning,
+      text: userFeedbackData.text.fail,
       ticketId
+    },
+    commandType: commandAction.type
   };
 }
 
-export function successUserFeedbackFromCommandAction(commandAction) {
-  const userFeedback = getUserFeedback(commandAction);
+export function createSuccessMetaData(commandAction) {
+  const userFeedbackData = getUserFeedbackData(commandAction);
   return {
-    notificationArrangement: userFeedback.notificationArrangement.info,
-    text: userFeedback.text.ok
+    userFeedback: {
+      notificationArrangement: userFeedbackData.notificationArrangement.info,
+      text: userFeedbackData.text.ok
+    },
+    commandType: commandAction.type
   };
 }
 
 const RESPONSE_DEFAULT = '[no response available]';
+const NO_TICKET_ID_AVAILABLE = '[no ticket ID available]';
 const NO_DATA_AVAILABLE = '[no data available]';
+
 const HTTP_STATUS_CODE = {
   BAD_REQUEST: 400,
   PRECONDITION_FAILED: 412
@@ -102,26 +110,21 @@ function problemTicketIdFromResponse(response) {
       return data.id;
     }
   }
-  return null;
+  return NO_TICKET_ID_AVAILABLE;
 }
 
 export function createCommonSuccessAction(commandAction, someResponse) {
-  console.log(`### createCommonSuccessAction ${JSON.stringify(commandAction)}`);
+  const meta = createSuccessMetaData(commandAction);
   const response = commonUtils.isNullOrEmpty(someResponse) ? RESPONSE_DEFAULT : someResponse;
-  const userFeedback = successUserFeedbackFromCommandAction(commandAction);
-  const result = commonActions.command.succeeded(commandAction.type, response, userFeedback);
-  console.log(`### createCommonSuccessAction result ${JSON.stringify(result)}`);
-  return result;
+  return commonActions.command.succeeded(commandAction.type, response, meta);
 }
 
 export function createCommonFailureAction(commandAction, someError) {
   const response = commonUtils.isSubvalueNullOrEmpty(someError, 'response') ? RESPONSE_DEFAULT : someError.response;
   const ticketId = problemTicketIdFromResponse(response);
-  const userFeedback = failureUserFeedbackFromCommandAction(commandAction, ticketId);
+  const meta = createFailureMetaData(commandAction, ticketId);
   const errorResponse = resolveErrorResponse(someError);
-  const result = commonActions.command.failed(commandAction.type, response, userFeedback, errorResponse);
-  console.log(`### createCommonFailureAction result ${JSON.stringify(result)}`);
-  return result;
+  return commonActions.command.failed(commandAction.type, response, meta, errorResponse);
 }
 
 
