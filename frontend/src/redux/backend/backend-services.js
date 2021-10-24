@@ -37,7 +37,6 @@ export const createBackend = (restApi) => ({
   performDeleteWithTag: (url, id, etag) => {
     commonUtils.assertNoNullOrEmptyValues({url, id, etag});
     const headers = { [IF_MATCH_HEADER]: etag};
-    console.log(`#### restApi=${JSON.stringify(restApi)}`);
     return restApi.delete(`${url}/${id}`, { headers }).then((response) => response.data);
   }
 });
