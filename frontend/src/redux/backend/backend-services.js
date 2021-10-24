@@ -1,7 +1,9 @@
 import { axios } from '@bundled-es-modules/axios';
 import * as commonUtils from '../../common-utils';
 
-export const restApi = axios.create({
+const IF_MATCH_HEADER = 'If-Match';
+
+export const realRestApi = axios.create({
   xsrfCookieName: 'XSRF-TOKEN',
   withCredentials: true
 });
@@ -18,7 +20,7 @@ export const contentTypeOptions = {
   upload: { headers: { headerNameContentType: undefined }}
 };
 
-export const actualBackend = {
+export const createBackend = (restApi) => ({
   performGet: (url) => restApi.get(url).then(response => response.data),
   performPost: (url) => restApi.post(url).then(response => response.data),
   performPostWithJsonBody: (url, jsonBody) =>
@@ -32,13 +34,15 @@ export const actualBackend = {
     formData.append('multipartFile', uploadFile);
     return restApi.post(url, formData, contentTypeOptions.upload).then(response => response.data);
   },
-  performDeleteWithTag: (url, etag) => {
-    commonUtils.assertNoNullOrEmptyValues({url, etag});
-    const headers = {'If-Match': etag};
-    console.log(`#### delete url=${JSON.stringify(url)} headers=${JSON.stringify(headers)}`);
-    return restApi.head(url, { headers }).then((response) => response.data);
+  performDeleteWithTag: (url, id, etag) => {
+    commonUtils.assertNoNullOrEmptyValues({url, id, etag});
+    const headers = { [IF_MATCH_HEADER]: etag};
+    console.log(`#### restApi=${JSON.stringify(restApi)}`);
+    return restApi.delete(`${url}/${id}`, { headers }).then((response) => response.data);
   }
-};
+});
+
+export const actualBackend = createBackend(realRestApi);
 
 export function createUrl (path) {
   return window.backendUrlPrefix + path;

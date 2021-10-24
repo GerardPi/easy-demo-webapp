@@ -6,7 +6,7 @@ import addressbookServices from '../backend/addressbook-services';
 import * as reduxUtils from '../redux-utils';
 import { actualBackend as backendSvc } from '../backend/backend-services';
 
-const epics = {
+export const createEpics = (backendSvc) => ({
   readAddress: (action$, state$) => action$.pipe(
       ofType(addressbookActions.address.read.command.type),
       mergeMap(action =>
@@ -58,11 +58,12 @@ const epics = {
 
   deleteAddress: (action$, state$) => action$.pipe(
       ofType(addressbookActions.address.delete.command.type),
+      tap(action => console.log(`### ${JSON.stringify(action)}`)),
       mergeMap((action) => from(addressbookServices.address.delete(backendSvc, action.payload.id, action.payload.etag)).pipe(
             map((response) => reduxUtils.createCommonSuccessAction(action, response)),
             catchError((error) => of(reduxUtils.createCommonFailureAction(action, error))))
       )
   )
-};
+});
 
-export default epics;
+export const epics = createEpics(backendSvc);

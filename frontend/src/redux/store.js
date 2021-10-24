@@ -6,7 +6,7 @@ import { actualBackend } from './backend/backend-services';
 import addressbookReducer from './addressbook/reducer';
 import commonReducer from './common/reducer';
 import commonEpics from './common/epics';
-import addressbookEpics from './addressbook/epics';
+import { epics as addressbookEpics } from './addressbook/epics';
 
 reducerRegistry.register("addressbook", addressbookReducer);
 reducerRegistry.register("common", commonReducer);

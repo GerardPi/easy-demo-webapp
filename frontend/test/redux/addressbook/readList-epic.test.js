@@ -1,7 +1,7 @@
 import { fixture, expect } from '@open-wc/testing';
 import '../../global-variables';
 
-import addressbookEpics from '../../../src/redux/addressbook/epics';
+import { epics as addressbookEpics } from '../../../src/redux/addressbook/epics';
 import addressbookActions from '../../../src/redux/addressbook/actions';
 import commonActions from '../../../src/redux/common/actions';
 import { actualBackend } from '../../../src/redux/backend/backend-services';
