@@ -8,15 +8,19 @@ import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.context.annotation.Bean;
 import org.springframework.core.env.Environment;
+import org.springframework.http.HttpMethod;
 import org.springframework.http.converter.HttpMessageConverter;
 import org.springframework.http.converter.json.MappingJackson2HttpMessageConverter;
 import org.springframework.web.servlet.config.annotation.CorsRegistry;
 import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
 
 import java.time.OffsetDateTime;
+import java.util.Arrays;
 import java.util.List;
 import java.util.UUID;
 import java.util.function.Supplier;
+import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 @SpringBootApplication
 public class DemoApplication implements WebMvcConfigurer {
@@ -39,8 +43,12 @@ public class DemoApplication implements WebMvcConfigurer {
         if (corsEnabled) {
             String corsPathPattern = "/**";
             String corsAllowedOrigins = "http://localhost:8000";
-            LOG.warn("!!! Added CORS maping for path pattern '{}' to allow origins '{}' !!!", corsPathPattern, corsAllowedOrigins);
-            registry.addMapping(corsPathPattern).allowedOrigins(corsAllowedOrigins).allowCredentials(true);
+            String[] corsAllowedMethods = Arrays.stream(HttpMethod.values()).map(Enum::name).toArray(String[]::new);
+            LOG.warn("!!! Added CORS maping for path pattern '{}' to allow origins '{}' and methods '{}' !!!", corsPathPattern, corsAllowedOrigins, corsAllowedMethods);
+            registry.addMapping(corsPathPattern)
+                    .allowedOrigins(corsAllowedOrigins)
+                    .allowCredentials(true)
+                    .allowedMethods(corsAllowedMethods);
         }
         WebMvcConfigurer.super.addCorsMappings(registry);
     }

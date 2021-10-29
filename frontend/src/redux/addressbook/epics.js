@@ -3,8 +3,15 @@ import { from, of } from 'rxjs';
 import { ofType  } from 'redux-observable';
 import addressbookActions from './actions';
 import addressbookServices from '../backend/addressbook-services';
+import addressbookSelectors from './selectors';
 import * as reduxUtils from '../redux-utils';
 import { actualBackend as backendSvc } from '../backend/backend-services';
+
+function createReadAddressListAction(state) {
+  const selectionData = addressbookSelectors.address.list.selectionData(state);
+  return addressbookActions.address.readList.command(selectionData.pageIndex, selectionData.pageSize);
+}
+
 
 export const createEpics = (backendSvc) => ({
   readAddress: (action$, state$) => action$.pipe(
@@ -37,9 +44,9 @@ export const createEpics = (backendSvc) => ({
   createAddress: (action$, state$) => action$.pipe(
       ofType(addressbookActions.address.create.command.type),
       mergeMap(action =>
-          from(addressbookServices.address.create(backendSvc, action.payload.address))
+          from(addressbookServices.address.create(backendSvc, action.payload.data))
             .pipe(
-              mergeMap(response => of(reduxUtils.createCommonSuccessAction(action))),
+              mergeMap(response => from([reduxUtils.createCommonSuccessAction(action), createReadAddressListAction(state$.value)])),
               catchError(error => of(reduxUtils.createCommonFailureAction(action, error)))
           )
       )
@@ -58,9 +65,8 @@ export const createEpics = (backendSvc) => ({
 
   deleteAddress: (action$, state$) => action$.pipe(
       ofType(addressbookActions.address.delete.command.type),
-      tap(action => console.log(`### ${JSON.stringify(action)}`)),
       mergeMap((action) => from(addressbookServices.address.delete(backendSvc, action.payload.id, action.payload.etag)).pipe(
-            map((response) => reduxUtils.createCommonSuccessAction(action, response)),
+            mergeMap((response) => from([reduxUtils.createCommonSuccessAction(action, response), createReadAddressListAction(state$.value)])),
             catchError((error) => of(reduxUtils.createCommonFailureAction(action, error))))
       )
   )

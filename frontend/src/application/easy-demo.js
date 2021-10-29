@@ -51,7 +51,6 @@ export class EasyDemo extends connect(store)(LitElement) {
   stateChanged(state) {
     this.isSomethingInProgress = commonSelectors.isSomethingInProgress(state);
     this.isSomethingBusy = commonSelectors.isSomethingBusy(state);
-    console.log(`## isSomethingInProgress: ${this.isSomethingInProgress}`);
     return this.requestUpdate();
   }
 

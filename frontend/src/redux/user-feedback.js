@@ -28,6 +28,14 @@ export const readList = ({notificationArrangement = notificationArrangements.war
   }
 });
 
+export const createItem = ({notificationArrangement = notificationArrangements.infoTransientAndWarning, details = null} = {}) => ({
+  notificationArrangement,
+  text: {
+    ok: 'The item was created successfully',
+    fail: `The item could not be created. ${details || PLEASE_TRY_AGAIN}`
+  }
+});
+
 export const deleteItem = ({notificationArrangement = notificationArrangements.infoAndWarning, details = null} = {}) => ({
   notificationArrangement,
   text: {

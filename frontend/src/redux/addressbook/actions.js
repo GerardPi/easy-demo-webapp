@@ -39,11 +39,11 @@ const address = {
     },
     create: {
         command: createAction(reduxUtils.backendAction.command.createType(actionTypePrefixes.address.create),
-            userFeedbackData => ({payload: {userFeedbackData}}))
+            (data, userFeedbackData) => ({payload: {data, userFeedbackData}}))
     },
     update: {
         command: createAction(reduxUtils.backendAction.command.createType(actionTypePrefixes.address.update),
-            userFeedbackData => ({payload: {userFeedbackData}}))
+            (data, etag, userFeedbackData) => ({payload: {data, etag, userFeedbackData}}))
     },
     delete: {
         command: createAction(reduxUtils.backendAction.command.createType(actionTypePrefixes.address.delete),
@@ -69,15 +69,15 @@ const person = {
     },
     create: {
         command: createAction(reduxUtils.backendAction.command.createType(actionTypePrefixes.person.create),
-            userFeedbackData => ({payload: {userFeedbackData}}))
+            (data, userFeedbackData) => ({payload: {data, userFeedbackData}}))
     },
     update: {
         command: createAction(reduxUtils.backendAction.command.createType(actionTypePrefixes.person.update),
-            userFeedbackData => ({payload: {userFeedbackData}}))
+            (id, etag, data, userFeedbackData) => ({payload: {id, etag, data, j0userFeedbackData}}))
     },
     delete: {
         command: createAction(reduxUtils.backendAction.command.createType(actionTypePrefixes.person.delete),
-            userFeedbackData => ({payload: {userFeedbackData}}))
+            (id, etag, userFeedbackData) => ({payload: {id, etag, userFeedbackData}}))
     }
 };
 

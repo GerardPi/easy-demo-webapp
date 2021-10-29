@@ -10,8 +10,10 @@ const INITIAL_VALUES = {
         },
         list: {
             items: [],
-            pageIndex: 0,
-            pageSize: applicationDefaults.pageSize
+            selectionData: {
+              pageIndex: 0,
+              pageSize: applicationDefaults.pageSize
+            }
         }
     }
 };
@@ -30,13 +32,13 @@ const reducer = reduxToolkit.createReducer(INITIAL_STATE, {
     },
     [addressbookActions.address.readList.command.type]: (state, action) => {
         state.address.list.items = INITIAL_VALUES.address.list.items;
-        state.address.list.pageIndex = action.payload.pageIndex;
-        state.address.list.pageSize = action.payload.pageSize;
+        state.address.list.selectionData.pageIndex = action.payload.pageIndex;
+        state.address.list.selectionData.pageSize = action.payload.pageSize;
     },
     [addressbookActions.address.readList.ok.type]: (state, action) => {
         state.address.list.items = action.payload.response.content;
-        state.address.list.pageIndex = action.payload.response.pageable.page;
-        state.address.list.pageSize = action.payload.response.pageable.size;
+        state.address.list.selectionData.pageIndex = action.payload.response.pageable.page;
+        state.address.list.selectionData.pageSize = action.payload.response.pageable.size;
     },
     [addressbookActions.person.read.command.type]: (state, action) => {
         state.person.one.item = INITIAL_VALUES.person.one.item;
@@ -47,13 +49,13 @@ const reducer = reduxToolkit.createReducer(INITIAL_STATE, {
     },
     [addressbookActions.person.readList.command.type]: (state, action) => {
         state.person.list.items = INITIAL_VALUES.person.list.items;
-        state.person.list.pageIndex = action.payload.pageIndex;
-        state.person.list.pageSize = action.payload.pageSize;
+        state.person.list.selectionData.pageIndex = action.payload.pageIndex;
+        state.person.list.selectionData.pageSize = action.payload.pageSize;
     },
     [addressbookActions.person.readList.ok.type]: (state, action) => {
         state.person.list.items = action.payload.response.content;
-        state.person.list.pageIndex = action.payload.response.pageable.page;
-        state.person.list.pageSize = action.payload.response.pageable.size;
+        state.person.list.selectionData.pageIndex = action.payload.response.pageable.page;
+        state.person.list.selectionData.pageSize = action.payload.response.pageable.size;
     }
 });
 

@@ -21,7 +21,9 @@ export const contentTypeOptions = {
 };
 
 export const createBackend = (restApi) => ({
-  performGet: (url) => restApi.get(url).then(response => response.data),
+  performGet: (url) => {
+    return restApi.get(url).then(response => response.data);
+  },
   performPost: (url) => restApi.post(url).then(response => response.data),
   performPostWithJsonBody: (url, jsonBody) =>
     restApi.post(url, jsonBody, contentTypeOptions.json.headers).then(response => response.data),

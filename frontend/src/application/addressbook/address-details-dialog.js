@@ -13,13 +13,6 @@ import '@kor-ui/kor/components/input';
 const EMPTY_ADDRESS = {};
 
 export class AddressDetailsDialog extends connect(store)(LitElement) {
-
-  static get properties() {
-    return {
-      address: {type: Object}
-    }
-  }
-
   constructor() {
    super();
    this.address = EMPTY_ADDRESS;
@@ -78,4 +71,9 @@ export class AddressDetailsDialog extends connect(store)(LitElement) {
     `;
   }
 }
+
+AddressDetailsDialog.properties = {
+  address: {type: Object}
+};
+
 customElements.define('address-details-dialog', AddressDetailsDialog);

@@ -9,6 +9,16 @@ const ACTION_SUFFIX = {
     fail: '_CMD_FAIL'
 };
 
+export function toCommandType(okOrFailType) {
+  if (okOrFailType.endsWith(ACTION_SUFFIX.fail)) {
+    return okOrFailType.substr(0, okOrFailType.length - ACTION_SUFFIX.fail.length) + ACTION_SUFFIX.command
+  }
+  if (okOrFailType.endsWith(ACTION_SUFFIX.ok)) {
+    return okOrFailType.substr(0, okOrFailType.length - ACTION_SUFFIX.ok.length) + ACTION_SUFFIX.command
+  }
+  throw `Command type to process must end with either '${ACTION_SUFFIX.fail}' or '${ACTION_SUFFIX.ok}'`;
+}
+
 export const backendAction = {
     command: {
         createType: prefix => prefix + ACTION_SUFFIX.command,
@@ -26,15 +36,13 @@ export const backendAction = {
         createType: prefix => prefix + ACTION_SUFFIX.ok,
         is: action => commonUtils.endsWith(action.type, ACTION_SUFFIX.ok),
         isType: actionType => commonUtils.endsWith(actionType, ACTION_SUFFIX.ok),
-        suffix: ACTION_SUFFIX.ok,
-        toCommand: actionType => actionType.substr(0, actionType.length - ACTION_SUFFIX.ok.length) + ACTION_SUFFIX.command
+        suffix: ACTION_SUFFIX.ok
     },
     fail: {
         createType: prefix => prefix + ACTION_SUFFIX.fail,
         is: action => commonUtils.endsWith(action.type, ACTION_SUFFIX.fail),
         isType: actionType => commonUtils.endsWith(actionType, ACTION_SUFFIX.fail),
-        suffix: ACTION_SUFFIX.fail,
-        toCommand: actionType => actionType.substr(0, actionType.length - ACTION_SUFFIX.fail.length) + ACTION_SUFFIX.command
+        suffix: ACTION_SUFFIX.fail
     },
 };
 
@@ -57,16 +65,6 @@ export function createFailureMetaData(commandAction, ticketId) {
   };
 }
 
-export function createSuccessMetaData(commandAction) {
-  const userFeedbackData = getUserFeedbackData(commandAction);
-  return {
-    userFeedback: {
-      notificationArrangement: userFeedbackData.notificationArrangement.info,
-      text: userFeedbackData.text.ok
-    },
-    commandType: commandAction.type
-  };
-}
 
 const RESPONSE_DEFAULT = '[no response available]';
 const NO_TICKET_ID_AVAILABLE = '[no ticket ID available]';
@@ -113,10 +111,21 @@ function problemTicketIdFromResponse(response) {
   return NO_TICKET_ID_AVAILABLE;
 }
 
+export function createSuccessMetaData(commandAction) {
+  const userFeedbackData = getUserFeedbackData(commandAction);
+  return {
+    userFeedback: {
+      notificationArrangement: userFeedbackData.notificationArrangement.info,
+      text: userFeedbackData.text.ok
+    },
+    commandType: commandAction.type
+  };
+}
+
 export function createCommonSuccessAction(commandAction, someResponse) {
   const meta = createSuccessMetaData(commandAction);
   const response = commonUtils.isNullOrEmpty(someResponse) ? RESPONSE_DEFAULT : someResponse;
-  return commonActions.command.succeeded(commandAction.type, response, meta);
+  return commonActions.command.succeeded(response, meta);
 }
 
 export function createCommonFailureAction(commandAction, someError) {
@@ -124,9 +133,11 @@ export function createCommonFailureAction(commandAction, someError) {
   const ticketId = problemTicketIdFromResponse(response);
   const meta = createFailureMetaData(commandAction, ticketId);
   const errorResponse = resolveErrorResponse(someError);
-  return commonActions.command.failed(commandAction.type, response, meta, errorResponse);
+  return commonActions.command.failed(response, meta, errorResponse);
 }
 
+export function createRepeatAction(commandAction, currentS) {
+}
 
 export function isInProgress(commandType, state) {
     if (commonUtils.containsPropertyWithKey(state, 'inProgress')) {

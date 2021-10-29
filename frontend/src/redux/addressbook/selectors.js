@@ -8,6 +8,7 @@ const selectors = {
     },
     list: {
       items: state => state.addressbook.address.list.items,
+      selectionData: state => state.addressbook.address.list.selectionData,
       inProgress: state => commonSelectors.isCommandTypeInProgress(state, addressbookActions.address.readList.command.type)
     }
   },
@@ -16,7 +17,9 @@ const selectors = {
       item: state => state.addressbook.person.one.item,
     },
     list: {
-      items: state => state.addressbook.person.list.items
+      items: state => state.addressbook.person.list.items,
+      selectionData: state => state.addressbook.person.list.selectionData,
+      inProgress: state => commonSelectors.isCommandTypeInProgress(state, addressbookActions.person.readList.command.type)
     }
   }
 }
