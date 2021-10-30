@@ -12,7 +12,6 @@ function createReadAddressListAction(state) {
   return addressbookActions.address.readList.command(selectionData.pageIndex, selectionData.pageSize);
 }
 
-
 export const createEpics = (backendSvc) => ({
   readAddress: (action$, state$) => action$.pipe(
       ofType(addressbookActions.address.read.command.type),
@@ -55,9 +54,9 @@ export const createEpics = (backendSvc) => ({
   updateAddress: (action$, state$) => action$.pipe(
       ofType(addressbookActions.address.update.command.type),
       mergeMap(action =>
-          from(addressbookServices.address.update(backendSvc, action.payload.address))
+          from(addressbookServices.address.update(backendSvc, action.payload.id, address.payload.etag, action.payload.data))
             .pipe(
-              mergeMap(response => of(reduxUtils.createCommonSuccessAction(action))),
+              mergeMap(response => from([reduxUtils.createCommonSuccessAction(action), createReadAddressListAction(state$.value)])),
               catchError(error => of(reduxUtils.createCommonFailureAction(action, error)))
           )
       )

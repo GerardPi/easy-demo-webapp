@@ -13,8 +13,7 @@ import '@kor-ui/kor/components/spinner';
 import '@kor-ui/kor/components/modal';
 import '@kor-ui/kor/components/checkbox';
 import '@kor-ui/kor/components/input';
-import './address-details-dialog';
-import './address-edit-dialog';
+import './address-dialog';
 
 export class AddressList extends connect(store)(LitElement) {
 
@@ -70,17 +69,15 @@ export class AddressList extends connect(store)(LitElement) {
   }
 
   _rowClicked(event, row) {
-    this._addressDetailsDialog.open(row);
-  }
-  _addButtonClicked() {
-    this._addressEditDialog.openForAddition();
+    this._addressDialog.openForView(row);
   }
 
-  get _addressDetailsDialog() {
-    return this.renderRoot.querySelector('#address-details-dialog');
+  _addButtonClicked() {
+    this._addressDialog.openForAddition();
   }
-  get _addressEditDialog() {
-    return this.renderRoot.querySelector('#address-edit-dialog');
+
+  get _addressDialog() {
+    return this.renderRoot.querySelector('address-dialog');
   }
 
   renderBody(rows, columns) {
@@ -98,18 +95,15 @@ export class AddressList extends connect(store)(LitElement) {
   }
   render() {
     return html`
-    <div>
       <kor-card icon="house" label="Addresses">
         <kor-button slot="functions" @click=${this.refreshButtonClicked} icon="refresh" color="secondary" title="Refresh"></kor-button>
         <kor-button slot="functions" @click=${this._addButtonClicked} icon="add" color="secondary" title="Add"></kor-button>
-        <kor-table columns="repeat(${this.columns.length - 2}, 1fr)">
+        <kor-table condensed columns="repeat(${this.columns.length - 2}, 1fr)">
           ${this.renderHeader(this.columns)}
           ${this.renderBody(this.items, this.columns)}
         <kor-table>
       </kor-card>
-    </div>
-    <address-details-dialog id="address-details-dialog"></address-details-dialog>
-    <address-edit-dialog id="address-edit-dialog"></address-edit-dialog>
+    <address-dialog></address-dialog>
     `;
   }
 }

@@ -1,6 +1,5 @@
 import { LitElement, html, css } from 'lit';
 import {mainStyle} from './style';
-import './components/easy-table';
 import store from '../redux/store';
 import { connect } from 'pwa-helpers';
 import './addressbook/address-list';
