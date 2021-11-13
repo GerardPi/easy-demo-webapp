@@ -20,8 +20,7 @@ export const contentTypeOptions = {
   upload: { headers: { headerNameContentType: undefined }}
 };
 
-export const createBackend = (restApi) => {
-  return {
+export const createBackend = (restApi) => ({
     performGet: (url) => restApi.get(url).then(response => response.data),
     performPost: (url) => restApi.post(url).then(response => response.data),
     performPostWithJsonBody: (url, jsonBody) =>
@@ -40,8 +39,7 @@ export const createBackend = (restApi) => {
       const headers = { [IF_MATCH_HEADER]: etag};
       return restApi.delete(`${url}/${id}`, { headers }).then((response) => response.data);
     }
-  };
-};
+});
 
 export const actualBackend = createBackend(realRestApi);
 
