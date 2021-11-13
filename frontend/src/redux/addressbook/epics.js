@@ -64,9 +64,7 @@ export const createEpics = (backendSvc) => ({
 
   deleteAddress: (action$, state$) => action$.pipe(
       ofType(addressbookActions.address.delete.command.type),
-      tap(action => console.log(`#### action=${JSON.stringify(action)}`)),
       mergeMap((action) => from(addressbookServices.address.delete(backendSvc, action.payload.id, action.payload.etag)).pipe(
-            tap(r => console.log(`#### r=${JSON.stringify(r)}`)),
             mergeMap((response) => from([reduxUtils.createCommonSuccessAction(action, response), createReadAddressListAction(state$.value)])),
             catchError((error) => of(reduxUtils.createCommonFailureAction(action, error))))
       )

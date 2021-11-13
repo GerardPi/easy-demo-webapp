@@ -2,20 +2,7 @@ import * as reduxToolkit from "@reduxjs/toolkit";
 import commonActions from './actions';
 import * as reduxUtils from '../redux-utils';
 import * as commonUtils from '../../common-utils';
-
-const INITIAL_VALUES = {
-    commandTypesBusy: [],
-    commandTypesInProgress: [],
-    backendResults: {},
-    userFeedback: []
-};
-
-const INITIAL_STATE = {
-    commandTypesBusy: INITIAL_VALUES.commandTypesBusy,
-    commandTypesInProgress: INITIAL_VALUES.commandTypesInProgress,
-    backendResults: INITIAL_VALUES.backendResults,
-    userFeedback: INITIAL_VALUES.userFeedback
-};
+import { INITIAL_STATE, INITIAL_VALUES } from './initial';
 
 function createBackendResult(commandType, response, message, isSuccess) {
     return {

@@ -21,7 +21,6 @@ export const contentTypeOptions = {
 };
 
 export const createBackend = (restApi) => {
-  console.log(`##  1 restApi=${JSON.stringify(restApi)}`);
   return {
     performGet: (url) => restApi.get(url).then(response => response.data),
     performPost: (url) => restApi.post(url).then(response => response.data),
@@ -39,10 +38,7 @@ export const createBackend = (restApi) => {
     performDeleteWithTag: (url, id, etag) => {
       commonUtils.assertNoNullOrEmptyValues({url, id, etag});
       const headers = { [IF_MATCH_HEADER]: etag};
-      console.log(`## url=${url} id=${id} etag=${etag} headers=${JSON.stringify(headers)}`);
-      const result =  restApi.delete(`${url}/${id}`, { headers }).then((response) => response.data);
-      console.log(`## after that call### restApi=${JSON.stringify(restApi)} result=${JSON.stringify(result)}`);
-      return result;
+      return restApi.delete(`${url}/${id}`, { headers }).then((response) => response.data);
     }
   };
 };

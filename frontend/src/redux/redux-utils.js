@@ -125,7 +125,8 @@ export function createSuccessMetaData(commandAction) {
 export function createCommonSuccessAction(commandAction, someResponse) {
   const meta = createSuccessMetaData(commandAction);
   const response = commonUtils.isNullOrEmpty(someResponse) ? RESPONSE_DEFAULT : someResponse;
-  return commonActions.command.succeeded(response, meta);
+  const result = commonActions.command.succeeded(response, meta);
+  return result;
 }
 
 export function createCommonFailureAction(commandAction, someError) {
