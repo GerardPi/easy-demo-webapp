@@ -16,6 +16,10 @@ import sinon from 'sinon';
 
 describe('addressbook delete epic', () => {
   const sandbox = sinon.createSandbox();
+  const axiosForTest = {
+    delete: (a) => {}
+  };
+  console.log(` 1 axios=${JSON.stringify(axiosForTest)}`);
 
 
   let stubbedBackendSvc;
@@ -23,9 +27,6 @@ describe('addressbook delete epic', () => {
   afterEach(() => {
     sandbox.restore();
   });
-  function createMockResponse(response) {
-    return new Promise((r) => r (response));
-  }
   it('address.delete success', (done) => {
     console.log('### TEST address.delete success');
     // Given
@@ -34,8 +35,10 @@ describe('addressbook delete epic', () => {
     const givenAction = addressbookActions.address.delete.command(addressId, addressEtag);
     const action$ = rxjs.of(givenAction);
     const state$ = rxjs.of({});
-    const stubbedAxios = sandbox.stub(axios, 'delete').returns(createMockResponse({}));
-    const backend = createBackend(axios);
+    const resolvedResponse = new Promise((r) => r({}));
+    const stubbedAxios = sandbox.stub(axiosForTest, 'delete').returns(resolvedResponse);
+    console.log(`axios=${JSON.stringify(axiosForTest)}`);
+    const backend = createBackend(axiosForTest);
     const addressbookEpics = createAddressbookEpics(backend);
     // When
     const actualAction$ = addressbookEpics.deleteAddress(action$, state$);

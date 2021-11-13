@@ -57,6 +57,6 @@ export function objectWith(object, path, value) {
 export function assertNoNullOrEmptyValues(keyValueMap) {
   const nullValues = Object.keys(keyValueMap).filter(key => keyValueMap[key] === null);
   if (Object.keys(nullValues).length > 0) {
-    throw `Missing arguments: ${JSON.stringify(nullValues)}`;
+    throw new Error(`Missing arguments: ${JSON.stringify(nullValues)}`);
   }
 }

@@ -66,7 +66,7 @@ const reducer = reduxToolkit.createReducer(
         state.commandTypesInProgress = state.commandTypesInProgress.filter(type => type !== cmdType);
         state.commandTypesBusy = state.commandTypesBusy.filter(type => type !== cmdType);
         const result = createBackendSuccess(cmdType, action.payload.response);
-        state.backendResults = state.backendResults[cmdType] = result;
+        state.backendResults[cmdType] = result;
         state.userFeedback.push(action.payload.meta.userFeedback);
     })
     .addMatcher(isFailureAction, (state, action) => {
@@ -74,7 +74,7 @@ const reducer = reduxToolkit.createReducer(
         state.commandTypesInProgress = state.commandTypesInProgress.filter(type => type !== cmdType);
         state.commandTypesBusy = state.commandTypesBusy.filter(type => type !== cmdType);
         const result = createBackendError(cmdType, action.payload.response);
-        state.backendResults = state.backendResults[cmdType] = result;
+        state.backendResults[cmdType] = result;
         state.userFeedback.push(action.payload.meta.userFeedback);
     })
     .addMatcher(reduxUtils.backendAction.command.is, (state, action) => {

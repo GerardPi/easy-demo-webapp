@@ -16,7 +16,7 @@ export function toCommandType(okOrFailType) {
   if (okOrFailType.endsWith(ACTION_SUFFIX.ok)) {
     return okOrFailType.substr(0, okOrFailType.length - ACTION_SUFFIX.ok.length) + ACTION_SUFFIX.command
   }
-  throw `Command type to process must end with either '${ACTION_SUFFIX.fail}' or '${ACTION_SUFFIX.ok}'`;
+  throw new Error(`Command type to process must end with either '${ACTION_SUFFIX.fail}' or '${ACTION_SUFFIX.ok}'`);
 }
 
 export const backendAction = {

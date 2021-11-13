@@ -73,7 +73,7 @@ const person = {
     },
     update: {
         command: createAction(reduxUtils.backendAction.command.createType(actionTypePrefixes.person.update),
-            (id, etag, data, userFeedbackData) => ({payload: {id, etag, data, j0userFeedbackData}}))
+            (id, etag, data, userFeedbackData) => ({payload: {id, etag, data, userFeedbackData}}))
     },
     delete: {
         command: createAction(reduxUtils.backendAction.command.createType(actionTypePrefixes.person.delete),

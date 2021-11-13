@@ -5,7 +5,7 @@ import addressbookActions from './actions';
 import addressbookServices from '../backend/addressbook-services';
 import addressbookSelectors from './selectors';
 import * as reduxUtils from '../redux-utils';
-import { actualBackend as backendSvc } from '../backend/backend-services';
+import { actualBackend } from '../backend/backend-services';
 
 function createReadAddressListAction(state) {
   const selectionData = addressbookSelectors.address.list.selectionData(state);
@@ -54,7 +54,7 @@ export const createEpics = (backendSvc) => ({
   updateAddress: (action$, state$) => action$.pipe(
       ofType(addressbookActions.address.update.command.type),
       mergeMap(action =>
-          from(addressbookServices.address.update(backendSvc, action.payload.id, address.payload.etag, action.payload.data))
+          from(addressbookServices.address.update(backendSvc, action.payload.id, action.payload.etag, action.payload.data))
             .pipe(
               mergeMap(response => from([reduxUtils.createCommonSuccessAction(action), createReadAddressListAction(state$.value)])),
               catchError(error => of(reduxUtils.createCommonFailureAction(action, error)))
@@ -64,11 +64,13 @@ export const createEpics = (backendSvc) => ({
 
   deleteAddress: (action$, state$) => action$.pipe(
       ofType(addressbookActions.address.delete.command.type),
+      tap(action => console.log(`#### action=${JSON.stringify(action)}`)),
       mergeMap((action) => from(addressbookServices.address.delete(backendSvc, action.payload.id, action.payload.etag)).pipe(
+            tap(r => console.log(`#### r=${JSON.stringify(r)}`)),
             mergeMap((response) => from([reduxUtils.createCommonSuccessAction(action, response), createReadAddressListAction(state$.value)])),
             catchError((error) => of(reduxUtils.createCommonFailureAction(action, error))))
       )
   )
 });
 
-export const epics = createEpics(backendSvc);
+export const epics = createEpics(actualBackend);

@@ -20,28 +20,32 @@ export const contentTypeOptions = {
   upload: { headers: { headerNameContentType: undefined }}
 };
 
-export const createBackend = (restApi) => ({
-  performGet: (url) => {
-    return restApi.get(url).then(response => response.data);
-  },
-  performPost: (url) => restApi.post(url).then(response => response.data),
-  performPostWithJsonBody: (url, jsonBody) =>
-    restApi.post(url, jsonBody, contentTypeOptions.json.headers).then(response => response.data),
-  performPostWithFormData: (url, body) =>
-    restApi.post(url, body, contentTypeOptions.formData).then(response => response.data),
-  performPutWithJsonBody: (url, jsonBody, etag) =>
-    restApi.put(url, jsonBody, contentTypeOptions.json).then(response => response.data),
-  performUpload: (url, uploadFile) => {
-    const formData = new FormData();
-    formData.append('multipartFile', uploadFile);
-    return restApi.post(url, formData, contentTypeOptions.upload).then(response => response.data);
-  },
-  performDeleteWithTag: (url, id, etag) => {
-    commonUtils.assertNoNullOrEmptyValues({url, id, etag});
-    const headers = { [IF_MATCH_HEADER]: etag};
-    return restApi.delete(`${url}/${id}`, { headers }).then((response) => response.data);
-  }
-});
+export const createBackend = (restApi) => {
+  console.log(`##  1 restApi=${JSON.stringify(restApi)}`);
+  return {
+    performGet: (url) => restApi.get(url).then(response => response.data),
+    performPost: (url) => restApi.post(url).then(response => response.data),
+    performPostWithJsonBody: (url, jsonBody) =>
+      restApi.post(url, jsonBody, contentTypeOptions.json.headers).then(response => response.data),
+    performPostWithFormData: (url, body) =>
+      restApi.post(url, body, contentTypeOptions.formData).then(response => response.data),
+    performPutWithJsonBody: (url, jsonBody, etag) =>
+      restApi.put(url, jsonBody, contentTypeOptions.json).then(response => response.data),
+    performUpload: (url, uploadFile) => {
+      const formData = new FormData();
+      formData.append('multipartFile', uploadFile);
+      return restApi.post(url, formData, contentTypeOptions.upload).then(response => response.data);
+    },
+    performDeleteWithTag: (url, id, etag) => {
+      commonUtils.assertNoNullOrEmptyValues({url, id, etag});
+      const headers = { [IF_MATCH_HEADER]: etag};
+      console.log(`## url=${url} id=${id} etag=${etag} headers=${JSON.stringify(headers)}`);
+      const result =  restApi.delete(`${url}/${id}`, { headers }).then((response) => response.data);
+      console.log(`## after that call### restApi=${JSON.stringify(restApi)} result=${JSON.stringify(result)}`);
+      return result;
+    }
+  };
+};
 
 export const actualBackend = createBackend(realRestApi);
 
