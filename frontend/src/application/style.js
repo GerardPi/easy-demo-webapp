@@ -1,8 +1,7 @@
 import { LitElement, html, css } from 'lit';
 
-export const mainStyle=css`
-    `;
-    /*
+export const mainStyle = css``;
+/*
       :host {
         min-height: 100vh;
         display: flex;

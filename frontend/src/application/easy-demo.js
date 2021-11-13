@@ -1,5 +1,5 @@
 import { LitElement, html, css } from 'lit';
-import {mainStyle} from './style';
+import { mainStyle } from './style';
 import store from '../redux/store';
 import { connect } from 'pwa-helpers';
 import './addressbook/address-list';
@@ -17,10 +17,10 @@ export class EasyDemo extends connect(store)(LitElement) {
   static get properties() {
     return {
       title: { type: String },
-      columns: { type: Array},
-      contents: { type: Object},
-      isSomethingInProgress: { type: Boolean},
-      isSomethingBusy: { type: Boolean},
+      columns: { type: Array },
+      contents: { type: Object },
+      isSomethingInProgress: { type: Boolean },
+      isSomethingBusy: { type: Boolean },
     };
   }
 
@@ -34,15 +34,15 @@ export class EasyDemo extends connect(store)(LitElement) {
     this.isSomethingBusy = false;
     this.title = 'My app';
     this.tableColumns = [
-      { name: 'First', path: 'first'},
-      { name: 'Last', path: 'last'},
-      { name: 'Date of birth', path: 'dateOfBirth'}
+      { name: 'First', path: 'first' },
+      { name: 'Last', path: 'last' },
+      { name: 'Date of birth', path: 'dateOfBirth' },
     ];
     this.tableData = {
       rows: [
-        { first: 'A', last: 'B', dateOfBirth: '2001-01-22'},
-        { first: 'C', last: 'D', dateOfBirth: '2001-02-22'},
-        { first: 'E', last: 'F', dateOfBirth: '2001-03-22'}
+        { first: 'A', last: 'B', dateOfBirth: '2001-01-22' },
+        { first: 'C', last: 'D', dateOfBirth: '2001-02-22' },
+        { first: 'E', last: 'F', dateOfBirth: '2001-03-22' },
       ],
     };
   }
@@ -55,7 +55,12 @@ export class EasyDemo extends connect(store)(LitElement) {
 
   renderSomethingIsInProgress() {
     if (this.isSomethingBusy) {
-      return html`<div slot="functions"><img src="assets/loader-arrow-circle.gif" title="Something is being loaded..."></div>`;
+      return html`<div slot="functions">
+        <img
+          src="assets/loader-arrow-circle.gif"
+          title="Something is being loaded..."
+        />
+      </div>`;
     }
     return html`<div slot="functions"></div>`;
   }
@@ -65,32 +70,38 @@ export class EasyDemo extends connect(store)(LitElement) {
   }
 
   _addressTabClicked(event) {
-    console.log("_addressTabClicked");
+    console.log('_addressTabClicked');
   }
 
   _personTabClicked(event) {
-    console.log("_personTabClicked");
+    console.log('_personTabClicked');
   }
-
 
   render() {
     return html`
-    <kor-page flex-direction="column">
-      <kor-app-bar slot="top" label="Easy Demo">
-        ${this.renderSomethingIsInProgress()}
-      </kor-app-bar>
-      <kor-nav-bar slot="top">
-        <kor-tabs>
-          <kor-tab-item label="Addresses" @click=${this._addressTabClicked} active></kor-tab-item>
-          <kor-tab-item label="Persons" @click=${this._personTabClicked} ></kor-tab-item>
-        </kor-tabs>
-        <!--
+      <kor-page flex-direction="column">
+        <kor-app-bar slot="top" label="Easy Demo">
+          ${this.renderSomethingIsInProgress()}
+        </kor-app-bar>
+        <kor-nav-bar slot="top">
+          <kor-tabs>
+            <kor-tab-item
+              label="Addresses"
+              @click=${this._addressTabClicked}
+              active
+            ></kor-tab-item>
+            <kor-tab-item
+              label="Persons"
+              @click=${this._personTabClicked}
+            ></kor-tab-item>
+          </kor-tabs>
+          <!--
         <kor-icon icon="launch" button slot="functions"></kor-icon>
         <kor-icon icon="more_vert" button slot="functions"></kor-icon>
         -->
-      </kor-nav-bar>
-      <address-list></address-list>
-    </kor-page>
+        </kor-nav-bar>
+        <address-list></address-list>
+      </kor-page>
     `;
   }
 }

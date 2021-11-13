@@ -8,21 +8,20 @@ import commonReducer from './common/reducer';
 import commonEpics from './common/epics';
 import { epics as addressbookEpics } from './addressbook/epics';
 
-reducerRegistry.register("addressbook", addressbookReducer);
-reducerRegistry.register("common", commonReducer);
+reducerRegistry.register('addressbook', addressbookReducer);
+reducerRegistry.register('common', commonReducer);
 
 const epicMiddleware = reduxObservable.createEpicMiddleware();
 
-const store = reduxToolkit.configureStore(
-    {
-        reducer: reducerRegistry.getRootReducer(),
-        middleware: [epicMiddleware],
-        devTools: true
+const store = reduxToolkit.configureStore({
+  reducer: reducerRegistry.getRootReducer(),
+  middleware: [epicMiddleware],
+  devTools: true,
+});
 
-    }
+reducerRegistry.setChangeListener(rootReducer =>
+  store.replaceReducer(rootReducer)
 );
-
-reducerRegistry.setChangeListener(rootReducer => store.replaceReducer(rootReducer));
 
 epicMiddleware.run(epicRegistry.rootEpic.bind(epicRegistry));
 
