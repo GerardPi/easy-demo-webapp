@@ -40,7 +40,7 @@ describe('addressbook epics', () => {
       expect(actualAction.payload.meta.commandType).to.be.equal(givenAction.type);
       expect(actualAction.payload.response).to.be.equal(mockResponse);
       expect(actualAction.payload.meta.userFeedback.notificationArrangement).to.be.equal(userFeedback.NOTIFICATION_TYPES.none);
-      expect(actualAction.payload.meta.userFeedback.text).to.be.equal(userFeedback.USER_FEEDBACK_TEXT_OK_DEFAULT);
+      expect(actualAction.payload.meta.userFeedback.text).to.be.equal('The list was loaded successfully');
       done();
     });
   });
@@ -63,7 +63,7 @@ describe('addressbook epics', () => {
       expect(actualAction.type).to.be.equal(commonActions.command.failed.type);
       expect(actualAction.payload.meta.commandType).to.be.equal(givenAction.type);
       expect(actualAction.payload.meta.userFeedback.notificationArrangement).to.be.equal(userFeedback.NOTIFICATION_TYPES.confirmed);
-      expect(actualAction.payload.meta.userFeedback.text).to.be.equal(userFeedback.USER_FEEDBACK_TEXT_FAIL_DEFAULT);
+      expect(actualAction.payload.meta.userFeedback.text).to.be.equal('The list could not be loaded. Please try again.');
       expect(actualAction.payload.meta.userFeedback.ticketId).to.be.equal(expectedTicketId);
       expect(actualAction.payload.errorResponseData).to.be.equal(expectedErrorResponseData);
       done();

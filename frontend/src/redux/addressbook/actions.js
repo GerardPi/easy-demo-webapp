@@ -24,14 +24,14 @@ const actionTypePrefixes = {
 const address = {
     read: {
         command: createAction(reduxUtils.backendAction.command.createType(actionTypePrefixes.address.read),
-            (id, userFeedbackData) => ({payload: { id, userFeedbackData }})),
+            (id, userFeedbackData = userFeedback.readOne()) => ({payload: { id, userFeedbackData }})),
         ok: createAction(reduxUtils.backendAction.ok.createType(actionTypePrefixes.address.read),
             (response, meta) => ({payload: { response, meta }})),
         commandRepeat: createAction(reduxUtils.backendAction.commandRepeat.createType(actionTypePrefixes.address.read))
     },
     readList: {
         command: createAction(reduxUtils.backendAction.command.createType(actionTypePrefixes.address.readList),
-            (pageIndex = APP_DEFAULTS.pageIndex, pageSize = APP_DEFAULTS.pageSize, userFeedbackData = userFeedback.USER_FEEDBACK_DATA_DEFAULT) =>
+            (pageIndex = APP_DEFAULTS.pageIndex, pageSize = APP_DEFAULTS.pageSize, userFeedbackData = userFeedback.readList()) =>
                   ({payload: { pageIndex, pageSize, userFeedbackData }})),
         ok: createAction(reduxUtils.backendAction.ok.createType(actionTypePrefixes.address.readList),
             (response, meta) => ({payload: { response, meta}})),
@@ -47,7 +47,7 @@ const address = {
     },
     delete: {
         command: createAction(reduxUtils.backendAction.command.createType(actionTypePrefixes.address.delete),
-            (id, etag, userFeedbackData = userFeedback.USER_FEEDBACK_DATA_DEFAULT) =>
+            (id, etag, userFeedbackData = userFeedback.deleteItem()) =>
                 ({payload: {id, etag, userFeedbackData}}))
     }
 };

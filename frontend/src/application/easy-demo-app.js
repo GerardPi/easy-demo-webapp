@@ -10,10 +10,12 @@ import '@kor-ui/kor/components/app-bar';
 import '@kor-ui/kor/components/nav-bar';
 import '@kor-ui/kor/components/tabs';
 import '@kor-ui/kor/components/icon';
+import './user-feedback-dialog';
+import './user-feedback-notification';
 
 const logo = new URL('../../assets/open-wc-logo.svg', import.meta.url).href;
 
-export class EasyDemo extends connect(store)(LitElement) {
+export class EasyDemoApp extends connect(store)(LitElement) {
   static get properties() {
     return {
       title: { type: String },
@@ -102,7 +104,9 @@ export class EasyDemo extends connect(store)(LitElement) {
         </kor-nav-bar>
         <address-list></address-list>
       </kor-page>
+      <user-feedback-dialog></user-feedback-dialog>
+      <user-feedback-notification></user-feedback-notification>
     `;
   }
 }
-customElements.define('easy-demo', EasyDemo);
+customElements.define('easy-demo-app', EasyDemoApp);

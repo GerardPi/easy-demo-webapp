@@ -1,5 +1,6 @@
 import { html } from 'lit';
 import { fixture, expect } from '@open-wc/testing';
+import dayjs from 'dayjs/esm';
 
 import * as commonUtils from '../src/common-utils';
 
@@ -59,5 +60,12 @@ describe('common-utils', () => {
   it ('assertNoNullOrEmptyValues throws an exception when passing an object with a null value', () => {
     const a = {b: 1, c: null, d: 3 };
     expect(() => commonUtils.assertNoNullOrEmptyValues(a)).to.throw('Missing arguments: ["c"]');
+  });
+  it ('isDateTimeBefore', () => {
+    const t1 = dayjs();
+    const t2 = t1.subtract(10, 'seconds');
+
+    expect(commonUtils.isDateTimeOlderThanSeconds(t1, 5)).to.be.equal(false);
+    expect(commonUtils.isDateTimeOlderThanSeconds(t2, 5)).to.be.equal(true);
   });
 });

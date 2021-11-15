@@ -29,19 +29,6 @@ export const notificationArrangements = {
 
 const PLEASE_TRY_AGAIN = 'Please try again.';
 
-export const readList = ({
-  notificationArrangement = notificationArrangements.warningOnly,
-  details = null,
-} = {}) => ({
-  notificationArrangement,
-  text: {
-    ok: 'The list was loaded successfully',
-    fail: `The list could not be loaded from server. ${
-      details || PLEASE_TRY_AGAIN
-    }`,
-  },
-});
-
 export const createItem = ({
   notificationArrangement = notificationArrangements.infoTransientAndWarning,
   details = null,
@@ -54,7 +41,7 @@ export const createItem = ({
 });
 
 export const deleteItem = ({
-  notificationArrangement = notificationArrangements.infoAndWarning,
+  notificationArrangement = notificationArrangements.infoTransientAndWarning,
   details = null,
 } = {}) => ({
   notificationArrangement,
@@ -71,9 +58,7 @@ export const readOne = ({
   notificationArrangement,
   text: {
     ok: 'The item was loaded successfully',
-    fail: `Item could not be loaded from server. ${
-      details || PLEASE_TRY_AGAIN
-    }`,
+    fail: `Item could not be loaded from server. ${ details || PLEASE_TRY_AGAIN }`,
   },
 });
 
@@ -84,9 +69,18 @@ export const readData = ({
   notificationArrangement,
   text: {
     ok: 'The data was loaded successfully',
-    fail: `Data could not be loaded from server. ${
-      details || PLEASE_TRY_AGAIN
-    }`,
+    fail: `Data could not be loaded from server. ${ details || PLEASE_TRY_AGAIN }`,
+  },
+});
+
+export const readList = ({
+  notificationArrangement = notificationArrangements.warningOnly,
+  details = null,
+} = {}) => ({
+  notificationArrangement,
+  text: {
+    ok: 'The list was loaded successfully',
+    fail: `The list could not be loaded. ${ details || PLEASE_TRY_AGAIN }`,
   },
 });
 

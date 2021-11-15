@@ -66,8 +66,8 @@ describe('addressbook delete epic', () => {
       sinon.assert.calledWith(stubbedAxios, expectedUrl, expectedHeaders);
       expect(actualAction.type).to.be.equal(commonActions.command.succeeded.type);
       expect(actualAction.payload.response).to.be.equal('[no response available]');
-      expect(actualAction.payload.meta.userFeedback.notificationArrangement).to.be.equal(userFeedback.NOTIFICATION_TYPES.none);
-      expect(actualAction.payload.meta.userFeedback.text).to.be.equal(userFeedback.USER_FEEDBACK_TEXT_OK_DEFAULT);
+      expect(actualAction.payload.meta.userFeedback.notificationArrangement).to.be.equal(userFeedback.NOTIFICATION_TYPES.transient);
+      expect(actualAction.payload.meta.userFeedback.text).to.be.equal('The item was deleted successfully');
       expect(actualAction.payload.meta.commandType).to.be.equal(givenAction.type);
 
       const actualAction2 = actualActionArray[1]; // The reload action
@@ -102,7 +102,7 @@ describe('addressbook delete epic', () => {
       expect(actualAction.type).to.be.equal(commonActions.command.failed.type);
       expect(actualAction.payload.response).to.be.equal('[no response available]');
       expect(actualAction.payload.meta.userFeedback.notificationArrangement).to.be.equal(userFeedback.NOTIFICATION_TYPES.confirmed);
-      expect(actualAction.payload.meta.userFeedback.text).to.be.equal(userFeedback.USER_FEEDBACK_TEXT_FAIL_DEFAULT);
+      expect(actualAction.payload.meta.userFeedback.text).to.be.equal('The item was not deleted. Please try again.');
       const expectedTicketId = '[no ticket ID available]';
       expect(actualAction.payload.meta.userFeedback.ticketId).to.be.equal(expectedTicketId);
       expect(actualAction.payload.meta.commandType).to.be.equal(givenAction.type);

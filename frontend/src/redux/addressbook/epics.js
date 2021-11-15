@@ -45,7 +45,7 @@ export const createEpics = (backendSvc) => ({
       mergeMap(action =>
           from(addressbookServices.address.create(backendSvc, action.payload.data))
             .pipe(
-              mergeMap(response => from([reduxUtils.createCommonSuccessAction(action), createReadAddressListAction(state$.value)])),
+              mergeMap(response => from([reduxUtils.createCommonSuccessAction(action, response), createReadAddressListAction(state$.value)])),
               catchError(error => of(reduxUtils.createCommonFailureAction(action, error)))
           )
       )
@@ -56,7 +56,7 @@ export const createEpics = (backendSvc) => ({
       mergeMap(action =>
           from(addressbookServices.address.update(backendSvc, action.payload.id, action.payload.etag, action.payload.data))
             .pipe(
-              mergeMap(response => from([reduxUtils.createCommonSuccessAction(action), createReadAddressListAction(state$.value)])),
+              mergeMap(response => from([reduxUtils.createCommonSuccessAction(action, response), createReadAddressListAction(state$.value)])),
               catchError(error => of(reduxUtils.createCommonFailureAction(action, error)))
           )
       )
