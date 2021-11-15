@@ -1,4 +1,4 @@
-import { LitElement, html } from 'lit';
+import { LitElement, html, css } from 'lit';
 import { connect } from 'pwa-helpers';
 import store from '../redux/store';
 import commonSelectors from '../redux/common/selectors';
@@ -12,6 +12,15 @@ export class UserFeedbackNotification extends connect(store)(LitElement) {
   constructor() {
     super();
     this.transientUserFeedback = [];
+    this.allUserFeedback = [];
+  }
+  static get styles() {
+    return [
+        css`kor-notification-item {
+          box-shadow: 120px 80px 40px 20px blue;
+          transition: box-shadow 0.3s ease-in-out;
+        }`
+    ];
   }
 
   connectedCallback() {
@@ -23,17 +32,19 @@ export class UserFeedbackNotification extends connect(store)(LitElement) {
   }
 
   stateChanged(state) {
-    console.log(`## state has changed`);
-    this.transientUserFeedback = this._filterTransientUserFeedback(commonSelectors.userFeedback(state));
-    const fbIds = this.transientUserFeedback.map(fb => fb.feedbackId);
-    store.dispatch(commonActions.transientUserFeedback.deleteLater(fbIds));
+    const newAllUserFeedback = commonSelectors.userFeedback(state);
+    if (this.allUserFeedback !== newAllUserFeedback) {
+      this.allUserFeedback = newAllUserFeedback;
+      this.transientUserFeedback = this._filterTransientUserFeedback(this.allUserFeedback);
+      const fbIds = this.transientUserFeedback.map(fb => fb.feedbackId);
+      store.dispatch(commonActions.transientUserFeedback.deleteLater(fbIds));
+    }
     return this.requestUpdate();
   }
 
   close() {
     this._innerModal.visible = false;
   }
-
 
   okButtonClicked() {
     this.close();
@@ -46,12 +57,15 @@ export class UserFeedbackNotification extends connect(store)(LitElement) {
   get _innerModal() {
     return this.renderRoot.querySelector('#inner-modal');
   }
+
   renderNotificationItem(fb) {
+    const icon = fb.success ? 'info' : 'report_problem'; // https://fonts.google.com/icons?selected=Material+Icons
     return html`
-        <kor-notification-item label="Some other notification" visible sticky>
+        <kor-notification-item icon="${icon}" label="Notification" visible sticky>
           ${fb.text}
         </kor-notification-item>`;
   }
+
   renderNotificationItems() {
     return this.transientUserFeedback.map(fb => this.renderNotificationItem(fb));
   }
@@ -67,6 +81,7 @@ export class UserFeedbackNotification extends connect(store)(LitElement) {
 
 UserFeedbackNotification.properties = {
     transientUserFeedback: { type: Array},
+    allUserFeedback: { type: Array}
 };
 
 customElements.define('user-feedback-notification', UserFeedbackNotification);

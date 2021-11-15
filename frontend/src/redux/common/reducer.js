@@ -62,7 +62,10 @@ function mustUserFeedbackBeRetained(fb, feedbackIdsToDelete) {
 }
 
 function deleteTransientUserFeedback(userFeedbackArray, feedbackIdsToDelete) {
-  return userFeedbackArray.filter(fb => mustUserFeedbackBeRetained(fb, feedbackIdsToDelete));
+  if (feedbackIdsToDelete.length > 0) {
+    return userFeedbackArray.filter(fb => mustUserFeedbackBeRetained(fb, feedbackIdsToDelete));
+  }
+  return userFeedbackArray;
 }
 
 const reducer = reduxToolkit.createReducer(
