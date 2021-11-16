@@ -26,9 +26,12 @@ export class AddressList extends connect(store)(LitElement) {
   constructor() {
    super();
    this.title = '';
-   this.columns = ADDRESS_COLUMNS;
    this.items = [];
    this.inProgress = false;
+   this.multiSelect = true;
+   this.selectedIds = [];
+   this.selectionIsEmpty = true;
+   this.columns = ADDRESS_COLUMNS;
   }
 
   stateChanged(state) {
@@ -59,6 +62,14 @@ export class AddressList extends connect(store)(LitElement) {
   }
 
   renderColumn(row, path) {
+    if (path === '_select') {
+      if (this.multiSelect) {
+        return html`<kor-table-cell>
+                <kor-checkbox @click=${(e) => this._rowSelectToggled(e, row)}></kor-checkbox>
+        </kor-table-cell>`;
+      }
+      return html``;
+    }
     return html`<kor-table-cell>${row[path]}</kor-table-cell>`;
   }
 
@@ -76,13 +87,26 @@ export class AddressList extends connect(store)(LitElement) {
     this._addressDialog.openForAddition();
   }
 
+  _rowSelectToggled(e, row) {
+    console.log(`## _rowSelectToggled ${JSON.stringify(row)}`);
+    if (this.selectedIds.includes(row.id)) {
+      this.selectedIds = this.selectedIds.filter(id => row.id !== id);
+    } else {
+      this.selectedIds.push(row.id);
+    }
+    this.selectionIsEmpty = (this.selectedIds.length == 0);
+    console.log(`## _rowSelectToggled this.selectedIds: ${this.selectedIds}`);
+    e.stopPropagation();
+  }
+
   get _addressDialog() {
     return this.renderRoot.querySelector('address-dialog');
   }
 
   renderBody(rows, columns) {
     if (commonUtils.isNotNullOrEmpty(rows)) {
-      return rows.map((row) => html`<kor-table-row @click=${(e) => this._rowClicked(e, row)}>${this.renderColumns(row, columns)}</kor-table-row>`);
+      return rows.map((row) =>
+        html`<kor-table-row @click=${(e) => this._rowClicked(e, row)}>${this.renderColumns(row, columns)}</kor-table-row>`);
     }
     if (this.inProgress) {
       return html`<kor-table-row><kor-table-cell grid-cols="7" alignment="center"><kor-spinner label="Loading..."></kor-spinner></kor-table-cell></kor-table-row>`;
@@ -93,12 +117,15 @@ export class AddressList extends connect(store)(LitElement) {
   refreshButtonClicked() {
     this.refreshTable();
   }
+
   render() {
+    const columnCount = (this.columns.length - 2) + (this.mutiSelect ? 1 : 0);
     return html`
       <kor-card icon="house" label="Addresses">
         <kor-button slot="functions" @click=${this.refreshButtonClicked} icon="refresh" color="secondary" title="Refresh"></kor-button>
         <kor-button slot="functions" @click=${this._addButtonClicked} icon="add" color="secondary" title="Add"></kor-button>
-        <kor-table condensed columns="repeat(${this.columns.length - 2}, 1fr)">
+        <kor-button slot="functions" @click=${this._deleteButtonClicked} icon="delete" color="danger" title="Add" ?disabled=${this.selectionIsEmpty}></kor-button>
+        <kor-table condensed columns="repeat(${columnCount}, 1fr)">
           ${this.renderHeader(this.columns)}
           ${this.renderBody(this.items, this.columns)}
         <kor-table>
@@ -112,7 +139,10 @@ AddressList.properties = {
     title: {type: String},
     columns: { type: Array},
     items: {type: Array},
-    inProgress: {type: Boolean}
+    selectedItems: {type: Array},
+    inProgress: {type: Boolean},
+    multiSelect: {type: Boolean},
+    selectedIds: {type: Array}
 };
 
 customElements.define('address-list', AddressList);

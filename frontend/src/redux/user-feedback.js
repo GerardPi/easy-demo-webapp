@@ -51,10 +51,7 @@ export const deleteItem = ({
   },
 });
 
-export const readOne = ({
-  notificationArrangement = notificationArrangements.warningOnly,
-  details = null,
-} = {}) => ({
+export const readOne = ({ notificationArrangement = notificationArrangements.warningOnly, details = null, } = {}) => ({
   notificationArrangement,
   text: {
     ok: 'The item was loaded successfully',
@@ -62,10 +59,7 @@ export const readOne = ({
   },
 });
 
-export const readData = ({
-  notificationArrangement = notificationArrangements.warningOnly,
-  details = null,
-} = {}) => ({
+export const readData = ({ notificationArrangement = notificationArrangements.warningOnly, details = null, } = {}) => ({
   notificationArrangement,
   text: {
     ok: 'The data was loaded successfully',

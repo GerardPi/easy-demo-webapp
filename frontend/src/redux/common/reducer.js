@@ -38,6 +38,22 @@ function isCommandFailureAction(action) {
   return common || specific;
 }
 
+function convertFeedback(action, cmdType, isSuccess) {
+  const notificationType = action.payload.meta.userFeedback.notificationType;
+  delete action.payload.meta.userFeedback.notificationType;
+  return {
+    notificationType,
+    fb: {
+      ...action.payload.meta.userFeedback,
+      commandType: cmdType,
+      feedbackId: commonUtils.generateId('feedback_'),
+      success: isSuccess,
+      dateTime: commonUtils.currentDateTime()
+    }
+  };
+}
+
+
 function processCommandResult(state, action, isSuccess) {
   const cmdType = action.payload.meta.commandType;
   const result = isSuccess
@@ -46,22 +62,15 @@ function processCommandResult(state, action, isSuccess) {
   state.commandTypesInProgress = state.commandTypesInProgress.filter(type => type !== cmdType);
   state.commandTypesBusy = state.commandTypesBusy.filter(type => type !== cmdType);
   state.backendResults[cmdType] = result;
-  const fb = {
-    ...action.payload.meta.userFeedback,
-    commandType: cmdType,
-    feedbackId: commonUtils.generateId('feedback_'),
-    success: isSuccess,
-    dateTime: commonUtils.currentDateTime()
-  };
-  state.userFeedback.push(fb);
+  const { notificationType, fb } = convertFeedback(action, cmdType, isSuccess);
+  state.userFeedback[notificationType].push(fb);
 }
 
 function mustUserFeedbackBeRetained(fb, feedbackIdsToDelete) {
-  const isTransientFb = fb.notificationArrangement === userFeedback.NOTIFICATION_TYPES.transient;
-  return !(isTransientFb && feedbackIdsToDelete.includes(fb.feedbackId));
+  return !feedbackIdsToDelete.includes(fb.feedbackId);
 }
 
-function deleteTransientUserFeedback(userFeedbackArray, feedbackIdsToDelete) {
+function userFeedbackWithSpecificItemsDeleted(userFeedbackArray, feedbackIdsToDelete) {
   if (feedbackIdsToDelete.length > 0) {
     return userFeedbackArray.filter(fb => mustUserFeedbackBeRetained(fb, feedbackIdsToDelete));
   }
@@ -80,7 +89,9 @@ const reducer = reduxToolkit.createReducer(
         }
     })
     .addCase(commonActions.transientUserFeedback.deleteNow, (state, action) => {
-      state.userFeedback = deleteTransientUserFeedback(state.userFeedback, action.payload.transientUserFeedbackIds);
+      state.userFeedback[userFeedback.NOTIFICATION_TYPES.transient] = userFeedbackWithSpecificItemsDeleted(
+            state.userFeedback[userFeedback.NOTIFICATION_TYPES.transient],
+            action.payload.transientUserFeedbackIds);
     })
     .addMatcher(isCommandSuccessAction, (state, action) => {
         processCommandResult(state, action, true);

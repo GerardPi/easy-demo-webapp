@@ -1,4 +1,5 @@
 export const ADDRESS_COLUMNS = [
+    { name: '', path: '_select' },
     { name: 'ID', path: 'id', hidden: true },
     { name: 'etag', path: 'etag', hidden: true},
     { name: 'Street', path: 'street', width: 3},

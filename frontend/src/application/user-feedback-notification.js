@@ -14,28 +14,15 @@ export class UserFeedbackNotification extends connect(store)(LitElement) {
     this.transientUserFeedback = [];
     this.allUserFeedback = [];
   }
-  static get styles() {
-    return [
-        css`kor-notification-item {
-          box-shadow: 120px 80px 40px 20px blue;
-          transition: box-shadow 0.3s ease-in-out;
-        }`
-    ];
-  }
-
   connectedCallback() {
     super.connectedCallback();
   }
 
-  _filterTransientUserFeedback(userFeedbackArray) {
-    return userFeedbackArray.filter(fb => fb.notificationArrangement === userFeedback.NOTIFICATION_TYPES.transient);
-  }
-
   stateChanged(state) {
-    const newAllUserFeedback = commonSelectors.userFeedback(state);
-    if (this.allUserFeedback !== newAllUserFeedback) {
-      this.allUserFeedback = newAllUserFeedback;
-      this.transientUserFeedback = this._filterTransientUserFeedback(this.allUserFeedback);
+    const newTransientUserFeedback = commonSelectors.userFeedback.transient(state);
+    const isTransientFeedbackChanged = this.transientUserFeedback !== newTransientUserFeedback;
+    if (isTransientFeedbackChanged) {
+      this.transientUserFeedback = newTransientUserFeedback;
       const fbIds = this.transientUserFeedback.map(fb => fb.feedbackId);
       store.dispatch(commonActions.transientUserFeedback.deleteLater(fbIds));
     }

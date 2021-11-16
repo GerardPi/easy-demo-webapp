@@ -70,7 +70,7 @@ export function createFailureMetaData(commandAction, ticketId) {
   const userFeedbackData = getUserFeedbackData(commandAction);
   return {
     userFeedback: {
-      notificationArrangement: userFeedbackData.notificationArrangement.warning,
+      notificationType: userFeedbackData.notificationArrangement.warning,
       text: userFeedbackData.text.fail,
       ticketId,
     },
@@ -127,7 +127,7 @@ export function createSuccessMetaData(commandAction) {
   const userFeedbackData = getUserFeedbackData(commandAction);
   return {
     userFeedback: {
-      notificationArrangement: userFeedbackData.notificationArrangement.info,
+      notificationType: userFeedbackData.notificationArrangement.info,
       text: userFeedbackData.text.ok,
     },
     commandType: commandAction.type,
