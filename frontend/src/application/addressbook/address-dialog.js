@@ -1,4 +1,4 @@
-import {LitElement, html} from 'lit';
+import { LitElement, html } from 'lit';
 import { connect } from 'pwa-helpers';
 import store from '../../redux/store';
 import addressbookActions from '../../redux/addressbook/actions';
@@ -14,17 +14,17 @@ import '../confirmation-dialog';
 import './address-details';
 
 const EMPTY_ADDRESS = {};
-const MODE_ADD = 'ADD';
-const MODE_EDIT = 'EDIT';
-const MODE_VIEW = 'VIEW';
+export const MODE_ADD = 'ADD';
+export const MODE_EDIT = 'EDIT';
+export const MODE_VIEW = 'VIEW';
 
 export class AddressDialog extends connect(store)(LitElement) {
   constructor() {
-   super();
-   this.open = false;
-   this.address = EMPTY_ADDRESS;
-   this.mode = MODE_VIEW;
-   this.visible = false;
+    super();
+    this.open = false;
+    this.address = EMPTY_ADDRESS;
+    this.mode = MODE_VIEW;
+    this.visible = false;
   }
 
   connectedCallback() {
@@ -56,16 +56,31 @@ export class AddressDialog extends connect(store)(LitElement) {
   }
 
   _delete() {
-    const deleteAction = addressbookActions.address.delete.command(this.address.id, this.address.etag, userFeedback.deleteItem());
+    const deleteActions = [
+      addressbookActions.address.delete.command(
+        this.address.id,
+        this.address.etag,
+        userFeedback.deleteItem()
+      ),
+    ];
     this._deletionAddressDetails.address = this.address;
-    this._deletionConfirmationDialog.open('Are you sure?', 'Confirm that you want to delete this address', deleteAction);
+    this._deletionConfirmationDialog.open(
+      'Are you sure?',
+      'Confirm that you want to delete this address',
+      deleteActions
+    );
     this.close();
   }
 
   _save() {
     const newAddress = this._addressDetails.getAddressFromForm();
     console.log(`saving ${JSON.stringify(newAddress)}`);
-    store.dispatch(addressbookActions.address.create.command(newAddress, userFeedback.createItem()));
+    store.dispatch(
+      addressbookActions.address.create.command(
+        newAddress,
+        userFeedback.createItem()
+      )
+    );
     this.close();
   }
 
@@ -73,19 +88,29 @@ export class AddressDialog extends connect(store)(LitElement) {
     if (this.mode === MODE_ADD) {
       return html``;
     }
-    const { id, etag} = this.address;
+    const { id, etag } = this.address;
     return html`
-        <kor-input label="ID" readonly value="${id}"></kor-input>
-        <kor-input label="Entity tag" readonly  value="${etag}"></kor-input>
+      <kor-input label="ID" readonly value="${id}"></kor-input>
+      <kor-input label="Entity tag" readonly value="${etag}"></kor-input>
     `;
   }
 
   _renderButtons() {
     if (this.mode === MODE_VIEW) {
-      return html`<kor-button slot="footer" color="secondary" label="Delete" @click="${this._delete}"></kor-button>`;
+      return html`<kor-button
+        slot="footer"
+        color="secondary"
+        label="Delete"
+        @click="${this._delete}"
+      ></kor-button>`;
     }
     if (this.mode === MODE_ADD) {
-      return html`<kor-button slot="footer" color="secondary" label="Submit" @click="${this._save}"></kor-button>`;
+      return html`<kor-button
+        slot="footer"
+        color="secondary"
+        label="Submit"
+        @click="${this._save}"
+      ></kor-button>`;
     }
     return html``;
   }
@@ -108,8 +133,15 @@ export class AddressDialog extends connect(store)(LitElement) {
   _renderDeletionConfirmationDialog() {
     if (this.mode === MODE_VIEW) {
       return html`
-        <confirmation-dialog id="deletion-confirmation-dialog" label="Are you sure" text="You want to delete this address?">
-          <address-details id="deletion-address-details" .mode=${MODE_VIEW}></address-details>
+        <confirmation-dialog
+          id="deletion-confirmation-dialog"
+          label="Are you sure"
+          text="You want to delete this address?"
+        >
+          <address-details
+            id="deletion-address-details"
+            .mode=${MODE_VIEW}
+          ></address-details>
         </confirmation-dialog>
       `;
     }
@@ -117,14 +149,29 @@ export class AddressDialog extends connect(store)(LitElement) {
   }
 
   render() {
-    const { countryCode, city, postalCode, street, houseNumber, id, etag} = this.address;
+    const { countryCode, city, postalCode, street, houseNumber, id, etag } =
+      this.address;
     const readOnly = this.mode === MODE_VIEW;
     const sticky = this.mode !== MODE_VIEW; // Allow dialog to be closed by clicking next to it.
     return html`
-      <kor-modal id="inner-modal" label="Address" height="500px" ?sticky=${sticky}>
-        <address-details id="address-details" .address=${this.address} .mode=${this.mode}></address-details>
+      <kor-modal
+        id="inner-modal"
+        label="Address"
+        height="500px"
+        ?sticky=${sticky}
+      >
+        <address-details
+          id="address-details"
+          .address=${this.address}
+          .mode=${this.mode}
+        ></address-details>
         ${this._renderButtons()}
-        <kor-button slot="footer" color="secondary" label="Close" @click="${this.close}"></kor-button>
+        <kor-button
+          slot="footer"
+          color="secondary"
+          label="Close"
+          @click="${this.close}"
+        ></kor-button>
       </kor-modal>
       ${this._renderDeletionConfirmationDialog()}
     `;
@@ -132,7 +179,7 @@ export class AddressDialog extends connect(store)(LitElement) {
 }
 
 AddressDialog.properties = {
-  address: {type: Object},
-  mode: {type: String}
+  address: { type: Object },
+  mode: { type: String },
 };
 customElements.define('address-dialog', AddressDialog);

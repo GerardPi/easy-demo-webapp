@@ -19,8 +19,10 @@ export class UserFeedbackNotification extends connect(store)(LitElement) {
   }
 
   stateChanged(state) {
-    const newTransientUserFeedback = commonSelectors.userFeedback.transient(state);
-    const isTransientFeedbackChanged = this.transientUserFeedback !== newTransientUserFeedback;
+    const newTransientUserFeedback =
+      commonSelectors.userFeedback.transient(state);
+    const isTransientFeedbackChanged =
+      this.transientUserFeedback !== newTransientUserFeedback;
     if (isTransientFeedbackChanged) {
       this.transientUserFeedback = newTransientUserFeedback;
       const fbIds = this.transientUserFeedback.map(fb => fb.feedbackId);
@@ -47,14 +49,20 @@ export class UserFeedbackNotification extends connect(store)(LitElement) {
 
   renderNotificationItem(fb) {
     const icon = fb.success ? 'info' : 'report_problem'; // https://fonts.google.com/icons?selected=Material+Icons
-    return html`
-        <kor-notification-item icon="${icon}" label="Notification" visible sticky>
-          ${fb.text}
-        </kor-notification-item>`;
+    return html` <kor-notification-item
+      icon="${icon}"
+      label="Notification"
+      visible
+      sticky
+    >
+      ${fb.text}
+    </kor-notification-item>`;
   }
 
   renderNotificationItems() {
-    return this.transientUserFeedback.map(fb => this.renderNotificationItem(fb));
+    return this.transientUserFeedback.map(fb =>
+      this.renderNotificationItem(fb)
+    );
   }
 
   render() {
@@ -67,8 +75,8 @@ export class UserFeedbackNotification extends connect(store)(LitElement) {
 }
 
 UserFeedbackNotification.properties = {
-    transientUserFeedback: { type: Array},
-    allUserFeedback: { type: Array}
+  transientUserFeedback: { type: Array },
+  allUserFeedback: { type: Array },
 };
 
 customElements.define('user-feedback-notification', UserFeedbackNotification);

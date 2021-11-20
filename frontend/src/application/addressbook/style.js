@@ -1,8 +1,6 @@
 import { LitElement, html, css } from 'lit';
 
-export const style=css`
-
-`;
+export const style = css``;
 
 export default style;
 /*

@@ -28,10 +28,10 @@ Then, start the frontend
   . ./setnodeenv.sh
   npm run start
 
-This should open a browser automatically.
+A message _Web Dev Server started..._ appears and indicates what to do next.
 
-This application does not contain functionality yet.
-It is work in progress...
+This application may actually contain some functionality.
+It is a work in progress...
 
 
 == References

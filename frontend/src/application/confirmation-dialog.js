@@ -9,7 +9,7 @@ export class ConfirmationDialog extends connect(store)(LitElement) {
     super();
     this.label = 'no label';
     this.text = 'no text';
-    this.action = null;
+    this.actions = [];
   }
 
   connectedCallback() {
@@ -20,21 +20,25 @@ export class ConfirmationDialog extends connect(store)(LitElement) {
     this._innerModal.visible = false;
   }
 
-  open(label, text, action) {
+  open(label, text, actions) {
+    console.log(`## 1 actions=${JSON.stringify(actions)}`);
     this.label = label;
     this.text = text;
-    this.action = action;
+    this.actions = actions;
     this._innerModal.visible = true;
   }
 
   okButtonClicked() {
-    store.dispatch(this.action);
-    this.action = null;
+    this.actions.forEach(action =>
+      console.log(`## 4 action=${JSON.stringify(action)}`)
+    );
+    this.actions.forEach(action => store.dispatch(action));
+    this.actions = [];
     this.close();
   }
 
   cancelButtonClicked() {
-    this.action = null;
+    this.actions = [];
     this.close();
   }
 
@@ -43,6 +47,7 @@ export class ConfirmationDialog extends connect(store)(LitElement) {
   }
 
   render() {
+    console.log(`## 3 actions=${JSON.stringify(this.actions)}`);
     return html`
       <kor-modal id="inner-modal" label="${this.label}" sticky height="500px">
         <slot></slot>
@@ -67,7 +72,7 @@ export class ConfirmationDialog extends connect(store)(LitElement) {
 ConfirmationDialog.properties = {
   label: { type: String },
   text: { type: String },
-  action: { type: Object },
+  actions: { type: Array },
 };
 
 customElements.define('confirmation-dialog', ConfirmationDialog);

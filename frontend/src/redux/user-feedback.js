@@ -51,19 +51,29 @@ export const deleteItem = ({
   },
 });
 
-export const readOne = ({ notificationArrangement = notificationArrangements.warningOnly, details = null, } = {}) => ({
+export const readOne = ({
+  notificationArrangement = notificationArrangements.warningOnly,
+  details = null,
+} = {}) => ({
   notificationArrangement,
   text: {
     ok: 'The item was loaded successfully',
-    fail: `Item could not be loaded from server. ${ details || PLEASE_TRY_AGAIN }`,
+    fail: `Item could not be loaded from server. ${
+      details || PLEASE_TRY_AGAIN
+    }`,
   },
 });
 
-export const readData = ({ notificationArrangement = notificationArrangements.warningOnly, details = null, } = {}) => ({
+export const readData = ({
+  notificationArrangement = notificationArrangements.warningOnly,
+  details = null,
+} = {}) => ({
   notificationArrangement,
   text: {
     ok: 'The data was loaded successfully',
-    fail: `Data could not be loaded from server. ${ details || PLEASE_TRY_AGAIN }`,
+    fail: `Data could not be loaded from server. ${
+      details || PLEASE_TRY_AGAIN
+    }`,
   },
 });
 
@@ -74,7 +84,7 @@ export const readList = ({
   notificationArrangement,
   text: {
     ok: 'The list was loaded successfully',
-    fail: `The list could not be loaded. ${ details || PLEASE_TRY_AGAIN }`,
+    fail: `The list could not be loaded. ${details || PLEASE_TRY_AGAIN}`,
   },
 });
 

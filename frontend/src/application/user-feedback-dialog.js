@@ -5,10 +5,6 @@ import '@kor-ui/kor/components/button';
 import '@kor-ui/kor/components/modal';
 
 export class UserFeedbackDialog extends connect(store)(LitElement) {
-  constructor() {
-    super();
-  }
-
   connectedCallback() {
     super.connectedCallback();
   }
@@ -21,7 +17,6 @@ export class UserFeedbackDialog extends connect(store)(LitElement) {
   close() {
     this._innerModal.visible = false;
   }
-
 
   okButtonClicked() {
     this.close();
@@ -57,7 +52,6 @@ export class UserFeedbackDialog extends connect(store)(LitElement) {
   }
 }
 
-UserFeedbackDialog.properties = {
-};
+UserFeedbackDialog.properties = {};
 
 customElements.define('user-feedback-dialog', UserFeedbackDialog);
