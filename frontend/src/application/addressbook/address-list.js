@@ -98,7 +98,7 @@ export class AddressList extends connect(store)(LitElement) {
     if (this.selectedIds.includes(row.id)) {
       this.selectedIds = this.selectedIds.filter(id => row.id !== id);
     } else {
-      this.selectedIds.push(row.id);
+      this.selectedIds = this.selectedIds.concat(row.id);
     }
     console.log(
       `## _rowSelectToggled selectedIds=${JSON.stringify(this.selectedIds)}`
@@ -114,9 +114,9 @@ export class AddressList extends connect(store)(LitElement) {
     if (commonUtils.isNotNullOrEmpty(rows)) {
       return rows.map(
         row =>
-          html`<kor-table-row @click=${e => this._rowClicked(e, row)}
-            >${this.renderColumns(row, columns)}</kor-table-row
-          >`
+          html`<kor-table-row @click=${e => this._rowClicked(e, row)}>
+            ${this.renderColumns(row, columns)}
+          </kor-table-row>`
       );
     }
     if (this.inProgress) {
@@ -131,7 +131,7 @@ export class AddressList extends connect(store)(LitElement) {
     >`;
   }
 
-  refreshButtonClicked() {
+  reloadButtonClicked() {
     this.refreshTable();
   }
 
@@ -160,32 +160,25 @@ export class AddressList extends connect(store)(LitElement) {
     return this.renderRoot.querySelector('#bulk-deletion-confirmation-dialog');
   }
 
-  renderDeleteButton() {
-    if (this.selectedIds.length > 0) {
-      return html`
+  render() {
+    const columnCount = this.columns.length - 2 + (this.mutiSelect ? 1 : 0);
+    console.log(`## render selectedIds=${JSON.stringify(this.selectedIds)}`);
+    return html`
+      <kor-card icon="house" label="Addresses">
+        <kor-button slot="functions" @click=${
+          this.reloadButtonClicked
+        } icon="refresh" color="secondary" title="Reload"></kor-button>
+        <kor-button slot="functions" @click=${
+          this._addButtonClicked
+        } icon="add" color="secondary" title="Add"></kor-button>
         <kor-button
           slot="functions"
           @click=${this._deleteButtonClicked}
           icon="delete"
           color="danger"
-          title="Add"
+          title="Delete"
+          ?disabled=${this.selectedIds.length === 0}
         ></kor-button>
-      `;
-    }
-    return html``;
-  }
-
-  render() {
-    const columnCount = this.columns.length - 2 + (this.mutiSelect ? 1 : 0);
-    return html`
-      <kor-card icon="house" label="Addresses">
-        <kor-button slot="functions" @click=${
-          this.refreshButtonClicked
-        } icon="refresh" color="secondary" title="Refresh"></kor-button>
-        <kor-button slot="functions" @click=${
-          this._addButtonClicked
-        } icon="add" color="secondary" title="Add"></kor-button>
-        ${this.renderDeleteButton()}
         <kor-table condensed columns="repeat(${columnCount}, 1fr)">
           ${this.renderHeader(this.columns)}
           ${this.renderBody(this.items, this.columns)}
@@ -204,7 +197,7 @@ AddressList.properties = {
   items: { type: Array },
   inProgress: { type: Boolean },
   selectedIds: { type: Array, reflect: true },
-  multiSelect: { type: Boolean, reflect: true },
+  multiSelect: { type: Boolean },
 };
 
 customElements.define('address-list', AddressList);
