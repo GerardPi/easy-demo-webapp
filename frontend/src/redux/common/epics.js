@@ -28,7 +28,3 @@ const epics = {
 
 export default epics;
 
-/*
-    filter(action => (action.payload.transientUserFeedbackIds.length > 0)
-                      && (action.type === commonActions.transientUserFeedback.deleteLater.type)),
-                      */

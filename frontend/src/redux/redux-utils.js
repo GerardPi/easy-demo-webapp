@@ -68,12 +68,14 @@ function getUserFeedbackData(commandAction) {
 
 export function createFailureMetaData(commandAction, ticketId) {
   const userFeedbackData = getUserFeedbackData(commandAction);
+  const commandArguments = getCommandArguments(commandAction);
   return {
     userFeedback: {
       notificationType: userFeedbackData.notificationArrangement.warning,
       text: userFeedbackData.text.fail,
       ticketId,
     },
+    commandArguments,
     commandType: commandAction.type,
   };
 }
@@ -123,13 +125,29 @@ function problemTicketIdFromResponse(response) {
   return NO_TICKET_ID_AVAILABLE;
 }
 
+function getCommandArguments(commandAction) {
+  const result = {};
+  if (commonUtils.isNotNullOrEmpty(commandAction.payload.pageIndex)) {
+    result.pageIndex = commandAction.payload.pageIndex;
+  }
+  if (commonUtils.isNotNullOrEmpty(commandAction.payload.pageSize)) {
+    result.pageSize = commandAction.payload.pageSize;
+  }
+  if (commonUtils.isNotNullOrEmpty(commandAction.payload.id)) {
+    result.id = commandAction.payload.id;
+  }
+  return result;
+}
+
 export function createSuccessMetaData(commandAction) {
   const userFeedbackData = getUserFeedbackData(commandAction);
+  const commandArguments = getCommandArguments(commandAction);
   return {
     userFeedback: {
       notificationType: userFeedbackData.notificationArrangement.info,
       text: userFeedbackData.text.ok,
     },
+    commandArguments,
     commandType: commandAction.type,
   };
 }

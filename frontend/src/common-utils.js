@@ -19,11 +19,11 @@ export function generateId(idPrefix) {
 }
 
 export function isNullOrEmpty(value) {
-  return ldLang.isNull(value) || ldLang.isEmpty(value);
+  return (ldLang.isNull(value) || ldLang.isEmpty(value)) && !ldLang.isNumber(value);
 }
 
 export function isNotNullOrEmpty(value) {
-  return !ldLang.isNull(value) && !ldLang.isEmpty(value);
+  return !ldLang.isNull(value) && !ldLang.isEmpty(value) || ldLang.isNumber(value);
 }
 
 export function isSubvalueNullOrEmpty(value, propertyKey) {

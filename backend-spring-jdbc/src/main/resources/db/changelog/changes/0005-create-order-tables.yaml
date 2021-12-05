@@ -1,0 +1,78 @@
+databaseChangeLog:
+  - changeSet:
+      id: '20210308005'
+      author: gerardpi
+      changes:
+        - createTable:
+            tableName: item_order
+            columns:
+              - column:
+                  name: id
+                  type: UUID
+                  constraints:
+                    primaryKey: true
+                    nullable: false
+              - column:
+                  name: person_id
+                  type: UUID
+                  constraints:
+                    nullable: false
+              - column:
+                  name: description
+                  type: VARCHAR(256)
+              - column:
+                  name: date_time
+                  type: 'TIMESTAMP WITH TIME ZONE'
+                  constraints:
+                    nullable: false
+              - column:
+                  name: etag
+                  type: Integer
+                  constraints:
+                    nullable: false
+        - addForeignKeyConstraint:
+            constraintName: fk_item_order_person
+            baseTableName: item_order
+            baseColumnNames: person_id
+            referencedTableName: person
+            referencedColumnNames: id
+        - createTable:
+            tableName: "item_order_line"
+            columns:
+              - column:
+                  name: id
+                  type: UUID
+                  constraints:
+                    primaryKey: true
+                    nullable: false
+              - column:
+                  name: item_order_id
+                  type: UUID
+                  constraints:
+                    nullable: false
+              - column:
+                  name: item_id
+                  type: UUID
+                  constraints:
+                    nullable: false
+              - column:
+                  name: count
+                  type: Integer
+                  constraints:
+                    nullable: false
+              - column:
+                  name: amount_per_item
+                  type: DECIMAL
+                  constraints:
+                    nullable: false
+              - column:
+                  name: etag
+                  type: Integer
+                  constraints:
+                    nullable: false
+        - addForeignKeyConstraint:
+            constraintName: fk_item_order_line_order
+            baseTableName: item_order_line
+            baseColumnNames: item_order_id
+            referencedTableName: item_order
+            referencedColumnNames: id

@@ -2,7 +2,7 @@ package io.github.gerardpi.easy.demo.web.addressbook;
 
 import io.github.gerardpi.easy.demo.domain.addressbook.PersonAddress;
 import io.github.gerardpi.easy.demo.domain.addressbook.PersonAddressRepository;
-import io.github.gerardpi.easy.demo.web.ControllerUtils;
+import io.github.gerardpi.easy.demo.web.EntityControllerUtils;
 import io.github.gerardpi.easy.demo.web.EntityController;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -18,7 +18,7 @@ import java.util.Optional;
 import java.util.UUID;
 import java.util.function.Supplier;
 
-import static io.github.gerardpi.easy.demo.web.ControllerUtils.toUri;
+import static io.github.gerardpi.easy.demo.web.EntityControllerUtils.toUri;
 
 
 @RestController
@@ -39,7 +39,7 @@ public class PersonAddressController implements EntityController<PersonAddress, 
     public HttpEntity<Void> createOne(@RequestBody final PersonAddressDto dto) {
         final PersonAddress newEntity = dto.toEntity(PersonAddress.create(uuidSupplier.get()).build()).build();
         final PersonAddress savedEntity = repository.save(newEntity);
-        return ControllerUtils.responseForPost(savedEntity, toUri(URI, savedEntity.getId().toString()));
+        return EntityControllerUtils.responseForPost(savedEntity, toUri(URI, savedEntity.getId().toString()));
     }
 
     /**
@@ -51,9 +51,9 @@ public class PersonAddressController implements EntityController<PersonAddress, 
             @RequestBody final PersonAddressDto dto,
             @RequestHeader(value = HttpHeaders.IF_MATCH) final Integer expectedEtag) {
         final PersonAddress existingEntity = repository.findById(id).orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND));
-        ControllerUtils.assertEtagEqual(existingEntity, expectedEtag);
+        EntityControllerUtils.assertEtagEqual(existingEntity, expectedEtag);
         final PersonAddress savedEntity = repository.save(dto.toEntityNotNull(existingEntity).build());
-        return ControllerUtils.responseForPatch(savedEntity, toUri(URI, savedEntity.getId().toString()));
+        return EntityControllerUtils.responseForPatch(savedEntity, toUri(URI, savedEntity.getId().toString()));
     }
 
     /**
@@ -69,7 +69,7 @@ public class PersonAddressController implements EntityController<PersonAddress, 
             @PathVariable final UUID id,
             @RequestBody final PersonAddressDto dto) {
         final PersonAddress replacedEntity = repository.save(dto.toEntity(repository.getPersonAddressById(id)).build());
-        return ControllerUtils.responseForPut(replacedEntity, toUri(URI, replacedEntity.getId().toString()));
+        return EntityControllerUtils.responseForPut(replacedEntity, toUri(URI, replacedEntity.getId().toString()));
     }
 
     @GetMapping("/{id}")
@@ -77,9 +77,9 @@ public class PersonAddressController implements EntityController<PersonAddress, 
             @PathVariable final UUID id,
             @RequestHeader(value = HttpHeaders.IF_NONE_MATCH, required = false) final Optional<String> ifNoneMatchHeader) {
         final PersonAddressDto dto = PersonAddressDto.fromEntity(repository.getPersonAddressById(id)).build();
-        ControllerUtils.assertEtagDifferent(ifNoneMatchHeader, dto.getEtag(),
+        EntityControllerUtils.assertEtagDifferent(ifNoneMatchHeader, dto.getEtag(),
                 toUri(URI, id.toString()).toString());
-        return ControllerUtils.responseForGet(dto, dateTimeSupplier);
+        return EntityControllerUtils.responseForGet(dto, dateTimeSupplier);
     }
 
     @GetMapping
@@ -93,8 +93,8 @@ public class PersonAddressController implements EntityController<PersonAddress, 
             @PathVariable final UUID id,
             @RequestHeader(value = HttpHeaders.IF_MATCH, required = false) final Integer expectedEtag) {
         final PersonAddress entity = repository.getPersonAddressById(id);
-        ControllerUtils.assertEtagEqual(entity, expectedEtag);
+        EntityControllerUtils.assertEtagEqual(entity, expectedEtag);
         repository.delete(entity);
-        return ControllerUtils.responseForDelete();
+        return EntityControllerUtils.responseForDelete();
     }
 }

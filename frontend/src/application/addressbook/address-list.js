@@ -33,14 +33,14 @@ export class AddressList extends connect(store)(LitElement) {
 
   stateChanged(state) {
     this.items = addressbookSelectors.address.list.items(state);
-    const existingIds = this.items.map(item => item.id);
-    console.log(`## existingIds: ${JSON.stringify(existingIds)}`);
-    console.log(`## selectedIds: ${JSON.stringify(this.selectedIds)}`);
-    this.selectedIds = this.selectedIds.filter(selectedId =>
-      existingIds.includes(selectedId)
-    );
+    this.selectedIds = this._onlyKeepSelectedIdsThatExist(this.selectedIds, this.items);
     this.inProgress = addressbookSelectors.address.list.inProgress(state);
     return this.requestUpdate();
+  }
+
+  _onlyKeepSelectedIdsThatExist(currentlySelectedIds, existingItems) {
+    const existingIds = existingItems.map(item => item.id);
+    return currentlySelectedIds.filter(selectedId => existingIds.includes(selectedId));
   }
 
   connectedCallback() {

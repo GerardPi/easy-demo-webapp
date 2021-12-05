@@ -5,9 +5,10 @@ import * as commonUtils from '../../common-utils';
 import { INITIAL_STATE, INITIAL_VALUES } from './initial';
 import * as userFeedback from '../user-feedback';
 
-function createBackendResult(commandType, response, message, isSuccess) {
+function createBackendResult(commandType, commandArguments, response, message, isSuccess) {
   return {
     commandType,
+    commandArguments,
     response,
     message,
     success: isSuccess,
@@ -18,13 +19,14 @@ function getErrorMessage(response) {
   return 'some error message: TODO: fix this';
 }
 
-function createCommandBackendSuccess(commandType, response) {
-  return createBackendResult(commandType, response, 'success', true);
+function createCommandBackendSuccess(commandType, commandArguments, response) {
+  return createBackendResult(commandType, commandArguments, response, 'success', true);
 }
 
-function createCommandBackendError(commandType, response) {
+function createCommandBackendError(commandType, commandArguments, response) {
   return createBackendResult(
     commandType,
+    commandArguments,
     response,
     getErrorMessage(response),
     false
@@ -51,7 +53,6 @@ function takeNotificationType(meta) {
 }
 
 function convertFeedback(action, cmdType, isSuccess) {
-  console.log(`convertFeedback action=${JSON.stringify(action)}`);
   return {
     fb: {
       ...action.payload.meta.userFeedback,
@@ -66,9 +67,10 @@ function convertFeedback(action, cmdType, isSuccess) {
 
 function processCommandResult(state, action, isSuccess) {
   const cmdType = action.payload.meta.commandType;
+  const cmdArgs = action.payload.meta.commandArguments;
   const result = isSuccess
-    ? createCommandBackendSuccess(cmdType, action.payload.response)
-    : createCommandBackendError(cmdType, action.payload.response);
+    ? createCommandBackendSuccess(cmdType, cmdArgs, action.payload.response)
+    : createCommandBackendError(cmdType, cmdArgs, action.payload.response);
   state.commandTypesInProgress = state.commandTypesInProgress.filter(
     type => type !== cmdType
   );

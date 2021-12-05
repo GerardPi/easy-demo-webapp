@@ -12,11 +12,12 @@ import java.net.URI;
 import java.time.OffsetDateTime;
 import java.time.ZonedDateTime;
 import java.util.Optional;
+import java.util.UUID;
 import java.util.concurrent.TimeUnit;
 import java.util.function.Supplier;
 
-public final class ControllerUtils {
-    private ControllerUtils() {
+public final class EntityControllerUtils {
+    private EntityControllerUtils() {
         // No instantiation allowed/
     }
 
@@ -27,6 +28,7 @@ public final class ControllerUtils {
             }
         });
     }
+
     public static void assertEtagDifferent(final Optional<String> ifNoneMatchHeader, final String currentEtagValue, final URI uri) {
         ifNoneMatchHeader.ifPresent(eTag -> {
             if (currentEtagValue.equalsIgnoreCase(eTag)) {
@@ -39,16 +41,26 @@ public final class ControllerUtils {
         assertEtagDifferent(ifNoneMatchHeader, "" + currentEtagValue, uri);
     }
 
-    public static <T extends PersistableEntityWithTag> void assertEtagEqual(final T entity, final String expectedEtagValue) {
-        if (entity.getEtag() == null) {
+    public static <T extends PersistableEntityWithTag> void assertEtagEqual(final Integer etag, final String expectedEtagValue, Class<?> entityClass, UUID entityId) {
+        if (etag == null) {
             throw new IllegalStateException("Field " + PersistableEntityWithTag.PROPNAME_ETAG + " was not set. This must never happen!");
         }
-        if (!expectedEtagValue.equalsIgnoreCase("" + entity.getEtag())) {
-            throw new EntityTagMismatchException("The entity " + entity.getClass().getSimpleName() + " to update with ID " + entity.getId()
+        if (!expectedEtagValue.equalsIgnoreCase("" + etag)) {
+            throw new EntityTagMismatchException("The entity " + entityClass.getSimpleName() + " to update with ID " + entityId
                     + " does not have expected etag " + expectedEtagValue
-                    + " (actual etag = " + entity.getEtag() + ").");
+                    + " (actual etag = " + etag + ").");
         }
+
     }
+
+    public static <T extends PersistableEntityWithTag> void assertEtagEqual(final Integer etag, final int expectedEtagValue, Class<?> entityClass, UUID entityId) {
+        assertEtagEqual(etag, expectedEtagValue, entityClass, entityId);
+    }
+
+    public static <T extends PersistableEntityWithTag> void assertEtagEqual(final T entity, final String expectedEtagValue) {
+        assertEtagEqual(entity.getEtag(), expectedEtagValue, entity.getClass(), entity.getId());
+    }
+
     public static <T extends PersistableEntityWithTag> void assertEtagEqual(final T entity, final int expectedEtagValue) {
         assertEtagEqual(entity, "" + expectedEtagValue);
     }

@@ -10,12 +10,16 @@ describe('common-utils', () => {
     expect(commonUtils.isNotNullOrEmpty([])).to.be.equal(false);
     expect(commonUtils.isNotNullOrEmpty([1])).to.be.equal(true);
     expect(commonUtils.isNotNullOrEmpty(undefined)).to.be.equal(false);
+    expect(commonUtils.isNotNullOrEmpty(100)).to.be.equal(true);
+    expect(commonUtils.isNotNullOrEmpty(0)).to.be.equal(true);
   });
   it('null is nullOrEmpty', () => {
     expect(commonUtils.isNullOrEmpty(null)).to.be.equal(true);
     expect(commonUtils.isNullOrEmpty(undefined)).to.be.equal(true);
     expect(commonUtils.isNullOrEmpty([])).to.be.equal(true);
     expect(commonUtils.isNullOrEmpty([1])).to.be.equal(false);
+    expect(commonUtils.isNullOrEmpty(100)).to.be.equal(false);
+    expect(commonUtils.isNullOrEmpty(0)).to.be.equal(false);
   });
   it('objectWith to result in an extened object and original is not touched', () => {
     const a = { a: 1, b: 2, c: 3 };

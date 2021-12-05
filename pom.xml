@@ -11,11 +11,17 @@
 
     <properties>
         <java.version>8</java.version>
+        <maven-enforcer-plugin.version>3.0.0</maven-enforcer-plugin.version>
     </properties>
 
     <modules>
         <module>backend</module>
+        <module>backend-spring-jdbc</module>
         <module>frontend</module>
     </modules>
+    <build>
+        <plugins>
+        </plugins>
+    </build>
 
 </project>

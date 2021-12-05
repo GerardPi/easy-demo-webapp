@@ -2,7 +2,7 @@ package io.github.gerardpi.easy.demo.web.addressbook;
 
 import io.github.gerardpi.easy.demo.domain.addressbook.Person;
 import io.github.gerardpi.easy.demo.domain.addressbook.PersonRepository;
-import io.github.gerardpi.easy.demo.web.ControllerUtils;
+import io.github.gerardpi.easy.demo.web.EntityControllerUtils;
 import io.github.gerardpi.easy.demo.web.EntityController;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -18,7 +18,7 @@ import java.util.Optional;
 import java.util.UUID;
 import java.util.function.Supplier;
 
-import static io.github.gerardpi.easy.demo.web.ControllerUtils.*;
+import static io.github.gerardpi.easy.demo.web.EntityControllerUtils.*;
 
 
 @RestController
@@ -52,7 +52,7 @@ public class PersonController implements EntityController<Person, PersonDto> {
             @RequestHeader(value = HttpHeaders.IF_MATCH) final Integer expectedEtag) {
 
         final Person existingPerson = repository.findById(id).orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND));
-        ControllerUtils.assertEtagEqual(existingPerson, expectedEtag);
+        EntityControllerUtils.assertEtagEqual(existingPerson, expectedEtag);
         final Person updatedEntity = personDto.toEntityNotNull(existingPerson).build();
         final Person savedEntity = repository.save(updatedEntity);
         return responseForPatch(savedEntity, toUri(URI, savedEntity.getId().toString()));
@@ -77,7 +77,7 @@ public class PersonController implements EntityController<Person, PersonDto> {
             @PathVariable final UUID id,
             @RequestHeader(value = HttpHeaders.IF_NONE_MATCH, required = false) final Optional<String> ifNoneMatchHeader) {
         final PersonDto dto = PersonDto.fromEntity(repository.getPersonById(id)).build();
-        ControllerUtils.assertEtagDifferent(ifNoneMatchHeader, dto.getEtag(),
+        EntityControllerUtils.assertEtagDifferent(ifNoneMatchHeader, dto.getEtag(),
                 toUri(URI, id.toString()).toString());
         return responseForGet(dto, dateTimeSupplier);
     }
@@ -92,8 +92,8 @@ public class PersonController implements EntityController<Person, PersonDto> {
             @PathVariable final UUID id,
             @RequestHeader(value = HttpHeaders.IF_MATCH, required = false) final Integer expectedEtag) {
         final Person entity = repository.getPersonById(id);
-        ControllerUtils.assertEtagEqual(entity, expectedEtag);
+        EntityControllerUtils.assertEtagEqual(entity, expectedEtag);
         repository.delete(entity);
-        return ControllerUtils.responseForDelete();
+        return EntityControllerUtils.responseForDelete();
     }
 }
